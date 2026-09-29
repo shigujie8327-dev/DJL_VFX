@@ -1695,7 +1695,8 @@ exports.HUARONG_VFX = {
             ] },
         "TuishenJian.Shot": { authoredFacing: 1, cues: [
                 // Hand edit 2026-09-30: flight arrow shares 穿云箭's projectile (was HRCommon.SilverArrow 160x60). Re-import overwrites this.
-                { asset: "ChuanyunJian.Projectile", start: 0, duration: 0.07, anchor: "Caster_WeaponPoint", w: 190, h: 71.25, x: 0, y: 0, alpha: 1, scaleFrom: 1, scaleTo: 1, dx: 0, dy: 0, rotation: 0, spin: 0, envelope: "hold", motion: "linear", curve: { control: [240, -40], endAnchor: "Target_HitPoint", endOffset: [0, 0] }, orientToPath: true, pivot: [0.91, 0.5] },
+                // Hand edit 2026-09-30: NEAR-only shot flies straight from the bow to the chest (control was [240, -40], which held the arrow high and dropped it at the end).
+                { asset: "ChuanyunJian.Projectile", start: 0, duration: 0.07, anchor: "Caster_WeaponPoint", w: 190, h: 71.25, x: 0, y: 0, alpha: 1, scaleFrom: 1, scaleTo: 1, dx: 0, dy: 0, rotation: 0, spin: 0, envelope: "hold", motion: "linear", curve: { control: [160, 58], endAnchor: "Target_HitPoint", endOffset: [0, 0] }, orientToPath: true, pivot: [0.91, 0.5] },
             ] },
         "TuishenJian.Hit": { authoredFacing: 1, cues: [
                 { asset: "HRCommon.BlueHit", start: 0, duration: 0.24, anchor: "Target_HitPoint", w: 175, h: 165, x: 0, y: 0, alpha: 1, scaleFrom: 0.6, scaleTo: 1, dx: 0, dy: 0, rotation: 0, spin: 0, envelope: "pulse", pivot: [0.482, 0.482] },
