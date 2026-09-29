@@ -1,0 +1,735 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>林冲 VFX 预览台</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;900&family=Noto+Sans+SC:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: battle-console — scenario rail | stage + layer lanes | acceptance sheet; asset ledger below.
+   Deliberately single dark look: VFX are judged on a dark stage, so the whole console commits to it. */
+:root {
+  color-scheme: dark;
+  --ink: #0e1013;          /* lacquer black ground */
+  --panel: #161a1f;        /* raised console panel */
+  --panel-2: #1d2229;
+  --line: #2b313a;
+  --fg: #e8e3d7;           /* rice-paper text */
+  --muted: #8f95a1;
+  --bronze: #c69a5b;       /* wiki icon frame bronze = accent */
+  --bronze-dim: #7a5f3a;
+  --ok: #7fbf8a; --warn: #e0b04f; --bad: #e0685f;
+  --f-display: "Noto Serif SC", "Songti SC", "SimSun", serif;
+  --f-body: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --r: 6px;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { background: var(--ink); color: var(--fg); }
+body { font-family: var(--f-body); font-size: 14px; line-height: 1.55; margin: 0; padding: 20px 16px 48px; }
+.wrap { max-width: 1480px; margin: 0 auto; display: grid; gap: 18px; }
+header.top { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 8px 24px;
+  border-bottom: 1px solid var(--line); padding-bottom: 12px; }
+h1 { font-family: var(--f-display); font-weight: 900; font-size: clamp(22px, 3vw, 30px); margin: 0; letter-spacing: .04em; text-wrap: balance; }
+h1 small { font-family: var(--f-body); font-weight: 500; font-size: 13px; color: var(--muted); letter-spacing: .02em; margin-left: 10px; }
+.meta { color: var(--muted); font-size: 12px; font-family: var(--f-mono); }
+h2 { font-family: var(--f-display); font-weight: 600; font-size: 18px; margin: 0; letter-spacing: .05em; }
+.eyebrow { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--bronze); font-family: var(--f-mono); }
+
+.console { display: grid; grid-template-columns: 250px minmax(0, 1fr) 300px; gap: 16px; align-items: start; }
+@media (max-width: 1180px) { .console { grid-template-columns: 220px minmax(0, 1fr); } .sheet { grid-column: 1 / -1; } }
+@media (max-width: 760px) { .console { grid-template-columns: minmax(0, 1fr); } }
+
+/* scenario rail */
+.rail { display: grid; gap: 14px; }
+.skill { display: grid; gap: 6px; }
+.skill-head { display: flex; align-items: center; gap: 10px; }
+.skill-head img { width: 40px; height: 40px; border-radius: 6px; border: 1px solid var(--bronze-dim); flex: none; }
+.skill-head b { font-family: var(--f-display); font-size: 15px; letter-spacing: .06em; display: block; }
+.skill-head span { font-size: 11.5px; color: var(--muted); }
+.sw { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 3px; vertical-align: 0; }
+.scn { appearance: none; text-align: left; width: 100%; border: 1px solid var(--line); background: var(--panel); color: var(--fg);
+  font: inherit; font-size: 13px; padding: 7px 10px; border-radius: var(--r); cursor: pointer; display: flex; justify-content: space-between; gap: 8px; }
+.scn:hover { border-color: var(--bronze-dim); }
+.scn[aria-pressed="true"] { border-color: var(--bronze); background: var(--panel-2); box-shadow: inset 3px 0 0 var(--bronze); }
+.scn em { font-style: normal; font-family: var(--f-mono); font-size: 11px; color: var(--muted); white-space: nowrap; }
+@media (max-width: 760px) { .rail { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); } }
+
+/* stage */
+.stagebox { display: grid; gap: 10px; min-width: 0; }
+.stage { position: relative; width: 100%; aspect-ratio: 16 / 9; max-width: 100%; border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; background: #000; }
+.stage canvas { width: 100%; height: 100%; display: block; }
+.transport { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.btn { appearance: none; border: 1px solid var(--line); background: var(--panel); color: var(--fg); font: inherit; font-size: 13px;
+  padding: 6px 12px; border-radius: var(--r); cursor: pointer; }
+.btn:hover { border-color: var(--bronze-dim); }
+.btn.primary { background: var(--bronze); border-color: var(--bronze); color: #1a140b; font-weight: 700; min-width: 76px; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; }
+.seg button { appearance: none; border: 0; background: var(--panel); color: var(--muted); font: inherit; font-size: 12px; padding: 6px 10px; cursor: pointer; }
+.seg button + button { border-left: 1px solid var(--line); }
+.seg button[aria-pressed="true"] { background: var(--panel-2); color: var(--fg); box-shadow: inset 0 -2px 0 var(--bronze); }
+.tc { font-family: var(--f-mono); font-variant-numeric: tabular-nums; font-size: 13px; color: var(--fg); margin-left: auto; }
+.tc span { color: var(--muted); }
+label.chk { display: inline-flex; gap: 6px; align-items: center; font-size: 12.5px; color: var(--muted); cursor: pointer; }
+:focus-visible { outline: 2px solid var(--bronze); outline-offset: 2px; }
+
+/* layer lanes */
+.lanes { position: relative; border: 1px solid var(--line); border-radius: var(--r); background: var(--panel); padding: 8px 10px 8px 118px; cursor: pointer; user-select: none; }
+.lane { position: relative; height: 15px; border-bottom: 1px dashed #232830; }
+.lane:last-child { border-bottom: 0; }
+.lane i { position: absolute; left: -110px; top: 0; font-style: normal; font-family: var(--f-mono); font-size: 10.5px; color: var(--muted); line-height: 15px; }
+.lane b { position: absolute; top: 3px; height: 9px; border-radius: 2px; opacity: .85; min-width: 3px; }
+.lane .mk { position: absolute; top: 1px; width: 2px; height: 13px; background: var(--fg); }
+.playhead { position: absolute; top: 4px; bottom: 4px; width: 2px; background: var(--bronze); pointer-events: none; box-shadow: 0 0 6px var(--bronze); }
+.lanes-axis { display: flex; justify-content: space-between; font-family: var(--f-mono); font-size: 10.5px; color: var(--muted); padding-left: 118px; margin-top: -4px; }
+
+/* acceptance sheet */
+.sheet { border: 1px solid var(--line); border-radius: var(--r); background: var(--panel); padding: 14px; display: grid; gap: 12px; min-width: 0; }
+.sheet h3 { margin: 0; font-family: var(--f-display); font-size: 17px; letter-spacing: .05em; }
+.dna { display: flex; gap: 8px; align-items: center; font-size: 13px; }
+.dna .chip { width: 22px; height: 22px; border-radius: 4px; border: 1px solid #0006; }
+dl.kv { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 5px 12px; margin: 0; font-size: 12.5px; }
+dl.kv dt { color: var(--muted); }
+dl.kv dd { margin: 0; font-variant-numeric: tabular-nums; min-width: 0; overflow-wrap: anywhere; }
+.pill { display: inline-block; font-size: 11px; padding: 0 7px; border-radius: 999px; border: 1px solid currentColor; line-height: 18px; margin-left: 6px; font-family: var(--f-mono); }
+.pill.ok { color: var(--ok); } .pill.warn { color: var(--warn); } .pill.info { color: var(--muted); }
+.note { font-size: 12px; color: var(--muted); }
+ul.assets-used { margin: 0; padding: 0; list-style: none; display: grid; gap: 3px; font-family: var(--f-mono); font-size: 11.5px; }
+ul.assets-used a { color: var(--fg); text-decoration: none; border-bottom: 1px dotted var(--muted); }
+ul.assets-used a:hover { color: var(--bronze); }
+
+/* gallery */
+.gal-head { display: flex; flex-wrap: wrap; gap: 10px 20px; align-items: flex-end; justify-content: space-between; border-top: 1px solid var(--line); padding-top: 18px; }
+.gal-group { display: grid; gap: 10px; }
+.gal-group > h4 { margin: 8px 0 0; font-family: var(--f-display); font-size: 15px; letter-spacing: .06em; color: var(--fg); display: flex; gap: 10px; align-items: baseline; }
+.gal-group > h4 span { font-family: var(--f-mono); font-size: 11px; color: var(--muted); font-weight: 400; letter-spacing: 0; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 10px; }
+.card { border: 1px solid var(--line); border-radius: var(--r); background: var(--panel); overflow: hidden; display: grid; grid-template-rows: auto 1fr; min-width: 0; }
+.card:target { border-color: var(--bronze); box-shadow: 0 0 0 1px var(--bronze); }
+.card canvas { width: 100%; aspect-ratio: 16 / 10; display: block; }
+.card .info { padding: 8px 10px 10px; display: grid; gap: 3px; min-width: 0; }
+.card .key { font-family: var(--f-mono); font-size: 11.5px; font-weight: 600; overflow-wrap: anywhere; }
+.card .dims { font-family: var(--f-mono); font-size: 10.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.card .desc { font-size: 12px; color: #c3bfb5; }
+.card .path { font-family: var(--f-mono); font-size: 10px; color: var(--muted); overflow-wrap: anywhere; }
+.loading { position: absolute; inset: 0; display: grid; place-items: center; color: var(--muted); font-family: var(--f-mono); font-size: 13px; background: #0b0c0e; }
+footer { color: var(--muted); font-size: 12px; border-top: 1px solid var(--line); padding-top: 12px; }
+@media (prefers-reduced-motion: reduce) { .playhead { box-shadow: none; } }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <div class="eyebrow">斗将录：梁山篇 · Battle VFX v1.1</div>
+      <h1>林冲 · 豹子头<small>四主动 + 固有能力 · 动态特效预览</small></h1>
+    </div>
+    <div class="meta" id="meta"></div>
+  </header>
+
+  <section class="console">
+    <nav class="rail" id="rail" aria-label="技能演出"></nav>
+
+    <div class="stagebox">
+      <div class="stage">
+        <canvas id="stage" width="1920" height="1080" aria-label="战斗演出画面"></canvas>
+        <div class="loading" id="loading">加载素材…</div>
+      </div>
+      <div class="transport">
+        <button class="btn primary" id="play" type="button">暂停</button>
+        <button class="btn" id="restart" type="button" title="从头播放">重播</button>
+        <button class="btn" id="stepb" type="button" title="后退一帧 (←)">◀ 帧</button>
+        <button class="btn" id="stepf" type="button" title="前进一帧 (→)">帧 ▶</button>
+        <div class="seg" id="speed" role="group" aria-label="播放速度">
+          <button type="button" data-v="1" aria-pressed="true">1×</button>
+          <button type="button" data-v="0.5">0.5×</button>
+          <button type="button" data-v="0.25">0.25×</button>
+          <button type="button" data-v="0.1">0.1×</button>
+        </div>
+        <div class="seg" id="bg" role="group" aria-label="背景">
+          <button type="button" data-v="battle" aria-pressed="true">战场</button>
+          <button type="button" data-v="light">亮底</button>
+          <button type="button" data-v="checker">棋盘格</button>
+        </div>
+        <label class="chk"><input type="checkbox" id="loop" checked> 循环</label>
+        <label class="chk"><input type="checkbox" id="debug"> Anchor / UI 安全区</label>
+        <span class="tc" id="tc">0.000 <span>/ 0.000 s</span></span>
+      </div>
+      <div class="lanes" id="lanes" title="点击跳转时间"></div>
+      <div class="lanes-axis" id="axis"></div>
+    </div>
+
+    <aside class="sheet" id="sheet" aria-live="polite"></aside>
+  </section>
+
+  <section class="gal-head">
+    <div>
+      <div class="eyebrow">Characters/Linchong</div>
+      <h2>素材清单</h2>
+    </div>
+    <div class="seg" id="gbg" role="group" aria-label="素材背景">
+      <button type="button" data-v="dark" aria-pressed="true">暗底</button>
+      <button type="button" data-v="checker">透明棋盘格</button>
+      <button type="button" data-v="light">亮底</button>
+    </div>
+  </section>
+  <section id="gallery" style="display:grid;gap:14px"></section>
+
+  <footer>
+    素材由 <code>tools/vfx/gen_linchong.py</code> 程序化生成：RGBA 真透明、无人物 / 文字 / 背景，紧裁切，pivot 写入 manifest 的 anchor（Cocos anchorPoint）。
+    人物为占位剪影（林冲定稿立绘尚未接入 Wiki），角色高度 H = 520 px，舞台 1920×1080。
+  </footer>
+</div>
+
+<script>
+window.LC_VFX_MANIFEST = {"character":"Linchong","abbr":"LC","spec":"DouJiangLuV2 VFX Specification v1.1","unit":"H = character display height (px). size_H = sprite size / ppu.","format":"webp","anchors":{"H":520,"stage":[1920,1080],"LC_root":[560,880],"Target_root":{"NEAR":[1270,880],"FAR":[1580,880]},"LC":{"Root":[0,0],"Ground":[0,0],"Body":[0,-0.55],"Cast":[0.1,-0.6],"Back":[-0.15,-0.55],"Weapon_Tip":[0.5,-0.6],"Spear_Mid":[0.07,-0.58],"Sweep":[0.7,-0.5],"Field":[0.98,-0.1]},"Target":{"Root":[0,0],"Ground":[0,0],"HitPoint":[0,-0.55],"Front":[-0.3,-0.5]},"spear":{"from":[-0.36,-0.56],"to":[0.5,-0.6]}},"layers":["BattleFX_Back","Status_Back","Character","WeaponTrail","SkillFX","Projectile","HitFX","Status_Front","BattleUI"],"assets":{"LC_Common_WeaponFlash":{"dir":"Characters/Linchong/CommonFX/WeaponFlash","files":["LC_Common_WeaponFlash_01.webp"],"size":[458,318],"anchor":[0.4978,0.5031],"ppu":1400,"size_H":[0.327,0.227],"blend":"normal","desc":"通用武器闪光：四芒银白星光，可按技能染色","group":"CommonFX"},"LC_Common_HitFlash":{"dir":"Characters/Linchong/CommonFX/HitFlash","files":["LC_Common_HitFlash_01.webp"],"size":[512,512],"anchor":[0.5,0.5],"ppu":1100,"size_H":[0.465,0.465],"blend":"normal","desc":"通用受击中心闪光（白，可染色）","group":"CommonFX"},"LC_Common_Spark":{"dir":"Characters/Linchong/CommonFX/Spark","files":["LC_Common_Spark_01.webp","LC_Common_Spark_02.webp","LC_Common_Spark_03.webp"],"size":[170,102],"anchor":[0.6941,0.5],"ppu":1600,"size_H":[0.106,0.064],"blend":"normal","desc":"通用火星/锋芒粒子，3 种形态（白，可染色）","group":"CommonFX"},"LC_Common_Dust":{"dir":"Characters/Linchong/CommonFX/Dust","files":["LC_Common_Dust_01.webp"],"size":[460,292],"anchor":[0.5196,0.5342],"ppu":900,"size_H":[0.511,0.324],"blend":"normal","desc":"通用尘土团（普通混合，低不透明）","group":"CommonFX"},"LC_Common_Wind":{"dir":"Characters/Linchong/CommonFX/Wind","files":["LC_Common_Wind_01.webp"],"size":[882,112],"anchor":[0.4717,0.5982],"ppu":1000,"size_H":[0.882,0.112],"blend":"normal","desc":"通用风线（白，可染色，横向）","group":"CommonFX"},"LC_Common_Shard":{"dir":"Characters/Linchong/CommonFX/CommonParticles","files":["LC_Common_Shard_01.webp","LC_Common_Shard_02.webp","LC_Common_Shard_03.webp","LC_Common_Shard_04.webp"],"size":[224,154],"anchor":[0.4598,0.4935],"ppu":1800,"size_H":[0.124,0.086],"blend":"normal","desc":"通用黑色碎屑 4 种（普通混合）","group":"CommonFX"},"LC_Common_Glow":{"dir":"Characters/Linchong/CommonFX/CommonParticles","files":["LC_Common_Glow_01.webp"],"size":[240,240],"anchor":[0.5,0.5],"ppu":1600,"size_H":[0.15,0.15],"blend":"normal","desc":"通用柔光点（白，可染色）","group":"CommonFX"},"LC_Jifengci_Cast":{"dir":"Characters/Linchong/ActiveSkills/Jifengci/Cast","files":["LC_Jifengci_Cast_01.webp","LC_Jifengci_Cast_02.webp","LC_Jifengci_Cast_03.webp","LC_Jifengci_Cast_04.webp"],"size":[810,486],"anchor":[0.4741,0.5],"ppu":1500,"size_H":[0.54,0.324],"blend":"normal","desc":"出招：枪锋银白闪光（带极细赤红外晕），4 帧","group":"Jifengci","fps":30},"LC_Jifengci_Trail":{"dir":"Characters/Linchong/ActiveSkills/Jifengci/Trail","files":["LC_Jifengci_Trail_01.webp","LC_Jifengci_Trail_02.webp"],"size":[1954,644],"anchor":[0.9243,0.4907],"ppu":1320,"size_H":[1.48,0.488],"blend":"normal","desc":"Trail：银白细枪线 + 赤红高速流（速度场，非火焰）。_01 主体，_02 赤红速度场层；Cocos 用横向 Filled 揭示","group":"Jifengci"},"LC_Jifengci_Hit":{"dir":"Characters/Linchong/ActiveSkills/Jifengci/Hit","files":["LC_Jifengci_Hit_01.webp","LC_Jifengci_Hit_02.webp","LC_Jifengci_Hit_03.webp","LC_Jifengci_Hit_04.webp","LC_Jifengci_Hit_05.webp"],"size":[706,638],"anchor":[0.4093,0.4592],"ppu":1900,"size_H":[0.372,0.336],"blend":"normal","desc":"Hit：小型银白爆点 + 赤红放射线，5 帧，绑定 Target_HitPoint","group":"Jifengci","fps":25},"LC_Jifengci_Particle":{"dir":"Characters/Linchong/ActiveSkills/Jifengci/Particle","files":["LC_Jifengci_Particle_01.webp","LC_Jifengci_Particle_02.webp"],"size":[466,44],"anchor":[0.4592,0.5],"ppu":1500,"size_H":[0.311,0.029],"blend":"normal","desc":"粒子：_01 赤红速度线，_02 银红锋芒火星","group":"Jifengci"},"LC_Jifengci_Interrupt":{"dir":"Characters/Linchong/ActiveSkills/Jifengci/Special","files":["LC_Jifengci_Interrupt_01.webp","LC_Jifengci_Interrupt_02.webp","LC_Jifengci_Interrupt_03.webp","LC_Jifengci_Interrupt_04.webp"],"size":[590,812],"anchor":[0.5356,0.5012],"ppu":1250,"size_H":[0.472,0.65],"blend":"normal","desc":"Special·Interrupt：银白红边斩线瞬间切断敌方行动轨迹，4 帧（出现→全亮→断开→消散）","group":"Jifengci","fps":24},"LC_Jifengci_End":{"dir":"Characters/Linchong/ActiveSkills/Jifengci/End","files":["LC_Jifengci_End_01.webp"],"size":[1414,174],"anchor":[0.483,0.5287],"ppu":1300,"size_H":[1.088,0.134],"blend":"normal","desc":"End：残余赤红速度丝消散","group":"Jifengci"},"LC_Huimaqiang_Ready":{"dir":"Characters/Linchong/ActiveSkills/Huimaqiang/Special","files":["LC_Huimaqiang_Ready_01.webp"],"size":[348,774],"anchor":[1.1868,0.5],"ppu":1150,"size_H":[0.303,0.673],"blend":"normal","desc":"Special·Ready：极淡的铜橙半圆枪势，环绕林冲身后（预备反击，循环低亮度）","group":"Huimaqiang","loop":true},"LC_Huimaqiang_Cast":{"dir":"Characters/Linchong/ActiveSkills/Huimaqiang/Cast","files":["LC_Huimaqiang_Cast_01.webp","LC_Huimaqiang_Cast_02.webp","LC_Huimaqiang_Cast_03.webp"],"size":[612,430],"anchor":[0.4444,0.5],"ppu":1500,"size_H":[0.408,0.287],"blend":"normal","desc":"出招（未触发反击的 35 版本）：枪锋铜金闪光，3 帧","group":"Huimaqiang","fps":30},"LC_Huimaqiang_Trail":{"dir":"Characters/Linchong/ActiveSkills/Huimaqiang/Trail","files":["LC_Huimaqiang_Trail_01.webp"],"size":[1862,438],"anchor":[0.9205,0.4954],"ppu":1300,"size_H":[1.432,0.337],"blend":"normal","desc":"Trail（35 普通版）：金白枪线 + 铜橙速度流；横向 Filled 揭示","group":"Huimaqiang"},"LC_Huimaqiang_Trigger":{"dir":"Characters/Linchong/ActiveSkills/Huimaqiang/Special","files":["LC_Huimaqiang_Trigger_01.webp","LC_Huimaqiang_Trigger_02.webp","LC_Huimaqiang_Trigger_03.webp","LC_Huimaqiang_Trigger_04.webp","LC_Huimaqiang_Trigger_05.webp","LC_Huimaqiang_Trigger_06.webp"],"size":[788,788],"anchor":[0.5,0.5],"ppu":1250,"size_H":[0.63,0.63],"blend":"normal","desc":"Special·Trigger：敌方攻击实际命中后，铜金环形气流快速形成，6 帧","group":"Huimaqiang","fps":30},"LC_Huimaqiang_Counter":{"dir":"Characters/Linchong/ActiveSkills/Huimaqiang/Special","files":["LC_Huimaqiang_Counter_01.webp"],"size":[1818,598],"anchor":[0.9186,0.194],"ppu":1220,"size_H":[1.49,0.49],"blend":"normal","desc":"Special·Counter（35→反击基础形态）：铜金气流收向枪身，回身后金白反向枪刺；pivot=枪尖","group":"Huimaqiang"},"LC_Huimaqiang_CounterEnhanced":{"dir":"Characters/Linchong/ActiveSkills/Huimaqiang/Special","files":["LC_Huimaqiang_CounterEnhanced_01.webp"],"size":[1844,602],"anchor":[0.9197,0.196],"ppu":1220,"size_H":[1.511,0.493],"blend":"normal","desc":"Special·Counter 55 强化：双层回身弧 + 更亮金白枪刺，强于普通版但不爆炸化；pivot=枪尖","group":"Huimaqiang"},"LC_Huimaqiang_Hit":{"dir":"Characters/Linchong/ActiveSkills/Huimaqiang/Hit","files":["LC_Huimaqiang_Hit_01.webp","LC_Huimaqiang_Hit_02.webp","LC_Huimaqiang_Hit_03.webp","LC_Huimaqiang_Hit_04.webp","LC_Huimaqiang_Hit_05.webp"],"size":[712,592],"anchor":[0.4593,0.5],"ppu":1900,"size_H":[0.375,0.312],"blend":"normal","desc":"Hit 35：铜金爆点 + 细环冲击，5 帧","group":"Huimaqiang","fps":25},"LC_Huimaqiang_HitEnhanced":{"dir":"Characters/Linchong/ActiveSkills/Huimaqiang/Hit","files":["LC_Huimaqiang_HitEnhanced_01.webp","LC_Huimaqiang_HitEnhanced_02.webp","LC_Huimaqiang_HitEnhanced_03.webp","LC_Huimaqiang_HitEnhanced_04.webp","LC_Huimaqiang_HitEnhanced_05.webp"],"size":[750,592],"anchor":[0.436,0.5],"ppu":1700,"size_H":[0.441,0.348],"blend":"normal","desc":"Hit 55 强化：双环 + 更多金白锋线，略大但保持紧凑，5 帧","group":"Huimaqiang","fps":25},"LC_Huimaqiang_Particle":{"dir":"Characters/Linchong/ActiveSkills/Huimaqiang/Particle","files":["LC_Huimaqiang_Particle_01.webp"],"size":[198,50],"anchor":[0.5354,0.5],"ppu":1600,"size_H":[0.124,0.031],"blend":"normal","desc":"粒子：铜橙余烬拖尾","group":"Huimaqiang"},"LC_Huimaqiang_End":{"dir":"Characters/Linchong/ActiveSkills/Huimaqiang/End","files":["LC_Huimaqiang_End_01.webp"],"size":[608,568],"anchor":[0.5115,0.5141],"ppu":1250,"size_H":[0.486,0.454],"blend":"normal","desc":"End：铜金残余气流弧线淡出","group":"Huimaqiang"},"LC_Hengsaoqianjun_Cast":{"dir":"Characters/Linchong/ActiveSkills/Hengsaoqianjun/Cast","files":["LC_Hengsaoqianjun_Cast_01.webp","LC_Hengsaoqianjun_Cast_02.webp","LC_Hengsaoqianjun_Cast_03.webp","LC_Hengsaoqianjun_Cast_04.webp","LC_Hengsaoqianjun_Cast_05.webp"],"size":[824,462],"anchor":[0.4988,0.5022],"ppu":1150,"size_H":[0.717,0.402],"blend":"normal","desc":"出招：橙金短暂蓄势（螺旋气流向枪身收拢），5 帧","group":"Hengsaoqianjun","fps":20},"LC_Hengsaoqianjun_Trail":{"dir":"Characters/Linchong/ActiveSkills/Hengsaoqianjun/Trail","files":["LC_Hengsaoqianjun_Trail_01.webp","LC_Hengsaoqianjun_Trail_02.webp"],"size":[1912,582],"anchor":[0.4644,0.4708],"ppu":1450,"size_H":[1.319,0.401],"blend":"normal","desc":"Trail：_01 巨大但薄的银白枪锋弧 + 橙金横向旋风（左→右，中部最亮，尾端速散）；_02 橙金旋风底层","group":"Hengsaoqianjun"},"LC_Hengsaoqianjun_Hit":{"dir":"Characters/Linchong/ActiveSkills/Hengsaoqianjun/Hit","files":["LC_Hengsaoqianjun_Hit_01.webp","LC_Hengsaoqianjun_Hit_02.webp","LC_Hengsaoqianjun_Hit_03.webp","LC_Hengsaoqianjun_Hit_04.webp","LC_Hengsaoqianjun_Hit_05.webp"],"size":[1024,786],"anchor":[0.4102,0.5],"ppu":1500,"size_H":[0.683,0.524],"blend":"normal","desc":"Hit：橙金横向冲击 + 黑色碎屑，5 帧（重攻击：允许极短 HitStop + 小幅屏震）","group":"Hengsaoqianjun","fps":22},"LC_Hengsaoqianjun_Particle":{"dir":"Characters/Linchong/ActiveSkills/Hengsaoqianjun/Particle","files":["LC_Hengsaoqianjun_Particle_01.webp"],"size":[212,48],"anchor":[0.5189,0.5],"ppu":1600,"size_H":[0.133,0.03],"blend":"normal","desc":"粒子：橙金火星拖尾（配合 LC_Common_Shard 黑色碎屑）","group":"Hengsaoqianjun"},"LC_Hengsaoqianjun_ForcedPush":{"dir":"Characters/Linchong/ActiveSkills/Hengsaoqianjun/Special","files":["LC_Hengsaoqianjun_ForcedPush_01.webp","LC_Hengsaoqianjun_ForcedPush_02.webp","LC_Hengsaoqianjun_ForcedPush_03.webp","LC_Hengsaoqianjun_ForcedPush_04.webp"],"size":[1184,636],"anchor":[0.2044,0.5],"ppu":1300,"size_H":[0.911,0.489],"blend":"normal","desc":"Special·ForcedPush：Hit 后第二层横向推力风压（强制变距 近→远），4 帧，随目标右移","group":"Hengsaoqianjun","fps":14},"LC_Hengsaoqianjun_PushBlocked":{"dir":"Characters/Linchong/ActiveSkills/Hengsaoqianjun/Special","files":["LC_Hengsaoqianjun_PushBlocked_01.webp","LC_Hengsaoqianjun_PushBlocked_02.webp","LC_Hengsaoqianjun_PushBlocked_03.webp","LC_Hengsaoqianjun_PushBlocked_04.webp"],"size":[938,758],"anchor":[0.2655,0.4314],"ppu":1300,"size_H":[0.722,0.583],"blend":"normal","desc":"Special·PushBlocked：变距被阻止——风压破碎（已造成的 Hit 不回滚），4 帧","group":"Hengsaoqianjun","fps":14},"LC_Hengsaoqianjun_End":{"dir":"Characters/Linchong/ActiveSkills/Hengsaoqianjun/End","files":["LC_Hengsaoqianjun_End_01.webp"],"size":[954,398],"anchor":[0.501,0.5578],"ppu":1300,"size_H":[0.734,0.306],"blend":"normal","desc":"End：橙金余烬消散","group":"Hengsaoqianjun"},"LC_Qiangzhen_Cast":{"dir":"Characters/Linchong/ActiveSkills/Qiangzhen/Cast","files":["LC_Qiangzhen_Cast_01.webp"],"size":[226,820],"anchor":[0.5,0.1024],"ppu":1300,"size_H":[0.174,0.631],"blend":"normal","desc":"出招：枪尖蓝白光点下落（竖向拖尾，pivot=光点，从 Weapon_Tip 下落至阵心）","group":"Qiangzhen"},"LC_Qiangzhen_CastImpact":{"dir":"Characters/Linchong/ActiveSkills/Qiangzhen/Cast","files":["LC_Qiangzhen_CastImpact_01.webp"],"size":[676,304],"anchor":[0.5,0.4605],"ppu":1250,"size_H":[0.541,0.243],"blend":"normal","desc":"出招：光点落地的小型冰蓝冲击环（地面透视）","group":"Qiangzhen"},"LC_Qiangzhen_Spawn":{"dir":"Characters/Linchong/ActiveSkills/Qiangzhen/Status","files":["LC_Qiangzhen_Spawn_01.webp"],"size":[1950,710],"anchor":[0.5,0.5],"ppu":1250,"size_H":[1.56,0.568],"blend":"normal","desc":"Status·Spawn：_01 冰蓝阵纹出现（地面透视阵，BattleFX_Back 层）","group":"Qiangzhen"},"LC_Qiangzhen_SpearGhost":{"dir":"Characters/Linchong/ActiveSkills/Qiangzhen/Status","files":["LC_Qiangzhen_SpearGhost_01.webp"],"size":[200,1020],"anchor":[0.5,0.0196],"ppu":1500,"size_H":[0.133,0.68],"blend":"normal","desc":"Status·Spawn：银白半透明枪锋（阵中升起，可复用 3~5 支，pivot=枪杆底部）","group":"Qiangzhen"},"LC_Qiangzhen_Loop":{"dir":"Characters/Linchong/ActiveSkills/Qiangzhen/Status","files":["LC_Qiangzhen_Loop_01.webp"],"size":[1942,702],"anchor":[0.5,0.5],"ppu":1250,"size_H":[1.554,0.562],"blend":"normal","desc":"Status·Loop：低亮度蓝光阵纹（持续期，建议透明度 60~80% 呼吸）","group":"Qiangzhen","loop":true},"LC_Qiangzhen_Trigger":{"dir":"Characters/Linchong/ActiveSkills/Qiangzhen/Special","files":["LC_Qiangzhen_Trigger_01.webp"],"size":[2008,760],"anchor":[0.5,0.5],"ppu":1250,"size_H":[1.606,0.608],"blend":"normal","desc":"Special·Trigger：敌方发生 FAR→NEAR Attempt，枪阵瞬间亮起（带竖向光芒）","group":"Qiangzhen"},"LC_Qiangzhen_Attack":{"dir":"Characters/Linchong/ActiveSkills/Qiangzhen/Special","files":["LC_Qiangzhen_Attack_01.webp"],"size":[970,184],"anchor":[0.9557,0.5],"ppu":1500,"size_H":[0.647,0.123],"blend":"normal","desc":"Special·Attack：单支枪影横向刺出（多支同时播放），pivot=枪尖","group":"Qiangzhen"},"LC_Qiangzhen_Block":{"dir":"Characters/Linchong/ActiveSkills/Qiangzhen/Special","files":["LC_Qiangzhen_Block_01.webp"],"size":[672,694],"anchor":[0.8155,0.5043],"ppu":1300,"size_H":[0.517,0.534],"blend":"normal","desc":"Special·Block：目标前方形成枪锋封锁（交叉枪锋 + 竖向封锁光幕），pivot=封锁线中心","group":"Qiangzhen"},"LC_Qiangzhen_Hit":{"dir":"Characters/Linchong/ActiveSkills/Qiangzhen/Hit","files":["LC_Qiangzhen_Hit_01.webp","LC_Qiangzhen_Hit_02.webp","LC_Qiangzhen_Hit_03.webp","LC_Qiangzhen_Hit_04.webp","LC_Qiangzhen_Hit_05.webp"],"size":[758,686],"anchor":[0.591,0.5015],"ppu":1900,"size_H":[0.399,0.361],"blend":"normal","desc":"Hit 32×1：蓝白锐利 Hit（针状冰锋放射），5 帧","group":"Qiangzhen","fps":25},"LC_Qiangzhen_Particle":{"dir":"Characters/Linchong/ActiveSkills/Qiangzhen/Particle","files":["LC_Qiangzhen_Particle_01.webp"],"size":[198,100],"anchor":[0.4949,0.5],"ppu":1600,"size_H":[0.124,0.062],"blend":"normal","desc":"粒子：冰蓝碎锋闪点","group":"Qiangzhen"},"LC_Qiangzhen_End":{"dir":"Characters/Linchong/ActiveSkills/Qiangzhen/End","files":["LC_Qiangzhen_End_01.webp"],"size":[1928,702],"anchor":[0.4948,0.5028],"ppu":1250,"size_H":[1.542,0.562],"blend":"normal","desc":"End：阵纹断裂、低亮度消散（触发后枪阵消失）","group":"Qiangzhen"},"LC_Baozitou_Trigger":{"dir":"Characters/Linchong/PassiveSkills/Baozitou/Trigger","files":["LC_Baozitou_Trigger_01.webp","LC_Baozitou_Trigger_02.webp"],"size":[974,636],"anchor":[0.5749,0.5425],"ppu":1150,"size_H":[0.847,0.553],"blend":"normal","desc":"Trigger：成功打断/截击 → 淡金豹子轮廓 + 香槟金速度线（0.2~0.3s），_01 轮廓，_02 速度线","group":"Baozitou"},"LC_Baozitou_Active":{"dir":"Characters/Linchong/PassiveSkills/Baozitou/Active","files":["LC_Baozitou_Active_01.webp"],"size":[940,48],"anchor":[0.5,0.5],"ppu":1100,"size_H":[0.855,0.044],"blend":"normal","desc":"Active：枪身淡金高光（沿枪杆，低亮度常驻至消耗；配合 UI/LC_Baozitou_BuffIcon）","group":"Baozitou","loop":true},"LC_Baozitou_Consume":{"dir":"Characters/Linchong/PassiveSkills/Baozitou/Consume","files":["LC_Baozitou_Consume_01.webp","LC_Baozitou_Consume_02.webp","LC_Baozitou_Consume_03.webp"],"size":[990,414],"anchor":[0.9354,0.6184],"ppu":1250,"size_H":[0.792,0.331],"blend":"normal","desc":"Consume：下一次攻击开始，金色速度线向枪锋收束后消失（pivot=枪锋），3 帧","group":"Baozitou","fps":16},"LC_Baozitou_End":{"dir":"Characters/Linchong/PassiveSkills/Baozitou/End","files":["LC_Baozitou_End_01.webp"],"size":[172,172],"anchor":[0.5,0.5],"ppu":1500,"size_H":[0.115,0.115],"blend":"normal","desc":"End：枪锋处小型香槟金闪点收尾","group":"Baozitou"},"LC_Baozitou_BuffIcon":{"dir":"Characters/Linchong/UI","files":["LC_Baozitou_BuffIcon_01.webp"],"size":[252,252],"anchor":[0.5,0.5],"ppu":256,"size_H":[0.984,0.984],"blend":"normal","desc":"UI：豹子头 Buff 图标（速度提升：向前/向上锋线），无文字","group":"UI"},"LC_Qiangzhen_StatusIcon":{"dir":"Characters/Linchong/UI","files":["LC_Qiangzhen_StatusIcon_01.webp"],"size":[252,252],"anchor":[0.5,0.5],"ppu":256,"size_H":[0.984,0.984],"blend":"normal","desc":"UI：枪阵状态图标（三枪锋 + 冰蓝环），无文字","group":"UI"}},"timelines":{"Jifengci_Hit":{"skill":"Jifengci","name":"疾风刺 · 命中","category":"快速技能","std":[0.3,0.5],"setup":{"distance":"NEAR"},"duration":0.6,"events":[{"t":0,"type":"move","actor":"LC","dur":0.45,"x":[[0,0],[0.12,-6],[0.3,18],[0.62,18],[1,0]]},{"t":0,"type":"fx","asset":"LC_Jifengci_Cast","anchor":"LC.Weapon_Tip","dur":0.14,"layer":"SkillFX"},{"t":0.07,"type":"fx","asset":"LC_Jifengci_Trail","anchor":"Target.HitPoint","dur":0.3,"layer":"WeaponTrail","frame":1,"reveal":[[0,0],[0.25,1]],"alpha":[[0,0],[0.1,1],[0.45,1],[1,0]],"x":[[0,-0.04],[1,0.03]]},{"t":0.07,"type":"fx","asset":"LC_Jifengci_Trail","anchor":"Target.HitPoint","dur":0.26,"layer":"WeaponTrail","frame":0,"reveal":[[0,0],[0.3,1]],"alpha":[[0,1],[0.6,1],[1,0]],"x":[[0,-0.03],[1,0.02]]},{"t":0.15,"type":"fx","asset":"LC_Jifengci_Hit","anchor":"Target.HitPoint","dur":0.2,"layer":"HitFX"},{"t":0.15,"type":"move","actor":"Target","dur":0.25,"x":[[0,0],[0.2,10],[1,0]]},{"t":0.15,"type":"particles","asset":"LC_Jifengci_Particle","frame":0,"anchor":"Target.HitPoint","count":8,"angle":[-18,18],"speed":[1.6,3.2],"life":[0.12,0.24],"size":[0.6,1.1],"gravity":0.0,"layer":"HitFX","align":true,"spread":0.03},{"t":0.15,"type":"particles","asset":"LC_Jifengci_Particle","frame":1,"anchor":"Target.HitPoint","count":6,"angle":[-70,70],"speed":[1.0,2.2],"life":[0.1,0.2],"size":[0.4,0.8],"gravity":0.0,"layer":"HitFX","align":true,"spread":0.03},{"t":0.16,"type":"dmg","actor":"Target","text":"26","style":"normal"},{"t":0.33,"type":"fx","asset":"LC_Jifengci_End","anchor":"Target.HitPoint","dur":0.2,"layer":"SkillFX","x":[[0,-0.55],[1,-0.4]],"alpha":[[0,0.8],[1,0]]}]},"Jifengci_Interrupt":{"skill":"Jifengci","name":"疾风刺 · 打断成功","category":"快速技能","std":[0.3,0.5],"setup":{"distance":"NEAR"},"duration":0.65,"events":[{"t":0,"type":"move","actor":"LC","dur":0.45,"x":[[0,0],[0.12,-6],[0.3,18],[0.62,18],[1,0]]},{"t":0,"type":"fx","asset":"LC_Jifengci_Cast","anchor":"LC.Weapon_Tip","dur":0.14,"layer":"SkillFX"},{"t":0.07,"type":"fx","asset":"LC_Jifengci_Trail","anchor":"Target.HitPoint","dur":0.3,"layer":"WeaponTrail","frame":1,"reveal":[[0,0],[0.25,1]],"alpha":[[0,0],[0.1,1],[0.45,1],[1,0]],"x":[[0,-0.04],[1,0.03]]},{"t":0.07,"type":"fx","asset":"LC_Jifengci_Trail","anchor":"Target.HitPoint","dur":0.26,"layer":"WeaponTrail","frame":0,"reveal":[[0,0],[0.3,1]],"alpha":[[0,1],[0.6,1],[1,0]],"x":[[0,-0.03],[1,0.02]]},{"t":0.15,"type":"fx","asset":"LC_Jifengci_Hit","anchor":"Target.HitPoint","dur":0.2,"layer":"HitFX"},{"t":0.15,"type":"move","actor":"Target","dur":0.25,"x":[[0,0],[0.2,10],[1,0]]},{"t":0.15,"type":"particles","asset":"LC_Jifengci_Particle","frame":0,"anchor":"Target.HitPoint","count":8,"angle":[-18,18],"speed":[1.6,3.2],"life":[0.12,0.24],"size":[0.6,1.1],"gravity":0.0,"layer":"HitFX","align":true,"spread":0.03},{"t":0.15,"type":"particles","asset":"LC_Jifengci_Particle","frame":1,"anchor":"Target.HitPoint","count":6,"angle":[-70,70],"speed":[1.0,2.2],"life":[0.1,0.2],"size":[0.4,0.8],"gravity":0.0,"layer":"HitFX","align":true,"spread":0.03},{"t":0.16,"type":"dmg","actor":"Target","text":"26","style":"normal"},{"t":0.33,"type":"fx","asset":"LC_Jifengci_End","anchor":"Target.HitPoint","dur":0.2,"layer":"SkillFX","x":[[0,-0.55],[1,-0.4]],"alpha":[[0,0.8],[1,0]]},{"t":0.0,"type":"intent","action":"show"},{"t":0.15,"type":"fx","asset":"LC_Jifengci_Interrupt","anchor":"Target.Front","dur":0.2,"layer":"HitFX","x":[[0,-0.1],[1,-0.1]]},{"t":0.17,"type":"intent","action":"break"},{"t":0.2,"type":"tag","actor":"Target","text":"打断","kind":"mech"}]},"Huimaqiang_Normal":{"skill":"Huimaqiang","name":"回马枪 · 35×1 普通","category":"普通技能","std":[0.45,0.75],"setup":{"distance":"NEAR"},"duration":0.6,"events":[{"t":0,"type":"move","actor":"LC","dur":0.5,"x":[[0,0],[0.15,-6],[0.35,16],[0.65,16],[1,0]]},{"t":0,"type":"fx","asset":"LC_Huimaqiang_Cast","anchor":"LC.Weapon_Tip","dur":0.12,"layer":"SkillFX"},{"t":0.08,"type":"fx","asset":"LC_Huimaqiang_Trail","anchor":"Target.HitPoint","dur":0.3,"layer":"WeaponTrail","reveal":[[0,0],[0.3,1]],"alpha":[[0,1],[0.6,1],[1,0]]},{"t":0.17,"type":"fx","asset":"LC_Huimaqiang_Hit","anchor":"Target.HitPoint","dur":0.2,"layer":"HitFX"},{"t":0.17,"type":"move","actor":"Target","dur":0.25,"x":[[0,0],[0.2,9],[1,0]]},{"t":0.17,"type":"particles","asset":"LC_Huimaqiang_Particle","frame":0,"anchor":"Target.HitPoint","count":10,"angle":[-50,50],"speed":[1.0,2.4],"life":[0.15,0.3],"size":[0.6,1.1],"gravity":0.0,"layer":"HitFX","align":true,"spread":0.03},{"t":0.18,"type":"dmg","actor":"Target","text":"35","style":"normal"},{"t":0.18,"type":"tag","actor":"Target","text":"未触发反击 · 35×1","kind":"info"}]},"Huimaqiang_Counter":{"skill":"Huimaqiang","name":"回马枪 · 受击反击 55×1","category":"反击","std":[0.7,1.1],"note":"Ready → 受击 → Trigger → Counter → Hit；反击段 0.54→1.35s","setup":{"distance":"NEAR"},"duration":1.45,"events":[{"t":0,"type":"fx","asset":"LC_Huimaqiang_Ready","anchor":"LC.Body","dur":0.62,"layer":"Status_Back","alpha":[[0,0],[0.25,0.5],[0.6,0.35],[0.85,0.5],[1,0.2]],"x":[[0,-0.12],[1,-0.12]]},{"t":0.0,"type":"tag","actor":"LC","text":"回马枪 · 预备","kind":"info"},{"t":0.3,"type":"move","actor":"Target","dur":0.5,"x":[[0,0],[0.35,-70],[0.6,-70],[1,0]]},{"t":0.3,"type":"intent","action":"show"},{"t":0.48,"type":"intent","action":"hide"},{"t":0.48,"type":"fx","asset":"LC_Common_HitFlash","anchor":"LC.Body","dur":0.16,"layer":"HitFX","scale":[[0,0.5],[1,0.8]],"alpha":[[0,1],[1,0]],"x":[[0,0.1],[1,0.1]]},{"t":0.48,"type":"move","actor":"LC","dur":0.2,"x":[[0,0],[0.3,-10],[1,0]]},{"t":0.49,"type":"dmg","actor":"LC","text":"28","style":"taken"},{"t":0.54,"type":"fx","asset":"LC_Huimaqiang_Trigger","anchor":"LC.Body","dur":0.2,"layer":"SkillFX"},{"t":0.56,"type":"tag","actor":"LC","text":"反击触发","kind":"mech"},{"t":0.74,"type":"fx","asset":"LC_Huimaqiang_Trigger","anchor":"LC.Cast","dur":0.1,"layer":"SkillFX","frame":5,"scale":[[0,1],[1,0.3]],"alpha":[[0,1],[1,0]],"x":[[0,-0.1],[1,0.25]]},{"t":0.76,"type":"move","actor":"LC","dur":0.4,"x":[[0,0],[0.15,-12],[0.35,22],[0.7,22],[1,0]]},{"t":0.8,"type":"fx","asset":"LC_Huimaqiang_CounterEnhanced","anchor":"Target.HitPoint","dur":0.32,"layer":"WeaponTrail","reveal":[[0,0],[0.35,1]],"alpha":[[0,1],[0.55,1],[1,0]]},{"t":0.91,"type":"fx","asset":"LC_Huimaqiang_HitEnhanced","anchor":"Target.HitPoint","dur":0.24,"layer":"HitFX"},{"t":0.91,"type":"hitstop","dur":0.05},{"t":0.91,"type":"shake","dur":0.12,"amp":5},{"t":0.91,"type":"move","actor":"Target","dur":0.3,"x":[[0,0],[0.2,14],[1,0]]},{"t":0.91,"type":"particles","asset":"LC_Huimaqiang_Particle","frame":0,"anchor":"Target.HitPoint","count":14,"angle":[-60,60],"speed":[1.2,2.8],"life":[0.18,0.34],"size":[0.6,1.2],"gravity":0.0,"layer":"HitFX","align":true,"spread":0.03},{"t":0.92,"type":"dmg","actor":"Target","text":"55","style":"crit"},{"t":1.1,"type":"fx","asset":"LC_Huimaqiang_End","anchor":"Target.HitPoint","dur":0.25,"layer":"SkillFX","scale":[[0,0.8],[1,1.1]],"alpha":[[0,0.7],[1,0]]}]},"Hengsaoqianjun_Push":{"skill":"Hengsaoqianjun","name":"横扫千军 · 击退成功 近→远","category":"重攻击","std":[0.7,1.1],"setup":{"distance":"NEAR"},"duration":1.15,"events":[{"t":0,"type":"move","actor":"LC","dur":0.9,"x":[[0,0],[0.3,-12],[0.45,20],[0.75,20],[1,0]],"rot":[[0,0],[0.3,-1.5],[0.45,1.5],[0.8,1.5],[1,0]]},{"t":0,"type":"fx","asset":"LC_Hengsaoqianjun_Cast","anchor":"LC.Cast","dur":0.3,"layer":"SkillFX","alpha":[[0,1],[0.85,1],[1,0]]},{"t":0.22,"type":"fx","asset":"LC_Hengsaoqianjun_Trail","anchor":"LC.Sweep","dur":0.45,"layer":"WeaponTrail","frame":1,"scale":[[0,0.85],[1,1.05]],"alpha":[[0,0],[0.2,0.85],[0.7,0.6],[1,0]]},{"t":0.28,"type":"fx","asset":"LC_Hengsaoqianjun_Trail","anchor":"LC.Sweep","dur":0.3,"layer":"WeaponTrail","frame":0,"reveal":[[0,0],[0.4,1]],"alpha":[[0,1],[0.6,1],[1,0]]},{"t":0.4,"type":"fx","asset":"LC_Hengsaoqianjun_Hit","anchor":"Target.HitPoint","dur":0.25,"layer":"HitFX"},{"t":0.4,"type":"hitstop","dur":0.04},{"t":0.4,"type":"shake","dur":0.14,"amp":6},{"t":0.4,"type":"particles","asset":"LC_Common_Shard","frame":0,"anchor":"Target.HitPoint","count":9,"angle":[-45,15],"speed":[1.0,2.3],"life":[0.3,0.5],"size":[0.5,1.1],"gravity":4.0,"layer":"HitFX","align":false,"spread":0.03},{"t":0.4,"type":"particles","asset":"LC_Hengsaoqianjun_Particle","frame":0,"anchor":"Target.HitPoint","count":12,"angle":[-40,40],"speed":[1.2,2.8],"life":[0.15,0.3],"size":[0.6,1.1],"gravity":0.0,"layer":"HitFX","align":true,"spread":0.03},{"t":0.41,"type":"dmg","actor":"Target","text":"62","style":"normal"},{"t":0.5,"type":"fx","asset":"LC_Hengsaoqianjun_ForcedPush","anchor":"Target.HitPoint","dur":0.34,"layer":"SkillFX","follow":true,"x":[[0,-0.35],[1,-0.35]],"alpha":[[0,1],[0.7,1],[1,0]]},{"t":0.5,"type":"distance","to":"FAR","dur":0.34,"result":"success"},{"t":0.55,"type":"tag","actor":"Target","text":"强制变距 近→远","kind":"mech"},{"t":0.84,"type":"fx","asset":"LC_Hengsaoqianjun_End","anchor":"Target.HitPoint","dur":0.25,"layer":"SkillFX","alpha":[[0,0.8],[1,0]]}]},"Hengsaoqianjun_Blocked":{"skill":"Hengsaoqianjun","name":"横扫千军 · 变距受阻","category":"重攻击","std":[0.7,1.1],"setup":{"distance":"NEAR"},"duration":1.15,"events":[{"t":0,"type":"move","actor":"LC","dur":0.9,"x":[[0,0],[0.3,-12],[0.45,20],[0.75,20],[1,0]],"rot":[[0,0],[0.3,-1.5],[0.45,1.5],[0.8,1.5],[1,0]]},{"t":0,"type":"fx","asset":"LC_Hengsaoqianjun_Cast","anchor":"LC.Cast","dur":0.3,"layer":"SkillFX","alpha":[[0,1],[0.85,1],[1,0]]},{"t":0.22,"type":"fx","asset":"LC_Hengsaoqianjun_Trail","anchor":"LC.Sweep","dur":0.45,"layer":"WeaponTrail","frame":1,"scale":[[0,0.85],[1,1.05]],"alpha":[[0,0],[0.2,0.85],[0.7,0.6],[1,0]]},{"t":0.28,"type":"fx","asset":"LC_Hengsaoqianjun_Trail","anchor":"LC.Sweep","dur":0.3,"layer":"WeaponTrail","frame":0,"reveal":[[0,0],[0.4,1]],"alpha":[[0,1],[0.6,1],[1,0]]},{"t":0.4,"type":"fx","asset":"LC_Hengsaoqianjun_Hit","anchor":"Target.HitPoint","dur":0.25,"layer":"HitFX"},{"t":0.4,"type":"hitstop","dur":0.04},{"t":0.4,"type":"shake","dur":0.14,"amp":6},{"t":0.4,"type":"particles","asset":"LC_Common_Shard","frame":0,"anchor":"Target.HitPoint","count":9,"angle":[-45,15],"speed":[1.0,2.3],"life":[0.3,0.5],"size":[0.5,1.1],"gravity":4.0,"layer":"HitFX","align":false,"spread":0.03},{"t":0.4,"type":"particles","asset":"LC_Hengsaoqianjun_Particle","frame":0,"anchor":"Target.HitPoint","count":12,"angle":[-40,40],"speed":[1.2,2.8],"life":[0.15,0.3],"size":[0.6,1.1],"gravity":0.0,"layer":"HitFX","align":true,"spread":0.03},{"t":0.41,"type":"dmg","actor":"Target","text":"62","style":"normal"},{"t":0.5,"type":"fx","asset":"LC_Hengsaoqianjun_ForcedPush","anchor":"Target.HitPoint","dur":0.12,"layer":"SkillFX","frame":0,"follow":true,"x":[[0,-0.35],[1,-0.3]]},{"t":0.5,"type":"distance","to":"FAR","dur":0.34,"result":"blocked"},{"t":0.6,"type":"fx","asset":"LC_Hengsaoqianjun_PushBlocked","anchor":"Target.HitPoint","dur":0.3,"layer":"SkillFX","x":[[0,-0.3],[1,-0.3]]},{"t":0.62,"type":"tag","actor":"Target","text":"变距受阻 · 伤害不回滚","kind":"mech"},{"t":0.84,"type":"fx","asset":"LC_Hengsaoqianjun_End","anchor":"Target.HitPoint","dur":0.25,"layer":"SkillFX","alpha":[[0,0.6],[1,0]]}]},"Qiangzhen_Field":{"skill":"Qiangzhen","name":"枪阵 · 布阵 → 阻止接近","category":"阵地技能","std":[0.45,0.75],"note":"布阵 0→0.71s；之后为持续期与敌方回合的触发演示","setup":{"distance":"FAR"},"duration":2.1,"events":[{"t":0,"type":"move","actor":"LC","dur":0.4,"x":[[0,0],[0.3,8],[1,0]]},{"t":0,"type":"fx","asset":"LC_Common_WeaponFlash","anchor":"LC.Weapon_Tip","dur":0.12,"layer":"SkillFX","alpha":[[0,1],[1,0]],"scale":[[0,0.6],[1,1]]},{"t":0.04,"type":"fx","asset":"LC_Qiangzhen_Cast","anchor":"LC.Field","dur":0.2,"layer":"SkillFX","x":[[0,-0.48],[1,0]],"y":[[0,-0.6],[1,0]],"alpha":[[0,0],[0.2,1],[1,1]],"scale":[[0,0.6],[1,0.6]]},{"t":0.24,"type":"fx","asset":"LC_Qiangzhen_CastImpact","anchor":"LC.Field","dur":0.25,"layer":"BattleFX_Back","scale":[[0,0.4],[1,1.05]],"alpha":[[0,1],[1,0]]},{"t":0.26,"type":"fx","asset":"LC_Qiangzhen_Spawn","anchor":"LC.Field","dur":0.45,"layer":"BattleFX_Back","scale":[[0,0.3],[0.5,0.82],[1,0.82]],"alpha":[[0,0],[0.3,1],[1,1]]},{"t":0.71,"type":"fx","asset":"LC_Qiangzhen_Loop","anchor":"LC.Field","dur":0.72,"layer":"BattleFX_Back","scale":[[0,0.82],[1,0.82]],"alpha":[[0,1],[0.35,0.7],[0.7,0.9],[1,0.75]]},{"t":0.72,"type":"ui_status","action":"add","icon":"LC_Qiangzhen_StatusIcon","label":"枪阵"},{"t":0.72,"type":"tag","actor":"LC","text":"枪阵 · 持续至林冲下次行动结束","kind":"info"},{"t":0.32,"type":"fx","asset":"LC_Qiangzhen_SpearGhost","anchor":"LC.Field","dur":0.35,"layer":"SkillFX","x":[[0,-0.43],[1,-0.43]],"y":[[0,0.32999999999999996],[1,0.03]],"alpha":[[0,0],[0.5,0.85],[1,0.85]],"scale":[[0,0.62],[1,0.62]]},{"t":0.67,"type":"fx","asset":"LC_Qiangzhen_SpearGhost","anchor":"LC.Field","dur":0.76,"layer":"SkillFX","x":[[0,-0.43],[1,-0.43]],"y":[[0,0.03],[1,0.03]],"alpha":[[0,0.85],[0.2,0.4],[0.6,0.55],[1,0.45]],"scale":[[0,0.62],[1,0.62]]},{"t":0.35,"type":"fx","asset":"LC_Qiangzhen_SpearGhost","anchor":"LC.Field","dur":0.35,"layer":"SkillFX","x":[[0,-0.21],[1,-0.21]],"y":[[0,0.27],[1,-0.03]],"alpha":[[0,0],[0.5,0.85],[1,0.85]],"scale":[[0,0.62],[1,0.62]]},{"t":0.7,"type":"fx","asset":"LC_Qiangzhen_SpearGhost","anchor":"LC.Field","dur":0.73,"layer":"SkillFX","x":[[0,-0.21],[1,-0.21]],"y":[[0,-0.03],[1,-0.03]],"alpha":[[0,0.85],[0.2,0.4],[0.6,0.55],[1,0.45]],"scale":[[0,0.62],[1,0.62]]},{"t":0.38,"type":"fx","asset":"LC_Qiangzhen_SpearGhost","anchor":"LC.Field","dur":0.35,"layer":"SkillFX","x":[[0,0.0],[1,0.0]],"y":[[0,0.32],[1,0.02]],"alpha":[[0,0],[0.5,0.85],[1,0.85]],"scale":[[0,0.62],[1,0.62]]},{"t":0.73,"type":"fx","asset":"LC_Qiangzhen_SpearGhost","anchor":"LC.Field","dur":0.7,"layer":"SkillFX","x":[[0,0.0],[1,0.0]],"y":[[0,0.02],[1,0.02]],"alpha":[[0,0.85],[0.2,0.4],[0.6,0.55],[1,0.45]],"scale":[[0,0.62],[1,0.62]]},{"t":0.41,"type":"fx","asset":"LC_Qiangzhen_SpearGhost","anchor":"LC.Field","dur":0.35,"layer":"SkillFX","x":[[0,0.21],[1,0.21]],"y":[[0,0.27999999999999997],[1,-0.02]],"alpha":[[0,0],[0.5,0.85],[1,0.85]],"scale":[[0,0.62],[1,0.62]]},{"t":0.76,"type":"fx","asset":"LC_Qiangzhen_SpearGhost","anchor":"LC.Field","dur":0.6699999999999999,"layer":"SkillFX","x":[[0,0.21],[1,0.21]],"y":[[0,-0.02],[1,-0.02]],"alpha":[[0,0.85],[0.2,0.4],[0.6,0.55],[1,0.45]],"scale":[[0,0.62],[1,0.62]]},{"t":0.44,"type":"fx","asset":"LC_Qiangzhen_SpearGhost","anchor":"LC.Field","dur":0.35,"layer":"SkillFX","x":[[0,0.43],[1,0.43]],"y":[[0,0.32999999999999996],[1,0.03]],"alpha":[[0,0],[0.5,0.85],[1,0.85]],"scale":[[0,0.62],[1,0.62]]},{"t":0.79,"type":"fx","asset":"LC_Qiangzhen_SpearGhost","anchor":"LC.Field","dur":0.6399999999999999,"layer":"SkillFX","x":[[0,0.43],[1,0.43]],"y":[[0,0.03],[1,0.03]],"alpha":[[0,0.85],[0.2,0.4],[0.6,0.55],[1,0.45]],"scale":[[0,0.62],[1,0.62]]},{"t":1.25,"type":"distance","to":"NEAR","dur":0.5,"result":"blocked","attacker":"Target"},{"t":1.25,"type":"tag","actor":"Target","text":"远→近 尝试","kind":"mech"},{"t":1.4,"type":"fx","asset":"LC_Qiangzhen_Trigger","anchor":"LC.Field","dur":0.22,"layer":"BattleFX_Back","scale":[[0,0.82],[1,0.82]],"alpha":[[0,0],[0.12,1],[1,0.2]]},{"t":1.43,"type":"fx","asset":"LC_Qiangzhen_Attack","anchor":"Target.HitPoint","dur":0.18,"layer":"SkillFX","x":[[0,-0.95],[1,-0.12]],"y":[[0,-0.14],[1,-0.05600000000000001]],"alpha":[[0,0],[0.3,1],[0.8,1],[1,0]]},{"t":1.45,"type":"fx","asset":"LC_Qiangzhen_Attack","anchor":"Target.HitPoint","dur":0.18,"layer":"SkillFX","x":[[0,-0.95],[1,-0.12]],"y":[[0,0.0],[1,0.0]],"alpha":[[0,0],[0.3,1],[0.8,1],[1,0]]},{"t":1.47,"type":"fx","asset":"LC_Qiangzhen_Attack","anchor":"Target.HitPoint","dur":0.18,"layer":"SkillFX","x":[[0,-0.95],[1,-0.12]],"y":[[0,0.14],[1,0.05600000000000001]],"alpha":[[0,0],[0.3,1],[0.8,1],[1,0]]},{"t":1.43,"type":"fx","asset":"LC_Qiangzhen_SpearGhost","anchor":"LC.Field","dur":0.12,"layer":"SkillFX","x":[[0,-0.43],[1,-0.43]],"y":[[0,0],[1,-0.05]],"alpha":[[0,0.9],[1,0]],"scale":[[0,0.62],[1,0.62]]},{"t":1.43,"type":"fx","asset":"LC_Qiangzhen_SpearGhost","anchor":"LC.Field","dur":0.12,"layer":"SkillFX","x":[[0,-0.21],[1,-0.21]],"y":[[0,0],[1,-0.05]],"alpha":[[0,0.9],[1,0]],"scale":[[0,0.62],[1,0.62]]},{"t":1.43,"type":"fx","asset":"LC_Qiangzhen_SpearGhost","anchor":"LC.Field","dur":0.12,"layer":"SkillFX","x":[[0,0.0],[1,0.0]],"y":[[0,0],[1,-0.05]],"alpha":[[0,0.9],[1,0]],"scale":[[0,0.62],[1,0.62]]},{"t":1.43,"type":"fx","asset":"LC_Qiangzhen_SpearGhost","anchor":"LC.Field","dur":0.12,"layer":"SkillFX","x":[[0,0.21],[1,0.21]],"y":[[0,0],[1,-0.05]],"alpha":[[0,0.9],[1,0]],"scale":[[0,0.62],[1,0.62]]},{"t":1.43,"type":"fx","asset":"LC_Qiangzhen_SpearGhost","anchor":"LC.Field","dur":0.12,"layer":"SkillFX","x":[[0,0.43],[1,0.43]],"y":[[0,0],[1,-0.05]],"alpha":[[0,0.9],[1,0]],"scale":[[0,0.62],[1,0.62]]},{"t":1.5,"type":"fx","asset":"LC_Qiangzhen_Block","anchor":"Target.Front","dur":0.42,"layer":"SkillFX","alpha":[[0,0],[0.1,1],[0.6,1],[1,0]],"x":[[0,0.02],[1,0.02]]},{"t":1.52,"type":"tag","actor":"Target","text":"变距被阻止","kind":"mech"},{"t":1.56,"type":"fx","asset":"LC_Qiangzhen_Hit","anchor":"Target.HitPoint","dur":0.2,"layer":"HitFX"},{"t":1.56,"type":"shake","dur":0.1,"amp":4},{"t":1.56,"type":"particles","asset":"LC_Qiangzhen_Particle","frame":0,"anchor":"Target.HitPoint","count":10,"angle":[-80,80],"speed":[0.8,2.0],"life":[0.15,0.3],"size":[0.5,1.0],"gravity":0.0,"layer":"HitFX","align":false,"spread":0.03},{"t":1.57,"type":"dmg","actor":"Target","text":"32","style":"normal"},{"t":1.66,"type":"fx","asset":"LC_Qiangzhen_End","anchor":"LC.Field","dur":0.35,"layer":"BattleFX_Back","scale":[[0,0.82],[1,0.8528]],"alpha":[[0,0.9],[1,0]]},{"t":1.7,"type":"ui_status","action":"remove","icon":"LC_Qiangzhen_StatusIcon"}]},"Baozitou_Passive":{"skill":"Baozitou","name":"固有·豹子头 · 触发 → 生效 → 消耗","category":"被动","std":[0.2,0.4],"note":"Trigger 0.3s；Active 常驻至下一次攻击；Consume 于攻击开始","setup":{"distance":"NEAR"},"duration":2.6,"events":[{"t":0,"type":"move","actor":"LC","dur":0.45,"x":[[0,0],[0.12,-6],[0.3,18],[0.62,18],[1,0]]},{"t":0,"type":"fx","asset":"LC_Jifengci_Cast","anchor":"LC.Weapon_Tip","dur":0.14,"layer":"SkillFX"},{"t":0.07,"type":"fx","asset":"LC_Jifengci_Trail","anchor":"Target.HitPoint","dur":0.3,"layer":"WeaponTrail","frame":1,"reveal":[[0,0],[0.25,1]],"alpha":[[0,0],[0.1,1],[0.45,1],[1,0]],"x":[[0,-0.04],[1,0.03]]},{"t":0.07,"type":"fx","asset":"LC_Jifengci_Trail","anchor":"Target.HitPoint","dur":0.26,"layer":"WeaponTrail","frame":0,"reveal":[[0,0],[0.3,1]],"alpha":[[0,1],[0.6,1],[1,0]],"x":[[0,-0.03],[1,0.02]]},{"t":0.15,"type":"fx","asset":"LC_Jifengci_Hit","anchor":"Target.HitPoint","dur":0.2,"layer":"HitFX"},{"t":0.15,"type":"move","actor":"Target","dur":0.25,"x":[[0,0],[0.2,10],[1,0]]},{"t":0.15,"type":"particles","asset":"LC_Jifengci_Particle","frame":0,"anchor":"Target.HitPoint","count":8,"angle":[-18,18],"speed":[1.6,3.2],"life":[0.12,0.24],"size":[0.6,1.1],"gravity":0.0,"layer":"HitFX","align":true,"spread":0.03},{"t":0.15,"type":"particles","asset":"LC_Jifengci_Particle","frame":1,"anchor":"Target.HitPoint","count":6,"angle":[-70,70],"speed":[1.0,2.2],"life":[0.1,0.2],"size":[0.4,0.8],"gravity":0.0,"layer":"HitFX","align":true,"spread":0.03},{"t":0.16,"type":"dmg","actor":"Target","text":"26","style":"normal"},{"t":0.33,"type":"fx","asset":"LC_Jifengci_End","anchor":"Target.HitPoint","dur":0.2,"layer":"SkillFX","x":[[0,-0.55],[1,-0.4]],"alpha":[[0,0.8],[1,0]]},{"t":0.0,"type":"intent","action":"show"},{"t":0.15,"type":"fx","asset":"LC_Jifengci_Interrupt","anchor":"Target.Front","dur":0.2,"layer":"HitFX","x":[[0,-0.1],[1,-0.1]]},{"t":0.17,"type":"intent","action":"break"},{"t":0.2,"type":"tag","actor":"Target","text":"打断","kind":"mech"},{"t":0.34,"type":"fx","asset":"LC_Baozitou_Trigger","anchor":"LC.Body","dur":0.3,"layer":"Status_Back","frame":0,"x":[[0,-0.46],[1,-0.38]],"y":[[0,-0.1],[1,-0.1]],"scale":[[0,0.92],[1,1.04]],"alpha":[[0,0],[0.2,1],[0.6,0.9],[1,0]]},{"t":0.36,"type":"fx","asset":"LC_Baozitou_Trigger","anchor":"LC.Body","dur":0.26,"layer":"Status_Front","frame":1,"x":[[0,-0.1],[1,0.1]],"alpha":[[0,0],[0.25,0.9],[1,0]]},{"t":0.36,"type":"tag","actor":"LC","text":"豹子头 触发","kind":"mech"},{"t":0.62,"type":"fx","asset":"LC_Baozitou_Active","anchor":"LC.Spear_Mid","dur":1.03,"layer":"WeaponTrail","rot":-2.7,"sy":[[0,2.2],[1,2.2]],"alpha":[[0,0],[0.1,1],[0.45,0.65],[0.8,1],[1,1]]},{"t":0.62,"type":"ui_status","action":"add","icon":"LC_Baozitou_BuffIcon","label":"豹子头 · 速度+2"},{"t":1.45,"type":"caption","text":"— 下一回合 · 林冲再次攻击 —"},{"t":1.65,"type":"fx","asset":"LC_Baozitou_Consume","anchor":"LC.Weapon_Tip","dur":0.22,"layer":"SkillFX"},{"t":1.65,"type":"tag","actor":"LC","text":"豹子头 消耗 · 速度+2","kind":"buff"},{"t":1.8,"type":"ui_status","action":"remove","icon":"LC_Baozitou_BuffIcon"},{"t":1.86,"type":"fx","asset":"LC_Baozitou_End","anchor":"LC.Weapon_Tip","dur":0.14,"layer":"SkillFX","alpha":[[0,1],[1,0]]},{"t":1.87,"type":"move","actor":"LC","dur":0.45,"x":[[0,0],[0.12,-6],[0.3,18],[0.62,18],[1,0]]},{"t":1.87,"type":"fx","asset":"LC_Jifengci_Cast","anchor":"LC.Weapon_Tip","dur":0.14,"layer":"SkillFX"},{"t":1.94,"type":"fx","asset":"LC_Jifengci_Trail","anchor":"Target.HitPoint","dur":0.3,"layer":"WeaponTrail","frame":1,"reveal":[[0,0],[0.25,1]],"alpha":[[0,0],[0.1,1],[0.45,1],[1,0]],"x":[[0,-0.04],[1,0.03]]},{"t":1.94,"type":"fx","asset":"LC_Jifengci_Trail","anchor":"Target.HitPoint","dur":0.26,"layer":"WeaponTrail","frame":0,"reveal":[[0,0],[0.3,1]],"alpha":[[0,1],[0.6,1],[1,0]],"x":[[0,-0.03],[1,0.02]]},{"t":2.02,"type":"fx","asset":"LC_Jifengci_Hit","anchor":"Target.HitPoint","dur":0.2,"layer":"HitFX"},{"t":2.02,"type":"move","actor":"Target","dur":0.25,"x":[[0,0],[0.2,10],[1,0]]},{"t":2.02,"type":"particles","asset":"LC_Jifengci_Particle","frame":0,"anchor":"Target.HitPoint","count":8,"angle":[-18,18],"speed":[1.6,3.2],"life":[0.12,0.24],"size":[0.6,1.1],"gravity":0.0,"layer":"HitFX","align":true,"spread":0.03},{"t":2.02,"type":"particles","asset":"LC_Jifengci_Particle","frame":1,"anchor":"Target.HitPoint","count":6,"angle":[-70,70],"speed":[1.0,2.2],"life":[0.1,0.2],"size":[0.4,0.8],"gravity":0.0,"layer":"HitFX","align":true,"spread":0.03},{"t":2.03,"type":"dmg","actor":"Target","text":"26","style":"normal"},{"t":2.2,"type":"fx","asset":"LC_Jifengci_End","anchor":"Target.HitPoint","dur":0.2,"layer":"SkillFX","x":[[0,-0.55],[1,-0.4]],"alpha":[[0,0.8],[1,0]]}]}}};
+</script>
+<script>
+(() => {
+'use strict';
+const M = window.LC_VFX_MANIFEST;
+const A = M.anchors, H = A.H, LAYERS = M.layers;
+const SKILLS = {
+  Jifengci:       { name: '疾风刺',   icon: 'preview/wiki_icons/linchong-01_jifengci.webp',       dna: '赤红 / 银白', colors: ['#ff1a22', '#e4ecf6'], mech: '高速突刺 · 打断', rule: '近 · 20 气 · 26×1 · 速度 8' },
+  Huimaqiang:     { name: '回马枪',   icon: 'preview/wiki_icons/linchong-02_huimaqiang.webp',     dna: '铜橙 / 金白', colors: ['#ff6a1c', '#ffe7b0'], mech: '受击 → 回身 → 反刺', rule: '近 · 30 气 · 35×1 / 55×1 · 速度 3' },
+  Hengsaoqianjun: { name: '横扫千军', icon: 'preview/wiki_icons/linchong-03_hengsaoqianjun.webp', dna: '橙金 / 银白', colors: ['#ff9a1e', '#e4ecf6'], mech: '横扫 · 强制变距 近→远', rule: '近 · 45 气 · 62×1 · 速度 2' },
+  Qiangzhen:      { name: '枪阵',     icon: 'preview/wiki_icons/linchong-04_qiangzhen.webp',      dna: '冰蓝 / 银白', colors: ['#3f9bff', '#e4ecf6'], mech: '阵地 · 阻止远→近尝试', rule: '远 · 30 气 · 32×1 · 速度 7' },
+  Baozitou:       { name: '固有·豹子头', icon: 'preview/wiki_icons/linchong-05_baozitou.webp',   dna: '香槟金 / 银灰', colors: ['#f2d49a', '#a9adb4'], mech: '打断/截击后，下一次攻击速度 +2', rule: '固有能力 · 被动' },
+};
+const LAYER_COL = { BattleFX_Back: '#3f7fd0', Status_Back: '#6f8fb0', Character: '#777', WeaponTrail: '#d0663f',
+  SkillFX: '#c69a5b', Projectile: '#b07ad0', HitFX: '#e8e3d7', Status_Front: '#8fc0a0', BattleUI: '#999' };
+const GROUP_NAME = { Jifengci: '疾风刺 Jifengci', Huimaqiang: '回马枪 Huimaqiang', Hengsaoqianjun: '横扫千军 Hengsaoqianjun',
+  Qiangzhen: '枪阵 Qiangzhen', Baozitou: '固有·豹子头 Baozitou', CommonFX: '通用 CommonFX', UI: '战斗 UI 图标' };
+
+const $ = (id) => document.getElementById(id);
+const cv = $('stage'), ctx = cv.getContext('2d');
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// ---------------------------------------------------------------- assets
+const imgs = {};
+function loadAll() {
+  const jobs = [];
+  for (const [k, a] of Object.entries(M.assets)) {
+    imgs[k] = a.files.map((f) => {
+      const im = new Image();
+      jobs.push(new Promise((res) => { im.onload = res; im.onerror = res; }));
+      im.src = a.dir + '/' + f;
+      return im;
+    });
+  }
+  return Promise.all(jobs);
+}
+
+// ---------------------------------------------------------------- math
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const lerp = (a, b, t) => a + (b - a) * t;
+const easeOut = (t) => 1 - (1 - t) * (1 - t);
+const easeInOut = (t) => t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+function track(k, u, def) {
+  if (!k) return def;
+  if (u <= k[0][0]) return k[0][1];
+  for (let i = 1; i < k.length; i++) {
+    if (u <= k[i][0]) { const a = k[i - 1], b = k[i]; return lerp(a[1], b[1], (u - a[0]) / Math.max(1e-6, b[0] - a[0])); }
+  }
+  return k[k.length - 1][1];
+}
+function rng(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+
+// ---------------------------------------------------------------- state
+const S = { id: null, tl: null, t: 0, playing: !reduced, speed: 1, loop: true, bg: 'battle', debug: false, hold: 0 };
+function hitstops(tl) { return tl.events.filter((e) => e.type === 'hitstop').sort((a, b) => a.t - b.t); }
+function realDuration(tl) { return tl.duration + hitstops(tl).reduce((s, e) => s + e.dur, 0); }
+function effTime(tl, tr) {
+  let shift = 0;
+  for (const h of hitstops(tl)) {
+    const start = h.t + shift;
+    if (tr < start) break;
+    if (tr < start + h.dur) return h.t;
+    shift += h.dur;
+  }
+  return tr - shift;
+}
+
+// ---------------------------------------------------------------- scene evaluation
+function moveOffset(tl, actor, te) {
+  let x = 0, y = 0, r = 0;
+  for (const e of tl.events) {
+    if (e.type !== 'move' || e.actor !== actor || te < e.t) continue;
+    const u = clamp((te - e.t) / e.dur, 0, 1);
+    x += track(e.x, u, 0); y += track(e.y, u, 0); r += track(e.rot, u, 0);
+  }
+  return { x, y, r };
+}
+function targetRoot(tl, te) {
+  let dist = tl.setup.distance, x = A.Target_root[dist][0], state = { dist, blocked: false, moving: false };
+  for (const e of tl.events) {
+    if (e.type !== 'distance' || te < e.t) continue;
+    const from = A.Target_root[dist][0], to = A.Target_root[e.to][0];
+    const u = clamp((te - e.t) / e.dur, 0, 1);
+    if (e.result === 'success') {
+      x = lerp(from, to, easeOut(u));
+      if (u >= 1) { dist = e.to; }
+      state = { dist: u >= .5 ? e.to : dist, blocked: false, moving: u < 1, from: state.dist };
+    } else {
+      const reach = e.reach ?? (e.to === 'NEAR' ? .5 : .16), peak = e.peak ?? (e.to === 'NEAR' ? .5 : .3);
+      const f = u < peak ? easeOut(u / peak) * reach : reach * (1 - easeInOut((u - peak) / (1 - peak)));
+      x = from + (to - from) * f;
+      state = { dist, blocked: u >= peak && te < e.t + e.dur + .5, moving: u < 1, attempt: e.to };
+    }
+  }
+  return { x, y: A.Target_root.NEAR[1], state };
+}
+function scene(tl, te) {
+  const lm = moveOffset(tl, 'LC', te), tm = moveOffset(tl, 'Target', te), tr = targetRoot(tl, te);
+  const lc = { x: A.LC_root[0] + lm.x, y: A.LC_root[1] + lm.y, r: lm.r };
+  const tg = { x: tr.x + tm.x, y: tr.y + tm.y, r: tm.r };   // target faces left: +x = knocked back (away from LC)
+  return { lc, tg, dist: tr.state };
+}
+function anchorPos(sc, name) {
+  const [who, key] = name.split('.');
+  if (who === 'LC') { const o = A.LC[key]; return [sc.lc.x + o[0] * H, sc.lc.y + o[1] * H]; }
+  const o = A.Target[key]; return [sc.tg.x + o[0] * H, sc.tg.y + o[1] * H];
+}
+
+// ---------------------------------------------------------------- drawing: background + placeholders
+let bgCache = {};
+function drawBackground(mode) {
+  if (!bgCache[mode]) {
+    const c = document.createElement('canvas'); c.width = 1920; c.height = 1080; const g = c.getContext('2d');
+    if (mode === 'battle') {
+      let gr = g.createLinearGradient(0, 0, 0, 1080);
+      gr.addColorStop(0, '#1b2029'); gr.addColorStop(.55, '#2a2a2c'); gr.addColorStop(.82, '#3a3129'); gr.addColorStop(1, '#1e1a16');
+      g.fillStyle = gr; g.fillRect(0, 0, 1920, 1080);
+      g.fillStyle = '#ffffff08';
+      for (let i = 0; i < 7; i++) { g.beginPath(); g.ellipse(200 + i * 290, 640 - (i % 3) * 30, 260, 70, 0, Math.PI, 0); g.fill(); }
+      gr = g.createLinearGradient(0, 880, 0, 1080); gr.addColorStop(0, '#4a3c2e'); gr.addColorStop(1, '#231c16');
+      g.fillStyle = gr; g.fillRect(0, 880, 1920, 200);
+      g.fillStyle = '#00000030'; for (let i = 0; i < 90; i++) { g.fillRect((i * 173) % 1920, 890 + (i * 37) % 170, 30 + (i % 5) * 12, 2); }
+    } else if (mode === 'light') {
+      const gr = g.createLinearGradient(0, 0, 0, 1080); gr.addColorStop(0, '#e9e4d8'); gr.addColorStop(1, '#bfb49f');
+      g.fillStyle = gr; g.fillRect(0, 0, 1920, 1080);
+    } else {
+      for (let y = 0; y < 1080; y += 40) for (let x = 0; x < 1920; x += 40) { g.fillStyle = ((x + y) / 40) % 2 ? '#9a9a9a' : '#cfcfcf'; g.fillRect(x, y, 40, 40); }
+    }
+    bgCache[mode] = c;
+  }
+  ctx.drawImage(bgCache[mode], 0, 0);
+}
+function figure(root, facing, fill, rim, withSpear, label) {
+  ctx.save(); ctx.translate(root.x, root.y); ctx.rotate(root.r * Math.PI / 180); ctx.scale(facing * H, H);
+  const P = (pts) => { ctx.beginPath(); pts.forEach(([x, y], i) => i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)); ctx.closePath(); ctx.fill(); ctx.stroke(); };
+  ctx.fillStyle = fill; ctx.strokeStyle = rim; ctx.lineWidth = 2 / H; ctx.lineJoin = 'round';
+  P([[-0.14, -0.27], [-0.04, -0.27], [-0.08, 0], [-0.21, 0]]);
+  P([[0.04, -0.27], [0.14, -0.27], [0.23, 0], [0.1, 0]]);
+  P([[-0.16, -0.48], [0.16, -0.48], [0.21, -0.24], [-0.21, -0.24]]);
+  P([[-0.13, -0.8], [0.12, -0.8], [0.15, -0.46], [-0.14, -0.46]]);
+  ctx.beginPath(); ctx.arc(0.02, -0.885, 0.07, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+  P([[0.06, -0.78], [0.13, -0.77], [0.24, -0.6], [0.18, -0.57]]);
+  if (withSpear) {
+    const [f, t] = [A.spear.from, A.spear.to];
+    ctx.strokeStyle = '#6d5a43'; ctx.lineWidth = 7 / H; ctx.beginPath(); ctx.moveTo(f[0], f[1]); ctx.lineTo(t[0] - 0.06, t[1] + 0.005); ctx.stroke();
+    ctx.fillStyle = '#b7bcc4'; ctx.strokeStyle = '#e6ebf2'; ctx.lineWidth = 1.5 / H;
+    ctx.beginPath(); ctx.moveTo(t[0], t[1]); ctx.lineTo(t[0] - 0.07, t[1] - 0.018); ctx.lineTo(t[0] - 0.085, t[1] + 0.003); ctx.lineTo(t[0] - 0.07, t[1] + 0.024); ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = '#a3141b'; ctx.beginPath(); ctx.moveTo(t[0] - 0.09, t[1] + 0.004); ctx.lineTo(t[0] - 0.13, t[1] + 0.06); ctx.lineTo(t[0] - 0.105, t[1] + 0.07); ctx.closePath(); ctx.fill();
+  }
+  ctx.restore();
+  ctx.save(); ctx.font = '500 20px "Noto Sans SC", sans-serif'; ctx.textAlign = 'center';
+  ctx.fillStyle = S.bg === 'battle' ? '#ffffff55' : '#00000077'; ctx.fillText(label, root.x, root.y + 34); ctx.restore();
+}
+
+// generic enemy action trajectory (for interrupt demonstration)
+function drawIntent(tl, te, sc) {
+  const ev = tl.events.filter((e) => e.type === 'intent').sort((a, b) => a.t - b.t);
+  if (!ev.length || te < ev[0].t) return;
+  let shownAt = null, endAt = null, broke = null;
+  for (const e of ev) {
+    if (e.t > te) break;
+    if (e.action === 'show') { shownAt = e.t; endAt = null; broke = null; }
+    if (e.action === 'hide') endAt = e.t;
+    if (e.action === 'break') broke = e.t;
+  }
+  if (shownAt === null) return;
+  const a = anchorPos(sc, 'Target.HitPoint'), b = anchorPos(sc, 'LC.Body');
+  const x0 = a[0] - 40, y0 = a[1], x1 = b[0] + 90, y1 = b[1] - 10;
+  let alpha = clamp((te - shownAt) / .08, 0, 1) * .75;
+  if (endAt !== null) alpha *= clamp(1 - (te - endAt) / .12, 0, 1);
+  if (alpha <= 0) return;
+  ctx.save(); ctx.lineCap = 'round';
+  const drawSeg = (sx, sy, ex, ey, arrow, al) => {
+    ctx.globalAlpha = al; ctx.strokeStyle = '#d9d4cb'; ctx.lineWidth = 7; ctx.setLineDash([26, 12]); ctx.lineDashOffset = -te * 180;
+    ctx.beginPath(); ctx.moveTo(sx, sy); ctx.lineTo(ex, ey); ctx.stroke(); ctx.setLineDash([]);
+    if (arrow) { ctx.fillStyle = '#d9d4cb'; ctx.beginPath(); ctx.moveTo(ex - 6, ey); ctx.lineTo(ex + 26, ey - 18); ctx.lineTo(ex + 26, ey + 18); ctx.closePath(); ctx.fill(); }
+  };
+  if (broke === null) drawSeg(x0, y0, x1, y1, true, alpha);
+  else {
+    const u = clamp((te - broke) / .32, 0, 1), mx = (x0 + x1) / 2 + 60, my = (y0 + y1) / 2, off = easeOut(u) * 40, al = alpha * (1 - u);
+    drawSeg(x0, y0, mx + 8, my - off * .2 - 4, false, al);
+    ctx.save(); ctx.translate(0, off); drawSeg(mx - 8, my + 4, x1, y1, true, al); ctx.restore();
+  }
+  ctx.restore();
+}
+
+// ---------------------------------------------------------------- drawing: fx + particles
+function drawFx(e, te, sc) {
+  const a = M.assets[e.asset], fr = imgs[e.asset]; if (!a || !fr) return;
+  const u = clamp((te - e.t) / e.dur, 0, 1);
+  const fi = e.frame != null ? Math.min(e.frame, fr.length - 1) : Math.min(fr.length - 1, Math.floor(u * fr.length));
+  const im = fr[fi]; if (!im.naturalWidth) return;
+  const p = anchorPos(sc, e.anchor);
+  const x = p[0] + track(e.x, u, 0) * H, y = p[1] + track(e.y, u, 0) * H;
+  const s = track(e.scale, u, 1), w = a.size_H[0] * H * s * track(e.sx, u, 1), h = a.size_H[1] * H * s * track(e.sy, u, 1);
+  const al = track(e.alpha, u, 1), rv = clamp(track(e.reveal, u, 1), 0, 1);
+  if (al <= 0.001 || rv <= 0.001) return;
+  ctx.save(); ctx.translate(x, y); if (e.rot) ctx.rotate(e.rot * Math.PI / 180);
+  ctx.globalAlpha = clamp(al, 0, 1);
+  const ox = -a.anchor[0] * w, oy = -(1 - a.anchor[1]) * h;
+  ctx.drawImage(im, 0, 0, im.naturalWidth * rv, im.naturalHeight, ox, oy, w * rv, h);
+  ctx.restore();
+}
+function drawParticles(e, idx, te, sc) {
+  const a = M.assets[e.asset], fr = imgs[e.asset]; if (!a || !fr) return;
+  const im = fr[Math.min(e.frame || 0, fr.length - 1)]; if (!im.naturalWidth) return;
+  const age0 = te - e.t; if (age0 < 0 || age0 > e.life[1] + .05) return;
+  const r = rng(idx * 7919 + 17), p = anchorPos(sc, e.anchor);
+  for (let i = 0; i < e.count; i++) {
+    const ang = lerp(e.angle[0], e.angle[1], r()) * Math.PI / 180, sp = lerp(e.speed[0], e.speed[1], r()) * H;
+    const life = lerp(e.life[0], e.life[1], r()), size = lerp(e.size[0], e.size[1], r()), jx = (r() - .5) * e.spread * H, jy = (r() - .5) * e.spread * H, spin = (r() - .5) * 12;
+    if (age0 > life) continue;
+    const t = age0, vx = Math.cos(ang) * sp, vy = Math.sin(ang) * sp + e.gravity * H * t;
+    const x = p[0] + jx + Math.cos(ang) * sp * t, y = p[1] + jy + Math.sin(ang) * sp * t + .5 * e.gravity * H * t * t;
+    const w = a.size_H[0] * H * size, h = a.size_H[1] * H * size;
+    ctx.save(); ctx.translate(x, y); ctx.rotate(e.align ? Math.atan2(vy, vx) : spin * t); ctx.globalAlpha = clamp(1 - t / life, 0, 1);
+    ctx.drawImage(im, -a.anchor[0] * w, -(1 - a.anchor[1]) * h, w, h); ctx.restore();
+  }
+}
+
+// ---------------------------------------------------------------- drawing: battle UI
+function roundRect(x, y, w, h, r) { ctx.beginPath(); ctx.roundRect ? ctx.roundRect(x, y, w, h, r) : ctx.rect(x, y, w, h); }
+function drawUI(tl, te, sc) {
+  ctx.save();
+  // top bars
+  const bar = (x, name, hp, right) => {
+    ctx.fillStyle = '#0d0f12d8'; roundRect(x, 28, 620, 74, 10); ctx.fill();
+    ctx.strokeStyle = '#c69a5b88'; ctx.lineWidth = 2; ctx.stroke();
+    ctx.font = '700 26px "Noto Serif SC", serif'; ctx.fillStyle = '#e8e3d7'; ctx.textAlign = right ? 'right' : 'left';
+    ctx.fillText(name, right ? x + 600 : x + 20, 60);
+    ctx.fillStyle = '#2a2f36'; roundRect(x + 20, 72, 580, 14, 7); ctx.fill();
+    ctx.fillStyle = right ? '#b9463f' : '#6fae7c'; roundRect(right ? x + 20 + 580 * (1 - hp) : x + 20, 72, 580 * hp, 14, 7); ctx.fill();
+  };
+  const dmgTo = (actor) => tl.events.filter((e) => e.type === 'dmg' && e.actor === actor && e.t <= te).reduce((s, e) => s + (+e.text || 0), 0);
+  bar(40, '林冲', clamp(0.82 - dmgTo('LC') / 400, 0, 1), false);
+  bar(1260, '敌方武将', clamp(0.9 - dmgTo('Target') / 400, 0, 1), true);
+  // distance chip
+  const d = sc.dist, near = d.dist === 'NEAR';
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#0d0f12d8'; roundRect(860, 34, 200, 60, 30); ctx.fill();
+  ctx.strokeStyle = d.blocked ? '#e0685f' : '#c69a5b'; ctx.lineWidth = d.blocked ? 3 : 2; ctx.stroke();
+  ctx.font = '700 26px "Noto Serif SC", serif'; ctx.fillStyle = '#e8e3d7';
+  ctx.fillText(near ? '近 · NEAR' : '远 · FAR', 960, 73);
+  if (d.blocked) { ctx.font = '700 18px "Noto Sans SC", sans-serif'; ctx.fillStyle = '#e0685f'; ctx.fillText('变距受阻 · 距离不变', 960, 120); }
+  // status icons (UI)
+  const st = {};
+  for (const e of tl.events) if (e.type === 'ui_status' && e.t <= te) { if (e.action === 'add') st[e.icon] = { e, t: e.t }; else delete st[e.icon]; }
+  let ix = 60;
+  for (const k of Object.keys(st)) {
+    const im = imgs[k] && imgs[k][0]; if (!im || !im.naturalWidth) continue;
+    const pop = clamp((te - st[k].t) / .15, 0, 1), sz = 66 * (0.6 + 0.4 * easeOut(pop));
+    ctx.globalAlpha = pop; ctx.drawImage(im, ix + 29 - sz / 2, 140 - sz / 2, sz, sz);
+    ctx.font = '700 26px "Noto Sans SC", sans-serif'; ctx.textAlign = 'left'; ctx.fillStyle = '#e8e3d7'; ctx.fillText(st[k].e.label || '', ix + 74, 149);
+    ctx.globalAlpha = 1; ix += 320;
+  }
+  // bottom skill bar with the Wiki icon of the playing skill
+  ctx.fillStyle = '#0d0f12e0'; ctx.fillRect(0, 960, 1920, 120);
+  ctx.strokeStyle = '#c69a5b55'; ctx.beginPath(); ctx.moveTo(0, 960); ctx.lineTo(1920, 960); ctx.stroke();
+  const order = ['Jifengci', 'Huimaqiang', 'Hengsaoqianjun', 'Qiangzhen', 'Baozitou'];
+  order.forEach((k, i) => {
+    const im = iconImgs[k], x = 620 + i * 140, on = tl.skill === k;
+    ctx.globalAlpha = on ? 1 : .45;
+    if (im && im.naturalWidth) ctx.drawImage(im, x, 972, 96, 96);
+    ctx.strokeStyle = on ? '#c69a5b' : '#444'; ctx.lineWidth = on ? 4 : 2; roundRect(x, 972, 96, 96, 10); ctx.stroke();
+  });
+  ctx.globalAlpha = 1;
+  // floating numbers + mechanic tags (concurrent tags on one actor stack upward)
+  const stack = {};
+  for (const e of tl.events) {
+    if ((e.type !== 'dmg' && e.type !== 'tag' && e.type !== 'caption') || te < e.t) continue;
+    const life = e.type === 'dmg' ? .75 : e.type === 'caption' ? .7 : .9, u = (te - e.t) / life; if (u > 1) continue;
+    if (e.type === 'caption') {
+      ctx.globalAlpha = Math.sin(u * Math.PI); ctx.font = '600 30px "Noto Serif SC", serif'; ctx.textAlign = 'center'; ctx.fillStyle = '#e8e3d7'; ctx.fillText(e.text, 960, 250);
+      continue;
+    }
+    const p = anchorPos(sc, e.actor === 'LC' ? 'LC.Body' : 'Target.HitPoint');
+    if (e.type === 'dmg') {
+      const big = e.style === 'crit', col = e.style === 'taken' ? '#ff7a6e' : big ? '#ffd27a' : '#ffffff';
+      ctx.globalAlpha = clamp(1.4 - u * 1.4, 0, 1); ctx.font = `900 ${big ? 78 : 60}px "Noto Serif SC", serif`; ctx.textAlign = 'center';
+      ctx.lineWidth = 8; ctx.strokeStyle = '#000000b0'; const yy = p[1] - 0.42 * H - easeOut(u) * 70;
+      ctx.strokeText(e.text, p[0] + (e.actor === 'LC' ? -40 : 40), yy); ctx.fillStyle = col; ctx.fillText(e.text, p[0] + (e.actor === 'LC' ? -40 : 40), yy);
+    } else {
+      ctx.globalAlpha = clamp(Math.min(u * 6, (1 - u) * 4), 0, 1);
+      ctx.font = '700 22px "Noto Sans SC", sans-serif'; ctx.textAlign = 'center';
+      const n = stack[e.actor] = (stack[e.actor] || 0) + 1;
+      const w = ctx.measureText(e.text).width + 28, x = p[0], y = p[1] - 0.62 * H - (n - 1) * 42;
+      ctx.fillStyle = e.kind === 'buff' ? '#3b2f17e8' : e.kind === 'info' ? '#1b1f25e0' : '#43191ae8';
+      roundRect(x - w / 2, y - 22, w, 34, 17); ctx.fill();
+      ctx.strokeStyle = e.kind === 'buff' ? '#f2d49a' : e.kind === 'info' ? '#8f95a1' : '#ff6b5f'; ctx.lineWidth = 2; ctx.stroke();
+      ctx.fillStyle = '#f3efe6'; ctx.fillText(e.text, x, y + 3);
+    }
+  }
+  ctx.restore();
+}
+function drawDebug(sc) {
+  ctx.save();
+  ctx.strokeStyle = '#ff5ab4'; ctx.setLineDash([10, 8]); ctx.lineWidth = 2;
+  ctx.strokeRect(1, 1, 1918, 125); ctx.strokeRect(1, 960, 1918, 119);
+  ctx.setLineDash([]); ctx.font = '600 16px "JetBrains Mono", monospace'; ctx.fillStyle = '#ff5ab4';
+  ctx.fillText('BattleUI 区域 — VFX 不应进入', 16, 150); ctx.fillText('BattleUI 区域', 16, 952);
+  const pts = [['LC', A.LC], ['Target', A.Target]];
+  for (const [who, set] of pts) for (const k of Object.keys(set)) {
+    const [x, y] = anchorPos(sc, who + '.' + k);
+    ctx.strokeStyle = '#5affd2'; ctx.beginPath(); ctx.moveTo(x - 10, y); ctx.lineTo(x + 10, y); ctx.moveTo(x, y - 10); ctx.lineTo(x, y + 10); ctx.stroke();
+    ctx.fillStyle = '#5affd2'; ctx.font = '13px "JetBrains Mono", monospace'; ctx.fillText(who + '.' + k, x + 8, y - 8);
+  }
+  // H ruler
+  ctx.strokeStyle = '#5affd2'; ctx.beginPath(); ctx.moveTo(250, A.LC_root[1]); ctx.lineTo(250, A.LC_root[1] - H); ctx.stroke();
+  ctx.fillText('H = ' + H + 'px', 150, A.LC_root[1] - H / 2);
+  ctx.restore();
+}
+
+// ---------------------------------------------------------------- frame
+function render() {
+  const tl = S.tl; if (!tl) return;
+  const te = effTime(tl, S.t), sc = scene(tl, te);
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  drawBackground(S.bg);
+  let sx = 0, sy = 0;
+  for (const e of tl.events) if (e.type === 'shake' && te >= e.t && te < e.t + e.dur) {
+    const k = 1 - (te - e.t) / e.dur; sx += Math.sin(te * 97) * e.amp * k; sy += Math.cos(te * 83) * e.amp * k * .6;
+  }
+  ctx.setTransform(1, 0, 0, 1, sx, sy);
+  for (const L of LAYERS) {
+    if (L === 'BattleUI') break;
+    if (L === 'Character') {
+      figure(sc.lc, 1, '#262b33', '#4a525e', true, '林冲 · 占位剪影');
+      figure(sc.tg, -1, '#2f282a', '#5a4a4d', false, '敌方 · 占位剪影');
+      drawIntent(tl, te, sc);
+      continue;
+    }
+    tl.events.forEach((e, i) => {
+      if (e.layer !== L || te < e.t) return;
+      if (e.type === 'fx' && te <= e.t + e.dur) drawFx(e, te, sc);
+      else if (e.type === 'particles') drawParticles(e, i, te, sc);
+    });
+  }
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  drawUI(tl, te, sc);
+  if (S.debug) drawDebug(sc);
+  const total = realDuration(tl);
+  $('tc').innerHTML = `${S.t.toFixed(3)} <span>/ ${total.toFixed(3)} s</span>`;
+  const ph = $('lanes').querySelector('.playhead');
+  if (ph) ph.style.left = `calc(118px + (100% - 128px) * ${clamp(te / tl.duration, 0, 1)})`;
+}
+
+let last = performance.now();
+function tick(now) {
+  const dt = Math.min(.05, (now - last) / 1000); last = now;
+  if (S.tl && S.playing) {
+    const total = realDuration(S.tl);
+    if (S.t < total) S.t = Math.min(total, S.t + dt * S.speed);
+    else if (S.loop) { S.hold += dt; if (S.hold > .6) { S.t = 0; S.hold = 0; } }
+    else { S.playing = false; $('play').textContent = '播放'; }
+  }
+  render(); animateGallery(now);
+  requestAnimationFrame(tick);
+}
+
+// ---------------------------------------------------------------- UI: rail, lanes, sheet
+const iconImgs = {};
+function buildRail() {
+  const rail = $('rail'); const bySkill = {};
+  for (const [id, tl] of Object.entries(M.timelines)) (bySkill[tl.skill] ||= []).push([id, tl]);
+  for (const [sk, list] of Object.entries(bySkill)) {
+    const info = SKILLS[sk]; const box = document.createElement('div'); box.className = 'skill';
+    box.innerHTML = `<div class="skill-head"><img src="${info.icon}" alt="${info.name} Wiki 图标"><div><b>${info.name}</b><span>${info.colors.map((c) => `<i class="sw" style="background:${c}"></i>`).join('')}${info.dna}</span></div></div>`;
+    for (const [id, tl] of list) {
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'scn'; b.dataset.id = id;
+      b.innerHTML = `<span>${tl.name.split(' · ').slice(1).join(' · ') || tl.name}</span><em>${realDuration(tl).toFixed(2)}s</em>`;
+      b.addEventListener('click', () => select(id, true));
+      box.appendChild(b);
+    }
+    rail.appendChild(box);
+  }
+  for (const [k, v] of Object.entries(SKILLS)) { const im = new Image(); im.src = v.icon; iconImgs[k] = im; }
+}
+function buildLanes(tl) {
+  const lanes = $('lanes'); lanes.innerHTML = '';
+  const rows = [...LAYERS.filter((l) => l !== 'Character' && l !== 'BattleUI'), '命中 / 顿帧'];
+  for (const L of rows) {
+    const d = document.createElement('div'); d.className = 'lane'; d.innerHTML = `<i>${L}</i>`;
+    for (const e of tl.events) {
+      if (L === '命中 / 顿帧') {
+        if (e.type === 'dmg' && e.actor === 'Target') { const m = document.createElement('span'); m.className = 'mk'; m.style.left = (e.t / tl.duration * 100) + '%'; m.title = `Hit ${e.text} @ ${e.t}s`; d.appendChild(m); }
+        if (e.type === 'hitstop' || e.type === 'shake') { const b = document.createElement('b'); b.style.left = (e.t / tl.duration * 100) + '%'; b.style.width = (e.dur / tl.duration * 100) + '%'; b.style.background = e.type === 'hitstop' ? '#e0685f' : '#e0b04f'; b.title = `${e.type} ${e.dur}s`; d.appendChild(b); }
+        continue;
+      }
+      if (e.layer !== L || (e.type !== 'fx' && e.type !== 'particles')) continue;
+      const b = document.createElement('b'); const dur = e.type === 'fx' ? e.dur : e.life[1];
+      b.style.left = (e.t / tl.duration * 100) + '%'; b.style.width = (Math.min(dur, tl.duration - e.t) / tl.duration * 100) + '%';
+      b.style.background = LAYER_COL[L]; if (e.type === 'particles') b.style.opacity = .45;
+      b.title = `${e.asset}  ${e.t}s → ${(e.t + dur).toFixed(2)}s`;
+      d.appendChild(b);
+    }
+    lanes.appendChild(d);
+  }
+  const ph = document.createElement('div'); ph.className = 'playhead'; lanes.appendChild(ph);
+  const ax = $('axis'); ax.innerHTML = '';
+  const n = 5; for (let i = 0; i <= n; i++) { const s = document.createElement('span'); s.textContent = (tl.duration * i / n).toFixed(2) + 's'; ax.appendChild(s); }
+}
+function seekFromEvent(ev) {
+  const r = $('lanes').getBoundingClientRect(), x0 = r.left + 118, w = r.width - 128;
+  const u = clamp((ev.clientX - x0) / w, 0, 1), tl = S.tl;
+  // convert effective time back to real time (add hitstops before it)
+  const te = u * tl.duration; let tr = te; for (const h of hitstops(tl)) if (h.t < te) tr += h.dur;
+  S.t = tr; S.hold = 0;
+}
+function buildSheet(id, tl) {
+  const info = SKILLS[tl.skill];
+  const fxs = tl.events.filter((e) => e.type === 'fx');
+  let peak = 0, peakKey = '';
+  for (const e of fxs) {
+    const a = M.assets[e.asset]; if (!a || e.asset.startsWith('LC_Common_HitFlash')) continue;
+    const sMax = e.scale ? Math.max(...e.scale.map((k) => k[1])) : 1, v = Math.max(...a.size_H) * sMax;
+    if (v > peak) { peak = v; peakKey = e.asset; }
+  }
+  const hits = tl.events.filter((e) => e.type === 'dmg' && e.actor === 'Target').length;
+  const layers = [...new Set(tl.events.filter((e) => e.layer).map((e) => e.layer))].sort((a, b) => LAYERS.indexOf(a) - LAYERS.indexOf(b));
+  const used = [...new Set(tl.events.filter((e) => e.asset).map((e) => e.asset))];
+  const dur = realDuration(tl), inStd = dur >= tl.std[0] - .001 && dur <= tl.std[1] + .001;
+  const field = tl.skill === 'Qiangzhen' || tl.skill === 'Hengsaoqianjun';
+  const peakOk = peak <= 1.505 || field;
+  $('sheet').innerHTML = `
+    <div class="eyebrow">当前演出</div>
+    <h3>${tl.name}</h3>
+    <div class="dna">${info.colors.map((c) => `<span class="chip" style="background:${c}"></span>`).join('')}<span>Wiki 图标视觉：<b>${info.dna}</b></span></div>
+    <dl class="kv">
+      <dt>机制</dt><dd>${info.mech}</dd>
+      <dt>规则</dt><dd>${info.rule}</dd>
+      <dt>类型</dt><dd>${tl.category} · 标准 ${tl.std[0].toFixed(2)}–${tl.std[1].toFixed(2)} s</dd>
+      <dt>演出时长</dt><dd>${dur.toFixed(2)} s <span class="pill ${inStd ? 'ok' : 'info'}">${inStd ? '符合' : '含演示段'}</span></dd>
+      <dt>命中段数</dt><dd>${hits} 段 <span class="pill ok">可数</span></dd>
+      <dt>峰值尺寸</dt><dd>${peak.toFixed(2)} H <span class="pill ${peakOk ? 'ok' : 'warn'}">${peak <= 1.505 ? '≤ 1.5H' : '阵地/变距例外'}</span><br><span class="note">${peakKey}</span></dd>
+      <dt>起始距离</dt><dd>${tl.setup.distance === 'NEAR' ? '近' : '远'}</dd>
+      <dt>图层</dt><dd>${layers.join(' · ')}</dd>
+    </dl>
+    ${tl.note ? `<div class="note">${tl.note}</div>` : ''}
+    <div><div class="eyebrow" style="margin-bottom:6px">使用素材 · ${used.length}</div>
+    <ul class="assets-used">${used.map((k) => `<li><a href="#a-${k}">${k}</a> <span class="note">×${M.assets[k].files.length}</span></li>`).join('')}</ul></div>`;
+}
+function select(id, play) {
+  S.id = id; S.tl = M.timelines[id]; S.t = 0; S.hold = 0;
+  if (play) { S.playing = true; $('play').textContent = '暂停'; }
+  document.querySelectorAll('.scn').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.id === id)));
+  buildLanes(S.tl); buildSheet(id, S.tl);
+  try { localStorage.setItem('lc-vfx-scn', id); } catch (e) {}
+}
+
+// ---------------------------------------------------------------- gallery
+const gCards = [];
+let gbg = 'dark';
+const checker = (() => { const c = document.createElement('canvas'); c.width = c.height = 16; const g = c.getContext('2d'); g.fillStyle = '#cfcfcf'; g.fillRect(0, 0, 16, 16); g.fillStyle = '#9a9a9a'; g.fillRect(0, 0, 8, 8); g.fillRect(8, 8, 8, 8); return c; })();
+function buildGallery() {
+  const root = $('gallery'); const groups = {};
+  for (const [k, a] of Object.entries(M.assets)) (groups[a.group] ||= []).push([k, a]);
+  const order = ['Jifengci', 'Huimaqiang', 'Hengsaoqianjun', 'Qiangzhen', 'Baozitou', 'CommonFX', 'UI'];
+  let nFiles = 0;
+  for (const g of order) {
+    if (!groups[g]) continue;
+    const sec = document.createElement('div'); sec.className = 'gal-group';
+    const files = groups[g].reduce((s, [, a]) => s + a.files.length, 0); nFiles += files;
+    sec.innerHTML = `<h4>${GROUP_NAME[g] || g}<span>${groups[g].length} 组 · ${files} 张</span></h4>`;
+    const grid = document.createElement('div'); grid.className = 'grid';
+    for (const [k, a] of groups[g]) {
+      const card = document.createElement('article'); card.className = 'card'; card.id = 'a-' + k;
+      const c = document.createElement('canvas'); c.width = 460; c.height = 288;
+      card.appendChild(c);
+      const info = document.createElement('div'); info.className = 'info';
+      const fps = a.fps ? `${a.fps} fps` : a.files.length > 1 ? '变体' : '单帧';
+      info.innerHTML = `<div class="key">${k}_${a.files.length > 1 ? '01–' + String(a.files.length).padStart(2, '0') : '01'}</div>
+        <div class="dims">${a.files.length} 张 · ${fps} · ${a.size[0]}×${a.size[1]} px · ${a.size_H[0]}×${a.size_H[1]} H · anchor (${a.anchor[0]}, ${a.anchor[1]})</div>
+        <div class="desc">${a.desc}</div><div class="path">${a.dir}/</div>`;
+      card.appendChild(info); grid.appendChild(card);
+      gCards.push({ k, a, c, g: c.getContext('2d'), last: -1 });
+    }
+    sec.appendChild(grid); root.appendChild(sec);
+  }
+  $('meta').textContent = `${Object.keys(M.assets).length} 组素材 · ${nFiles} 张 ${M.format.toUpperCase()} RGBA · ${Object.keys(M.timelines).length} 段演出`;
+}
+function animateGallery(now) {
+  for (const cd of gCards) {
+    const fr = imgs[cd.k]; if (!fr) continue;
+    const n = fr.length, fps = cd.a.fps || 1.5;
+    const cycle = n / fps + (cd.a.fps ? .5 : 0);
+    const t = (now / 1000) % cycle, fi = Math.min(n - 1, Math.floor(t * fps));
+    const key = fi + gbg; if (key === cd.last) continue; cd.last = key;
+    const g = cd.g, W = cd.c.width, Hh = cd.c.height, im = fr[fi];
+    if (gbg === 'checker') { g.fillStyle = g.createPattern(checker, 'repeat'); } else g.fillStyle = gbg === 'light' ? '#e9e4d8' : '#111419';
+    g.fillRect(0, 0, W, Hh);
+    if (!im.naturalWidth) continue;
+    const s = Math.min((W - 24) / im.naturalWidth, (Hh - 24) / im.naturalHeight, 2);
+    g.drawImage(im, (W - im.naturalWidth * s) / 2, (Hh - im.naturalHeight * s) / 2, im.naturalWidth * s, im.naturalHeight * s);
+  }
+}
+
+// ---------------------------------------------------------------- controls
+function segs(id, fn) {
+  const el = $(id);
+  el.addEventListener('click', (ev) => {
+    const b = ev.target.closest('button'); if (!b) return;
+    el.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    fn(b.dataset.v);
+  });
+}
+function bind() {
+  $('play').addEventListener('click', () => {
+    if (!S.playing && S.t >= realDuration(S.tl)) S.t = 0;
+    S.playing = !S.playing; $('play').textContent = S.playing ? '暂停' : '播放';
+  });
+  $('restart').addEventListener('click', () => { S.t = 0; S.hold = 0; S.playing = true; $('play').textContent = '暂停'; });
+  const step = (d) => { S.playing = false; $('play').textContent = '播放'; S.t = clamp(S.t + d, 0, realDuration(S.tl)); };
+  $('stepb').addEventListener('click', () => step(-1 / 60));
+  $('stepf').addEventListener('click', () => step(1 / 60));
+  segs('speed', (v) => { S.speed = +v; });
+  segs('bg', (v) => { S.bg = v; });
+  segs('gbg', (v) => { gbg = v; });
+  $('loop').addEventListener('change', (e) => { S.loop = e.target.checked; });
+  $('debug').addEventListener('change', (e) => { S.debug = e.target.checked; });
+  let drag = false;
+  $('lanes').addEventListener('pointerdown', (e) => { drag = true; S.playing = false; $('play').textContent = '播放'; seekFromEvent(e); });
+  addEventListener('pointermove', (e) => { if (drag) seekFromEvent(e); });
+  addEventListener('pointerup', () => { drag = false; });
+  addEventListener('keydown', (e) => {
+    if (e.target.closest('input,textarea')) return;
+    if (e.code === 'Space') { e.preventDefault(); $('play').click(); }
+    if (e.code === 'ArrowRight') step(1 / 60);
+    if (e.code === 'ArrowLeft') step(-1 / 60);
+  });
+}
+
+buildRail(); bind(); buildGallery();
+// small hook for automated capture / Cocos-side comparison: LCVFX.select('Jifengci_Hit'); LCVFX.seek(0.16)
+window.LCVFX = { select: (id) => select(id, false), seek: (t) => { S.playing = false; $('play').textContent = '播放'; S.t = t; render(); }, timelines: M.timelines };
+let first = Object.keys(M.timelines)[0];
+try { const s = localStorage.getItem('lc-vfx-scn'); if (s && M.timelines[s]) first = s; } catch (e) {}
+select(first, false);
+if (reduced) { S.playing = false; $('play').textContent = '播放'; }
+loadAll().then(() => {
+  $('loading').hidden = true;
+  if (!S.playing) { // show a representative still frame at the first hit
+    const h = S.tl.events.find((e) => e.type === 'dmg'); if (h) S.t = h.t + .03;
+  }
+  requestAnimationFrame((n) => { last = n; tick(n); });
+});
+})();
+</script>
+
+</html>
