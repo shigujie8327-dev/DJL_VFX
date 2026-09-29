@@ -1684,7 +1684,7 @@ exports.HUARONG_VFX = {
             ] },
         "ChuanyunJian.Shot": { authoredFacing: 1, cues: [
                 { asset: "ChuanyunJian.Projectile", start: 0, duration: 0.16, anchor: "Caster_WeaponPoint", w: 235, h: 88.125, x: 0, y: 0, alpha: 1, scaleFrom: 1, scaleTo: 1, dx: 0, dy: 0, rotation: 0, spin: 0, envelope: "hold", motion: "linear", curve: { control: [240, -40], endAnchor: "Target_HitPoint", endOffset: [0, 0] }, orientToPath: true, pivot: [0.91, 0.5] },
-                { asset: "ChuanyunJian.CloudTunnel", start: 0, duration: 0.42, anchor: "Attack_MidPoint", w: 480, h: 180, x: 0, y: 0, alpha: 0.65, scaleFrom: 0.45, scaleTo: 1.08, dx: 0, dy: 0, rotation: 0, spin: 0, envelope: "pulse", reveal: true, pivot: [0.5, 0.5] },
+                { asset: "ChuanyunJian.CloudTunnel", start: 0, duration: 0.42, anchor: "Attack_MidPoint", w: 480, h: 180, x: 0, y: 0, alpha: 0.65, scaleFrom: 0.45, scaleTo: 1.08, dx: 0, dy: 0, rotation: 0, spin: 0, envelope: "pulse", pivot: [0.5, 0.5] },
             ] },
         "ChuanyunJian.Hit": { authoredFacing: 1, cues: [
                 { asset: "HRCommon.BlueHit", start: 0, duration: 0.3, anchor: "Target_HitPoint", w: 280, h: 265, x: 0, y: 0, alpha: 1, scaleFrom: 0.55, scaleTo: 1.08, dx: 0, dy: 0, rotation: 0, spin: 0, envelope: "pulse", pivot: [0.482, 0.482] },
@@ -1694,7 +1694,8 @@ exports.HUARONG_VFX = {
                 { asset: "ChuanyunJian.Gather", start: 0, duration: 0.12, anchor: "Caster_WeaponPoint", w: 120, h: 120, x: 0, y: 0, alpha: 0.52, scaleFrom: 0.65, scaleTo: 0.25, dx: 0, dy: 0, rotation: 0, spin: 0, envelope: "pulse", pivot: [0.5, 0.463] },
             ] },
         "TuishenJian.Shot": { authoredFacing: 1, cues: [
-                { asset: "HRCommon.SilverArrow", start: 0, duration: 0.07, anchor: "Caster_WeaponPoint", w: 160, h: 60, x: 0, y: 0, alpha: 1, scaleFrom: 1, scaleTo: 1, dx: 0, dy: 0, rotation: 0, spin: 0, envelope: "hold", motion: "linear", curve: { control: [240, -40], endAnchor: "Target_HitPoint", endOffset: [0, 0] }, orientToPath: true, pivot: [0.917, 0.498] },
+                // Hand edit 2026-09-30: flight arrow shares 穿云箭's projectile (was HRCommon.SilverArrow 160x60). Re-import overwrites this.
+                { asset: "ChuanyunJian.Projectile", start: 0, duration: 0.07, anchor: "Caster_WeaponPoint", w: 190, h: 71.25, x: 0, y: 0, alpha: 1, scaleFrom: 1, scaleTo: 1, dx: 0, dy: 0, rotation: 0, spin: 0, envelope: "hold", motion: "linear", curve: { control: [240, -40], endAnchor: "Target_HitPoint", endOffset: [0, 0] }, orientToPath: true, pivot: [0.91, 0.5] },
             ] },
         "TuishenJian.Hit": { authoredFacing: 1, cues: [
                 { asset: "HRCommon.BlueHit", start: 0, duration: 0.24, anchor: "Target_HitPoint", w: 175, h: 165, x: 0, y: 0, alpha: 1, scaleFrom: 0.6, scaleTo: 1, dx: 0, dy: 0, rotation: 0, spin: 0, envelope: "pulse", pivot: [0.482, 0.482] },
@@ -1703,7 +1704,8 @@ exports.HUARONG_VFX = {
                 { asset: "ChuanyunJian.Gather", start: 0, duration: 0.18, anchor: "Caster_WeaponPoint", w: 120, h: 120, x: 0, y: 0, alpha: 0.52, scaleFrom: 0.65, scaleTo: 0.25, dx: 0, dy: 0, rotation: 0, spin: 0, envelope: "pulse", pivot: [0.5, 0.463] },
             ] },
         "DingshenJian.Shot": { authoredFacing: 1, cues: [
-                { asset: "HRCommon.SilverArrow", start: 0, duration: 0.18, anchor: "Caster_WeaponPoint", w: 160, h: 60, x: 0, y: 0, alpha: 1, scaleFrom: 1, scaleTo: 1, dx: 0, dy: 0, rotation: 0, spin: 0, envelope: "hold", motion: "linear", curve: { control: [240, -40], endAnchor: "Target_HitPoint", endOffset: [0, 0] }, orientToPath: true, pivot: [0.917, 0.498] },
+                // Hand edit 2026-09-30: flight arrow shares 穿云箭's projectile (was HRCommon.SilverArrow 160x60). Re-import overwrites this.
+                { asset: "ChuanyunJian.Projectile", start: 0, duration: 0.18, anchor: "Caster_WeaponPoint", w: 190, h: 71.25, x: 0, y: 0, alpha: 1, scaleFrom: 1, scaleTo: 1, dx: 0, dy: 0, rotation: 0, spin: 0, envelope: "hold", motion: "linear", curve: { control: [240, -40], endAnchor: "Target_HitPoint", endOffset: [0, 0] }, orientToPath: true, pivot: [0.91, 0.5] },
             ] },
         "DingshenJian.Hit": { authoredFacing: 1, cues: [
                 { asset: "HRCommon.BlueHit", start: 0, duration: 0.24, anchor: "Target_HitPoint", w: 175, h: 165, x: 0, y: 0, alpha: 1, scaleFrom: 0.6, scaleTo: 1, dx: 0, dy: 0, rotation: 0, spin: 0, envelope: "pulse", pivot: [0.482, 0.482] },
@@ -7592,7 +7594,7 @@ async function playSkill(id, fromQueue = false) {
     onHit: (i) => onHit(id, variant, i, dodged),
     onComplete: () => onComplete(my, id, variant),
   }));
-  state.fx = fx; state.last = { id, variant, seed, fx };
+  state.fx = fx; state.last = { id, variant, seed, fx, dist: state.distance };
   buildTicks(fx);
 }
 function onHit(id, variant, i, dodged) {
@@ -7646,6 +7648,8 @@ function scrubTo(frac) {
   state.token++; state.queue = [];
   stopFx(); hideCaption();
   state.scrubbing = true; state.paused = true; setPauseUi();
+  // Replay from the stance the skill was cast at (a finished 退身箭 has already glided back to FAR).
+  if (L.dist && state.distance !== L.dist) { state.glide = null; state.distance = L.dist; P.x = ANCHORS[L.dist].player; E.x = ANCHORS[L.dist].enemy; updateDistUi(); }
   silent++;
   const fx = withSeed(L.seed, () => spawnSkill(L.id, L.variant, { sfx: false, shakeNode: null }));
   const target = frac * fx.duration;
@@ -7787,7 +7791,7 @@ function tinted(img, r, g, b) {
   // Opening frame: 禅杖横扫 frozen at its second hit.
   state.variant = {};
   state.distance = 'NEAR'; P.x = ANCHORS.NEAR.player; E.x = ANCHORS.NEAR.enemy; updateDistUi();
-  state.last = { id: 'STAFF_SWEEP', variant: '', seed: 0.4242, fx: null };
+  state.last = { id: 'STAFF_SWEEP', variant: '', seed: 0.4242, fx: null, dist: 'NEAR' };
   scrubTo(0.42); scrub.value = '420';
   buildTicks(state.fx);
   requestAnimationFrame(frame);

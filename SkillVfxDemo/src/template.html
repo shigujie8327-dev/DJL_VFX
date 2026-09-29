@@ -433,7 +433,7 @@ async function playSkill(id, fromQueue = false) {
     onHit: (i) => onHit(id, variant, i, dodged),
     onComplete: () => onComplete(my, id, variant),
   }));
-  state.fx = fx; state.last = { id, variant, seed, fx };
+  state.fx = fx; state.last = { id, variant, seed, fx, dist: state.distance };
   buildTicks(fx);
 }
 function onHit(id, variant, i, dodged) {
@@ -487,6 +487,8 @@ function scrubTo(frac) {
   state.token++; state.queue = [];
   stopFx(); hideCaption();
   state.scrubbing = true; state.paused = true; setPauseUi();
+  // Replay from the stance the skill was cast at (a finished 退身箭 has already glided back to FAR).
+  if (L.dist && state.distance !== L.dist) { state.glide = null; state.distance = L.dist; P.x = ANCHORS[L.dist].player; E.x = ANCHORS[L.dist].enemy; updateDistUi(); }
   silent++;
   const fx = withSeed(L.seed, () => spawnSkill(L.id, L.variant, { sfx: false, shakeNode: null }));
   const target = frac * fx.duration;
@@ -628,7 +630,7 @@ function tinted(img, r, g, b) {
   // Opening frame: 禅杖横扫 frozen at its second hit.
   state.variant = {};
   state.distance = 'NEAR'; P.x = ANCHORS.NEAR.player; E.x = ANCHORS.NEAR.enemy; updateDistUi();
-  state.last = { id: 'STAFF_SWEEP', variant: '', seed: 0.4242, fx: null };
+  state.last = { id: 'STAFF_SWEEP', variant: '', seed: 0.4242, fx: null, dist: 'NEAR' };
   scrubTo(0.42); scrub.value = '420';
   buildTicks(state.fx);
   requestAnimationFrame(frame);
