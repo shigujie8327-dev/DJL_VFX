@@ -1,0 +1,91 @@
+{
+  "errors": [],
+  "branches": [
+    {
+      "id": "Jifengci.hit",
+      "cues": 5,
+      "damageEvents": 1,
+      "damage": 26,
+      "casterReset": true,
+      "missing": 0
+    },
+    {
+      "id": "Jifengci.interrupt",
+      "cues": 11,
+      "damageEvents": 1,
+      "damage": 26,
+      "casterReset": true,
+      "missing": 0
+    },
+    {
+      "id": "Huimaqiang.counter",
+      "cues": 8,
+      "damageEvents": 1,
+      "damage": 55,
+      "casterReset": true,
+      "missing": 0
+    },
+    {
+      "id": "Huimaqiang.normal",
+      "cues": 6,
+      "damageEvents": 1,
+      "damage": 35,
+      "casterReset": true,
+      "missing": 0
+    },
+    {
+      "id": "Hengsaoqianjun.push",
+      "cues": 7,
+      "damageEvents": 1,
+      "damage": 62,
+      "casterReset": true,
+      "missing": 0
+    },
+    {
+      "id": "Hengsaoqianjun.blocked",
+      "cues": 9,
+      "damageEvents": 1,
+      "damage": 62,
+      "casterReset": true,
+      "missing": 0
+    },
+    {
+      "id": "Qiangzhen.block",
+      "cues": 18,
+      "damageEvents": 1,
+      "damage": 32,
+      "casterReset": true,
+      "missing": 0
+    },
+    {
+      "id": "Qiangzhen.expire",
+      "cues": 6,
+      "damageEvents": 0,
+      "damage": 0,
+      "casterReset": true,
+      "missing": 0
+    },
+    {
+      "id": "Baozitou.consume",
+      "cues": 4,
+      "damageEvents": 0,
+      "damage": 0,
+      "casterReset": true,
+      "missing": 0
+    },
+    {
+      "id": "Baozitou.active",
+      "cues": 2,
+      "damageEvents": 0,
+      "damage": 0,
+      "casterReset": true,
+      "missing": 0
+    }
+  ],
+  "controls": {
+    "speed": 0.25,
+    "scrub": 0.5,
+    "paused": true
+  },
+  "filePreviewLoaded": true
+}

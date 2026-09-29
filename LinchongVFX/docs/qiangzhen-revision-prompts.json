@@ -1,0 +1,22 @@
+[
+  {
+    "skill": "Qiangzhen",
+    "stage": "GatherSpear",
+    "folder": "Special",
+    "layer": "SkillFX",
+    "anchor": "Ground",
+    "duration": 0.26,
+    "prompt": "Use case: stylized-concept. Create ONE isolated transparent game VFX sprite: a SINGLE spectral Chinese spear, horizontal pointing exactly RIGHT. References show the approved Qiangzhen formation and original skill icon; use the same intricate silver-white engraved leaf-shaped Chinese spearhead silhouette, icy-blue edge light and translucent blue-white shaft. This one spear will be instanced FIVE TIMES and animated individually from standing positions into a gathered bundle. So create exactly ONE straight spear, not a group or formation. Long slender silver shaft to left and ornate pointed spearhead at right, matching the reference weapon anatomy. Moderate ethereal pale-blue flow hugging the shaft, precise metallic silver detail, no huge burst, subtle clean emissive edge. Entire sprite in frame with transparent padding, landscape approximately 3:1. TRUE transparent RGBA background. No ground, no circle, no character, no text, no UI, no border, no checkerboard, no solid backdrop. Single compositable component for animation.",
+    "path": "sources/imagegen/Qiangzhen-GatherSpear-exec-a446846e-e713-456f-8ae3-cf293e19d11f.png"
+  },
+  {
+    "skill": "Qiangzhen",
+    "stage": "Attack",
+    "folder": "Trail",
+    "layer": "WeaponTrail",
+    "anchor": "Attack_MidPoint",
+    "duration": 0.18,
+    "prompt": "Use case: stylized-concept. Create ONE isolated transparent game VFX ATTACK sprite for Qiangzhen. Use references as weapon and palette style guide. Exactly FIVE recognizable silver-white spectral Chinese spears have gathered into a very tight horizontal bundle and now thrust LEFT TO RIGHT together toward a single target. All five ornate engraved leaf-shaped spearheads point right, parallel with slight stagger so each spearhead is still readable, central spear foremost. Heads must match reference spear anatomy, not arrows or lasers. Slender translucent silver shafts trail left in very narrow icy-blue accelerated air ribbons. Dominant shape long and focused, total bundle height thin, white spear tips concentrated at right and blue airflow trailing to left. Delicate painterly metallic texture, strong decisive thrust, no explosion or impact star. Very clear left-to-right motion. Approx 3:1 wide landscape composition, all tips and tails inside frame. One gathered volley component, not multiple panels or frames. TRUE transparent alpha background; no formation circle, ground, ice chunks, characters, text, UI, border, black/white backdrop or checkerboard.",
+    "path": "sources/imagegen/Qiangzhen-Attack-exec-c20585b4-0251-4325-987e-1a21c231e094.png"
+  }
+]

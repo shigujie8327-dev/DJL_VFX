@@ -1,0 +1,32 @@
+[
+  {
+    "skill": "Qiangzhen",
+    "stage": "Spawn",
+    "folder": "Special",
+    "layer": "Status_Back",
+    "anchor": "Ground",
+    "duration": 0.3,
+    "prompt": "Five physical Chinese steel spears planted in dark earth. Visible shafts and silver spearheads, loose soil and dust at the base. Traditional wuxia combat, not magic. Isolated transparent RGBA sprite, no runes, circles, electricity, neon, light beam, character, text or background.",
+    "path": "sources/imagegen/Qiangzhen-Spawn-exec-cc72c8d3-3d71-41cd-9862-28be0ff1a56f.png"
+  },
+  {
+    "skill": "Qiangzhen",
+    "stage": "GatherSpear",
+    "folder": "Special",
+    "layer": "SkillFX",
+    "anchor": "Ground",
+    "duration": 0.3,
+    "prompt": "One physical Chinese steel spear pointing right, narrow grey air trace and engraved blade. Traditional wuxia, transparent RGBA sprite, no electricity, luminous aura, fantasy energy or background. Intended for five instances gathering at ground level.",
+    "path": "sources/imagegen/Qiangzhen-GatherSpear-exec-3950f93b-541e-4060-8f15-793eda571364.png"
+  },
+  {
+    "skill": "Qiangzhen",
+    "stage": "Attack",
+    "folder": "Trail",
+    "layer": "WeaponTrail",
+    "anchor": "Ground",
+    "duration": 0.25,
+    "prompt": "Five physical steel Chinese spears thrusting right as one tight volley, pale grey wind and earth dust. Traditional wuxia martial action, no magic, electricity, beam or neon. Transparent RGBA sprite.",
+    "path": "sources/imagegen/Qiangzhen-Attack-exec-c8df2aaa-2681-4420-ac24-4642afa29b66.png"
+  }
+]

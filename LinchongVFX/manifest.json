@@ -1,0 +1,668 @@
+{
+  "version": "1.1-r5",
+  "referenceCommit": "6d0dad6aa0fe7454a532940cf29a418505a70286",
+  "resolution": [
+    1920,
+    1080
+  ],
+  "characterHeight": 400,
+  "layers": [
+    "BattleFX_Back",
+    "Status_Back",
+    "Character",
+    "WeaponTrail",
+    "SkillFX",
+    "Projectile",
+    "HitFX",
+    "Status_Front",
+    "BattleUI"
+  ],
+  "assets": [
+    {
+      "id": "Jifengci.Cast",
+      "file": "Characters/Linchong/ActiveSkills/Jifengci/Cast/LC_Jifengci_Cast_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Caster_WeaponPoint",
+      "layer": "SkillFX",
+      "duration": 0.1,
+      "loop": false,
+      "blend": "normal",
+      "source": "authored-vector",
+      "alpha": "straight"
+    },
+    {
+      "id": "Jifengci.Hit",
+      "file": "Characters/Linchong/ActiveSkills/Jifengci/Hit/LC_Jifengci_Hit_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Target_HitPoint",
+      "layer": "HitFX",
+      "duration": 0.22,
+      "loop": false,
+      "blend": "normal",
+      "source": "authored-vector",
+      "alpha": "straight"
+    },
+    {
+      "id": "Jifengci.End",
+      "file": "Characters/Linchong/ActiveSkills/Jifengci/End/LC_Jifengci_End_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Caster_WeaponPoint",
+      "layer": "SkillFX",
+      "duration": 0.22,
+      "loop": false,
+      "blend": "normal",
+      "source": "authored-vector",
+      "alpha": "straight"
+    },
+    {
+      "id": "Huimaqiang.Cast",
+      "file": "Characters/Linchong/ActiveSkills/Huimaqiang/Cast/LC_Huimaqiang_Cast_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Caster_WeaponPoint",
+      "layer": "SkillFX",
+      "duration": 0.1,
+      "loop": false,
+      "blend": "normal",
+      "source": "authored-vector",
+      "alpha": "straight"
+    },
+    {
+      "id": "Huimaqiang.Hit",
+      "file": "Characters/Linchong/ActiveSkills/Huimaqiang/Hit/LC_Huimaqiang_Hit_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Target_HitPoint",
+      "layer": "HitFX",
+      "duration": 0.22,
+      "loop": false,
+      "blend": "normal",
+      "source": "authored-vector",
+      "alpha": "straight"
+    },
+    {
+      "id": "Huimaqiang.End",
+      "file": "Characters/Linchong/ActiveSkills/Huimaqiang/End/LC_Huimaqiang_End_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Caster_WeaponPoint",
+      "layer": "SkillFX",
+      "duration": 0.22,
+      "loop": false,
+      "blend": "normal",
+      "source": "authored-vector",
+      "alpha": "straight"
+    },
+    {
+      "id": "Hengsaoqianjun.Cast",
+      "file": "Characters/Linchong/ActiveSkills/Hengsaoqianjun/Cast/LC_Hengsaoqianjun_Cast_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Caster_WeaponPoint",
+      "layer": "SkillFX",
+      "duration": 0.22,
+      "loop": false,
+      "blend": "normal",
+      "source": "authored-vector",
+      "alpha": "straight"
+    },
+    {
+      "id": "Hengsaoqianjun.Hit",
+      "file": "Characters/Linchong/ActiveSkills/Hengsaoqianjun/Hit/LC_Hengsaoqianjun_Hit_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Target_HitPoint",
+      "layer": "HitFX",
+      "duration": 0.22,
+      "loop": false,
+      "blend": "normal",
+      "source": "authored-vector",
+      "alpha": "straight"
+    },
+    {
+      "id": "Qiangzhen.Cast",
+      "file": "Characters/Linchong/ActiveSkills/Qiangzhen/Cast/LC_Qiangzhen_Cast_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Caster_WeaponPoint",
+      "layer": "SkillFX",
+      "duration": 0.1,
+      "loop": false,
+      "blend": "normal",
+      "source": "authored-vector",
+      "alpha": "straight"
+    },
+    {
+      "id": "Qiangzhen.Hit",
+      "file": "Characters/Linchong/ActiveSkills/Qiangzhen/Hit/LC_Qiangzhen_Hit_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Target_HitPoint",
+      "layer": "HitFX",
+      "duration": 0.22,
+      "loop": false,
+      "blend": "normal",
+      "source": "authored-vector",
+      "alpha": "straight"
+    },
+    {
+      "id": "Qiangzhen.End",
+      "file": "Characters/Linchong/ActiveSkills/Qiangzhen/End/LC_Qiangzhen_End_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Caster_WeaponPoint",
+      "layer": "SkillFX",
+      "duration": 0.22,
+      "loop": false,
+      "blend": "normal",
+      "source": "authored-vector",
+      "alpha": "straight"
+    },
+    {
+      "id": "Jifengci.Interrupt",
+      "file": "Characters/Linchong/ActiveSkills/Jifengci/Special/LC_Jifengci_Interrupt_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Target_ActionPath",
+      "layer": "HitFX",
+      "duration": 0.16,
+      "loop": false,
+      "blend": "normal",
+      "source": "authored-vector",
+      "alpha": "straight"
+    },
+    {
+      "id": "Huimaqiang.Ready",
+      "file": "Characters/Linchong/ActiveSkills/Huimaqiang/Status/LC_Huimaqiang_Ready_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Caster_WeaponPoint",
+      "layer": "SkillFX",
+      "duration": 0.3,
+      "loop": true,
+      "blend": "normal",
+      "source": "authored-vector",
+      "alpha": "straight"
+    },
+    {
+      "id": "Huimaqiang.Trigger",
+      "file": "Characters/Linchong/ActiveSkills/Huimaqiang/Special/LC_Huimaqiang_Trigger_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Caster_WeaponPoint",
+      "layer": "SkillFX",
+      "duration": 0.24,
+      "loop": false,
+      "blend": "normal",
+      "source": "authored-vector",
+      "alpha": "straight"
+    },
+    {
+      "id": "Huimaqiang.Counter",
+      "file": "Characters/Linchong/ActiveSkills/Huimaqiang/Trail/LC_Huimaqiang_Counter_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Caster_WeaponPoint",
+      "layer": "WeaponTrail",
+      "duration": 0.16,
+      "loop": false,
+      "blend": "normal",
+      "source": "authored-vector",
+      "alpha": "straight"
+    },
+    {
+      "id": "Hengsaoqianjun.Blocked",
+      "file": "Characters/Linchong/ActiveSkills/Hengsaoqianjun/Special/LC_Hengsaoqianjun_Blocked_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Target_HitPoint",
+      "layer": "SkillFX",
+      "duration": 0.25,
+      "loop": false,
+      "blend": "normal",
+      "source": "authored-vector",
+      "alpha": "straight"
+    },
+    {
+      "id": "Qiangzhen.Ground",
+      "file": "Characters/Linchong/ActiveSkills/Qiangzhen/Status/LC_Qiangzhen_Ground_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Ground",
+      "layer": "BattleFX_Back",
+      "duration": 0.25,
+      "loop": false,
+      "blend": "normal",
+      "source": "authored-vector",
+      "alpha": "straight"
+    },
+    {
+      "id": "Qiangzhen.Loop",
+      "file": "Characters/Linchong/ActiveSkills/Qiangzhen/Status/LC_Qiangzhen_Loop_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Ground",
+      "layer": "Status_Back",
+      "duration": 1,
+      "loop": true,
+      "blend": "normal",
+      "source": "authored-vector",
+      "alpha": "straight"
+    },
+    {
+      "id": "Qiangzhen.Trigger",
+      "file": "Characters/Linchong/ActiveSkills/Qiangzhen/Special/LC_Qiangzhen_Trigger_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Ground",
+      "layer": "SkillFX",
+      "duration": 0.2,
+      "loop": false,
+      "blend": "normal",
+      "source": "authored-vector",
+      "alpha": "straight"
+    },
+    {
+      "id": "Qiangzhen.Block",
+      "file": "Characters/Linchong/ActiveSkills/Qiangzhen/Special/LC_Qiangzhen_Block_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Target_HitPoint",
+      "layer": "SkillFX",
+      "duration": 0.2,
+      "loop": false,
+      "blend": "normal",
+      "source": "authored-vector",
+      "alpha": "straight"
+    },
+    {
+      "id": "Qiangzhen.ArcTrail",
+      "file": "Characters/Linchong/ActiveSkills/Qiangzhen/Trail/LC_Qiangzhen_ArcTrail_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Ground",
+      "layer": "WeaponTrail",
+      "duration": 0.25,
+      "loop": false,
+      "blend": "normal",
+      "source": "authored-vector",
+      "alpha": "straight"
+    },
+    {
+      "id": "Baozitou.Active",
+      "file": "Characters/Linchong/PassiveSkills/Baozitou/Active/LC_Baozitou_Active_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Caster_WeaponPoint",
+      "layer": "Status_Front",
+      "duration": 1,
+      "loop": true,
+      "blend": "normal",
+      "source": "authored-vector",
+      "alpha": "straight"
+    },
+    {
+      "id": "Baozitou.Consume",
+      "file": "Characters/Linchong/PassiveSkills/Baozitou/Consume/LC_Baozitou_Consume_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Caster_WeaponPoint",
+      "layer": "Status_Front",
+      "duration": 0.23,
+      "loop": false,
+      "blend": "normal",
+      "source": "authored-vector",
+      "alpha": "straight"
+    },
+    {
+      "id": "Baozitou.End",
+      "file": "Characters/Linchong/PassiveSkills/Baozitou/End/LC_Baozitou_End_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Caster_WeaponPoint",
+      "layer": "Status_Front",
+      "duration": 0.22,
+      "loop": false,
+      "blend": "normal",
+      "source": "authored-vector",
+      "alpha": "straight"
+    },
+    {
+      "id": "Common.WeaponFlash",
+      "file": "Characters/Linchong/CommonFX/WeaponFlash/LC_Common_WeaponFlash_01.png",
+      "width": 512,
+      "height": 512,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Caster_WeaponPoint",
+      "layer": "SkillFX",
+      "duration": 0.25,
+      "loop": false,
+      "blend": "normal",
+      "source": "authored-vector",
+      "alpha": "straight"
+    },
+    {
+      "id": "Common.HitFlash",
+      "file": "Characters/Linchong/CommonFX/HitFlash/LC_Common_HitFlash_01.png",
+      "width": 512,
+      "height": 512,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Caster_WeaponPoint",
+      "layer": "SkillFX",
+      "duration": 0.25,
+      "loop": false,
+      "blend": "normal",
+      "source": "authored-vector",
+      "alpha": "straight"
+    },
+    {
+      "id": "Common.Dust",
+      "file": "Characters/Linchong/CommonFX/Dust/LC_Common_Dust_01.png",
+      "width": 512,
+      "height": 512,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Caster_WeaponPoint",
+      "layer": "SkillFX",
+      "duration": 0.25,
+      "loop": false,
+      "blend": "normal",
+      "source": "authored-vector",
+      "alpha": "straight"
+    },
+    {
+      "id": "Common.Spark",
+      "file": "Characters/Linchong/CommonFX/Spark/LC_Common_Spark_01.png",
+      "width": 256,
+      "height": 256,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Caster_WeaponPoint",
+      "layer": "SkillFX",
+      "duration": 0.25,
+      "loop": false,
+      "blend": "normal",
+      "source": "authored-vector",
+      "alpha": "straight"
+    },
+    {
+      "id": "Common.Wind",
+      "file": "Characters/Linchong/CommonFX/Wind/LC_Common_Wind_01.png",
+      "width": 512,
+      "height": 512,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Caster_WeaponPoint",
+      "layer": "SkillFX",
+      "duration": 0.25,
+      "loop": false,
+      "blend": "normal",
+      "source": "authored-vector",
+      "alpha": "straight"
+    },
+    {
+      "id": "Common.Shard",
+      "file": "Characters/Linchong/CommonFX/Shard/LC_Common_Shard_01.png",
+      "width": 512,
+      "height": 512,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Caster_WeaponPoint",
+      "layer": "SkillFX",
+      "duration": 0.25,
+      "loop": false,
+      "blend": "normal",
+      "source": "authored-vector",
+      "alpha": "straight"
+    },
+    {
+      "id": "Jifengci.Trail",
+      "file": "Characters/Linchong/ActiveSkills/Jifengci/Trail/LC_Jifengci_Trail_01.png",
+      "width": 1774,
+      "height": 887,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Caster_WeaponPoint",
+      "layer": "WeaponTrail",
+      "duration": 0.3,
+      "loop": false,
+      "blend": "normal",
+      "source": "imagegen",
+      "alpha": "straight"
+    },
+    {
+      "id": "Baozitou.Trigger",
+      "file": "Characters/Linchong/PassiveSkills/Baozitou/Trigger/LC_Baozitou_Trigger_01.png",
+      "width": 1254,
+      "height": 1254,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Caster_PassivePoint",
+      "layer": "Status_Front",
+      "duration": 0.25,
+      "loop": false,
+      "blend": "normal",
+      "source": "imagegen",
+      "alpha": "straight"
+    },
+    {
+      "id": "Hengsaoqianjun.Trail",
+      "file": "Characters/Linchong/ActiveSkills/Hengsaoqianjun/Trail/LC_Hengsaoqianjun_Trail_01.png",
+      "width": 1774,
+      "height": 887,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Attack_MidPoint",
+      "layer": "WeaponTrail",
+      "duration": 0.28,
+      "loop": false,
+      "blend": "normal",
+      "source": "imagegen",
+      "alpha": "straight"
+    },
+    {
+      "id": "Hengsaoqianjun.Push",
+      "file": "Characters/Linchong/ActiveSkills/Hengsaoqianjun/Special/LC_Hengsaoqianjun_Push_01.png",
+      "width": 1983,
+      "height": 793,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Target_HitPoint",
+      "layer": "SkillFX",
+      "duration": 0.24,
+      "loop": false,
+      "blend": "normal",
+      "source": "imagegen",
+      "alpha": "straight"
+    },
+    {
+      "id": "Hengsaoqianjun.End",
+      "file": "Characters/Linchong/ActiveSkills/Hengsaoqianjun/End/LC_Hengsaoqianjun_End_01.png",
+      "width": 1983,
+      "height": 793,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Target_HitPoint",
+      "layer": "SkillFX",
+      "duration": 0.22,
+      "loop": false,
+      "blend": "normal",
+      "source": "imagegen",
+      "alpha": "straight"
+    },
+    {
+      "id": "Qiangzhen.Spawn",
+      "file": "Characters/Linchong/ActiveSkills/Qiangzhen/Special/LC_Qiangzhen_Spawn_01.png",
+      "width": 1254,
+      "height": 1254,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Ground",
+      "layer": "Status_Back",
+      "duration": 0.3,
+      "loop": false,
+      "blend": "normal",
+      "source": "imagegen",
+      "alpha": "straight"
+    },
+    {
+      "id": "Qiangzhen.GatherSpear",
+      "file": "Characters/Linchong/ActiveSkills/Qiangzhen/Special/LC_Qiangzhen_GatherSpear_01.png",
+      "width": 2172,
+      "height": 724,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Ground",
+      "layer": "SkillFX",
+      "duration": 0.3,
+      "loop": false,
+      "blend": "normal",
+      "source": "imagegen",
+      "alpha": "straight"
+    },
+    {
+      "id": "Qiangzhen.Attack",
+      "file": "Characters/Linchong/ActiveSkills/Qiangzhen/Trail/LC_Qiangzhen_Attack_01.png",
+      "width": 2172,
+      "height": 724,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Ground",
+      "layer": "WeaponTrail",
+      "duration": 0.25,
+      "loop": false,
+      "blend": "normal",
+      "source": "imagegen",
+      "alpha": "straight"
+    }
+  ]
+}

@@ -1,0 +1,496 @@
+[
+  {
+    "id": "Jifengci.Cast",
+    "size": [
+      1024,
+      1024
+    ],
+    "channels": 4,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "transparentPixels": 909921,
+    "partialPixels": 124602,
+    "pass": true
+  },
+  {
+    "id": "Jifengci.Hit",
+    "size": [
+      1024,
+      1024
+    ],
+    "channels": 4,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "transparentPixels": 892997,
+    "partialPixels": 143757,
+    "pass": true
+  },
+  {
+    "id": "Jifengci.End",
+    "size": [
+      1024,
+      1024
+    ],
+    "channels": 4,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "transparentPixels": 856185,
+    "partialPixels": 181144,
+    "pass": true
+  },
+  {
+    "id": "Huimaqiang.Cast",
+    "size": [
+      1024,
+      1024
+    ],
+    "channels": 4,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "transparentPixels": 909921,
+    "partialPixels": 124602,
+    "pass": true
+  },
+  {
+    "id": "Huimaqiang.Hit",
+    "size": [
+      1024,
+      1024
+    ],
+    "channels": 4,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "transparentPixels": 892997,
+    "partialPixels": 143757,
+    "pass": true
+  },
+  {
+    "id": "Huimaqiang.End",
+    "size": [
+      1024,
+      1024
+    ],
+    "channels": 4,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "transparentPixels": 856185,
+    "partialPixels": 181144,
+    "pass": true
+  },
+  {
+    "id": "Hengsaoqianjun.Cast",
+    "size": [
+      1024,
+      1024
+    ],
+    "channels": 4,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "transparentPixels": 909921,
+    "partialPixels": 124602,
+    "pass": true
+  },
+  {
+    "id": "Hengsaoqianjun.Hit",
+    "size": [
+      1024,
+      1024
+    ],
+    "channels": 4,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "transparentPixels": 892997,
+    "partialPixels": 143757,
+    "pass": true
+  },
+  {
+    "id": "Qiangzhen.Cast",
+    "size": [
+      1024,
+      1024
+    ],
+    "channels": 4,
+    "alphaMin": 0,
+    "alphaMax": 179,
+    "transparentPixels": 1034158,
+    "partialPixels": 14418,
+    "pass": true
+  },
+  {
+    "id": "Qiangzhen.Hit",
+    "size": [
+      1024,
+      1024
+    ],
+    "channels": 4,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "transparentPixels": 1033332,
+    "partialPixels": 7675,
+    "pass": true
+  },
+  {
+    "id": "Qiangzhen.End",
+    "size": [
+      1024,
+      1024
+    ],
+    "channels": 4,
+    "alphaMin": 0,
+    "alphaMax": 162,
+    "transparentPixels": 979967,
+    "partialPixels": 68609,
+    "pass": true
+  },
+  {
+    "id": "Jifengci.Interrupt",
+    "size": [
+      1024,
+      1024
+    ],
+    "channels": 4,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "transparentPixels": 969876,
+    "partialPixels": 50776,
+    "pass": true
+  },
+  {
+    "id": "Huimaqiang.Ready",
+    "size": [
+      1024,
+      1024
+    ],
+    "channels": 4,
+    "alphaMin": 0,
+    "alphaMax": 208,
+    "transparentPixels": 1030711,
+    "partialPixels": 17865,
+    "pass": true
+  },
+  {
+    "id": "Huimaqiang.Trigger",
+    "size": [
+      1024,
+      1024
+    ],
+    "channels": 4,
+    "alphaMin": 0,
+    "alphaMax": 208,
+    "transparentPixels": 1015175,
+    "partialPixels": 33401,
+    "pass": true
+  },
+  {
+    "id": "Huimaqiang.Counter",
+    "size": [
+      1024,
+      1024
+    ],
+    "channels": 4,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "transparentPixels": 955703,
+    "partialPixels": 84733,
+    "pass": true
+  },
+  {
+    "id": "Hengsaoqianjun.Blocked",
+    "size": [
+      1024,
+      1024
+    ],
+    "channels": 4,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "transparentPixels": 1041136,
+    "partialPixels": 1663,
+    "pass": true
+  },
+  {
+    "id": "Qiangzhen.Ground",
+    "size": [
+      1024,
+      1024
+    ],
+    "channels": 4,
+    "alphaMin": 0,
+    "alphaMax": 194,
+    "transparentPixels": 997498,
+    "partialPixels": 51078,
+    "pass": true
+  },
+  {
+    "id": "Qiangzhen.Loop",
+    "size": [
+      1024,
+      1024
+    ],
+    "channels": 4,
+    "alphaMin": 0,
+    "alphaMax": 194,
+    "transparentPixels": 997498,
+    "partialPixels": 51078,
+    "pass": true
+  },
+  {
+    "id": "Qiangzhen.Trigger",
+    "size": [
+      1024,
+      1024
+    ],
+    "channels": 4,
+    "alphaMin": 0,
+    "alphaMax": 179,
+    "transparentPixels": 1034158,
+    "partialPixels": 14418,
+    "pass": true
+  },
+  {
+    "id": "Qiangzhen.Block",
+    "size": [
+      1024,
+      1024
+    ],
+    "channels": 4,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "transparentPixels": 1002296,
+    "partialPixels": 5790,
+    "pass": true
+  },
+  {
+    "id": "Qiangzhen.ArcTrail",
+    "size": [
+      1024,
+      1024
+    ],
+    "channels": 4,
+    "alphaMin": 0,
+    "alphaMax": 225,
+    "transparentPixels": 1028235,
+    "partialPixels": 20341,
+    "pass": true
+  },
+  {
+    "id": "Baozitou.Active",
+    "size": [
+      1024,
+      1024
+    ],
+    "channels": 4,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "transparentPixels": 1026885,
+    "partialPixels": 15187,
+    "pass": true
+  },
+  {
+    "id": "Baozitou.Consume",
+    "size": [
+      1024,
+      1024
+    ],
+    "channels": 4,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "transparentPixels": 856185,
+    "partialPixels": 181144,
+    "pass": true
+  },
+  {
+    "id": "Baozitou.End",
+    "size": [
+      1024,
+      1024
+    ],
+    "channels": 4,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "transparentPixels": 1026885,
+    "partialPixels": 15187,
+    "pass": true
+  },
+  {
+    "id": "Common.WeaponFlash",
+    "size": [
+      512,
+      512
+    ],
+    "channels": 4,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "transparentPixels": 227440,
+    "partialPixels": 31365,
+    "pass": true
+  },
+  {
+    "id": "Common.HitFlash",
+    "size": [
+      512,
+      512
+    ],
+    "channels": 4,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "transparentPixels": 223474,
+    "partialPixels": 36371,
+    "pass": true
+  },
+  {
+    "id": "Common.Dust",
+    "size": [
+      512,
+      512
+    ],
+    "channels": 4,
+    "alphaMin": 0,
+    "alphaMax": 53,
+    "transparentPixels": 237898,
+    "partialPixels": 24246,
+    "pass": true
+  },
+  {
+    "id": "Common.Spark",
+    "size": [
+      256,
+      256
+    ],
+    "channels": 4,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "transparentPixels": 64040,
+    "partialPixels": 1138,
+    "pass": true
+  },
+  {
+    "id": "Common.Wind",
+    "size": [
+      512,
+      512
+    ],
+    "channels": 4,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "transparentPixels": 214235,
+    "partialPixels": 46495,
+    "pass": true
+  },
+  {
+    "id": "Common.Shard",
+    "size": [
+      512,
+      512
+    ],
+    "channels": 4,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "transparentPixels": 260062,
+    "partialPixels": 829,
+    "pass": true
+  },
+  {
+    "id": "Jifengci.Trail",
+    "size": [
+      1774,
+      887
+    ],
+    "channels": 4,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "transparentPixels": 1314137,
+    "partialPixels": 259397,
+    "pass": true
+  },
+  {
+    "id": "Baozitou.Trigger",
+    "size": [
+      1254,
+      1254
+    ],
+    "channels": 4,
+    "alphaMin": 0,
+    "alphaMax": 253,
+    "transparentPixels": 844835,
+    "partialPixels": 727681,
+    "pass": true
+  },
+  {
+    "id": "Hengsaoqianjun.Trail",
+    "size": [
+      1774,
+      887
+    ],
+    "channels": 4,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "transparentPixels": 1117014,
+    "partialPixels": 456523,
+    "pass": true
+  },
+  {
+    "id": "Hengsaoqianjun.Push",
+    "size": [
+      1983,
+      793
+    ],
+    "channels": 4,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "transparentPixels": 572732,
+    "partialPixels": 999773,
+    "pass": true
+  },
+  {
+    "id": "Hengsaoqianjun.End",
+    "size": [
+      1983,
+      793
+    ],
+    "channels": 4,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "transparentPixels": 1335248,
+    "partialPixels": 237267,
+    "pass": true
+  },
+  {
+    "id": "Qiangzhen.Spawn",
+    "size": [
+      1254,
+      1254
+    ],
+    "channels": 4,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "transparentPixels": 1001755,
+    "partialPixels": 570043,
+    "pass": true
+  },
+  {
+    "id": "Qiangzhen.GatherSpear",
+    "size": [
+      2172,
+      724
+    ],
+    "channels": 4,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "transparentPixels": 1376144,
+    "partialPixels": 196223,
+    "pass": true
+  },
+  {
+    "id": "Qiangzhen.Attack",
+    "size": [
+      2172,
+      724
+    ],
+    "channels": 4,
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "transparentPixels": 742890,
+    "partialPixels": 829635,
+    "pass": true
+  }
+]

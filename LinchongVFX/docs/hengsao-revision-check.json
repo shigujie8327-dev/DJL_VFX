@@ -1,0 +1,20 @@
+{
+  "threeRevisedAssets": [
+    "Characters/Linchong/ActiveSkills/Hengsaoqianjun/Trail/LC_Hengsaoqianjun_Trail_01.png",
+    "Characters/Linchong/ActiveSkills/Hengsaoqianjun/Special/LC_Hengsaoqianjun_Push_01.png",
+    "Characters/Linchong/ActiveSkills/Hengsaoqianjun/End/LC_Hengsaoqianjun_End_01.png"
+  ],
+  "direction": "left-facing-horizontal-mirror",
+  "estimatedTrailTip": [
+    745.9115178571428,
+    584.2707233965015
+  ],
+  "targetHitPoint": [
+    740,
+    585
+  ],
+  "successHitCount": 1,
+  "blockedHitCount": 1,
+  "pushDurationOnBlock": 0.13,
+  "errors": []
+}

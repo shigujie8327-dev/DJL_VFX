@@ -1,0 +1,15 @@
+{
+  "gatherSpears": 5,
+  "attackVolleys": 1,
+  "hitEvents": 1,
+  "damage": 32,
+  "attackPath": "ground-quadratic-arc-to-target",
+  "airWake": "physical-dust-reveal",
+  "sequence": [
+    "ground-gather",
+    "curved-attack",
+    "hit"
+  ],
+  "cocosEventCuesMatch": true,
+  "errors": []
+}

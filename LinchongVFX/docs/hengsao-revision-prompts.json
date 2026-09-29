@@ -1,0 +1,35 @@
+[
+  {
+    "skill": "Hengsaoqianjun",
+    "stage": "Trail",
+    "folder": "Trail",
+    "anchor": "Attack_MidPoint",
+    "layer": "WeaponTrail",
+    "duration": 0.28,
+    "path": "sources/imagegen/Hengsaoqianjun-Trail-left.png",
+    "prompt": "Horizontal mirror of the revised wuxia spear sweep: pointed hook faces left, broad wind and debris follow to the right. Transparent RGBA. No magic, electric or technological effects.",
+    "kind": "edit"
+  },
+  {
+    "skill": "Hengsaoqianjun",
+    "stage": "Push",
+    "folder": "Special",
+    "anchor": "Target_HitPoint",
+    "layer": "SkillFX",
+    "duration": 0.24,
+    "path": "sources/imagegen/Hengsaoqianjun-Push-exec-bd3dd926-4ffb-482f-bf8e-7ccac933b10c.png",
+    "prompt": "Use case: stylized-concept. Asset type: ONE isolated 2D game VFX component for Lin Chong Hengsaoqianjun FORCE DISTANCE PUSH, triggered AFTER the silver-white/orange-gold spear sweep hits. Visual: compact horizontal air-pressure front moving left to right, three elegant orange-gold compression bands with silver-white leading pressure edge, black dust/debris pushed to the right. Broad but very thin, emphatically directional; clear narrow leading contact front on the right, diffuse turbulence trails to left. Keep center mostly airy/transparent so target is readable. Use wiki icon color/material as reference ONLY. This is physical wind pressure, not another attacking spear slash or magical energy beam. Approx 2.5:1 wide composition, bounded glow. TRUE alpha transparent background, no character, weapon object, text, UI, terrain, frame, black/white backdrop or checkerboard. No large explosion and no big solid orange block.",
+    "kind": "new"
+  },
+  {
+    "skill": "Hengsaoqianjun",
+    "stage": "End",
+    "folder": "End",
+    "anchor": "Target_HitPoint",
+    "layer": "SkillFX",
+    "duration": 0.22,
+    "path": "sources/imagegen/Hengsaoqianjun-End-exec-13eda1f7-e9dc-432d-89f6-e17d0f724dbc.png",
+    "prompt": "Use case: stylized-concept. Asset type: ONE isolated 2D game VFX END component for Lin Chong Hengsaoqianjun. The powerful orange-gold spear sweep and horizontal push have ALREADY happened. Draw only the delicate rapidly dissipating afterglow: three to five very thin broken orange-gold wind filaments tapering off to the right, a faint silver-white fading spear-light thread and just two or three tiny dark grit flecks drifting out. Mostly empty transparent negative space, low visual intensity, narrow horizontal flow, no heavy wind mass, no bright hit burst, no second slash, no sustained overlay. Use wiki icon palette/material only, not its frame. Approx 2.5:1 horizontal composition. TRUE alpha transparent background, no character, text, UI, environment, frame, black/white backdrop or checkerboard. A lightweight end component designed to vanish within 0.2 seconds.",
+    "kind": "new"
+  }
+]

@@ -1,0 +1,27 @@
+[
+  {
+    "skill": "Jifengci",
+    "stage": "Trail",
+    "path": "sources/imagegen/Jifengci-Trail-exec-39944bb3-c8e9-4d63-a1da-a6f2a5c60181.png"
+  },
+  {
+    "skill": "Huimaqiang",
+    "stage": "Trigger",
+    "path": "sources/imagegen/Huimaqiang-Trigger-exec-2c08fe84-8b22-4977-8f16-0066432fc213.png"
+  },
+  {
+    "skill": "Hengsaoqianjun",
+    "stage": "Trail",
+    "path": "sources/imagegen/Hengsaoqianjun-Trail-exec-01b8ef47-7f22-41c2-98dd-327e40588539.png"
+  },
+  {
+    "skill": "Qiangzhen",
+    "stage": "Spawn",
+    "path": "sources/imagegen/Qiangzhen-Spawn-exec-3285c928-507f-4e6b-9d5f-45b21034ad48.png"
+  },
+  {
+    "skill": "Baozitou",
+    "stage": "Trigger",
+    "path": "sources/imagegen/Baozitou-Trigger-exec-898e1c02-2d41-4274-90ab-5793ebd0f1af.png"
+  }
+]

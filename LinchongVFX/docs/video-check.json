@@ -1,0 +1,18 @@
+{
+  "file": "Linchong-VFX-showcase.mp4",
+  "format": "H.264 MP4, yuv420p, 30fps, faststart",
+  "bytes": 1183525,
+  "width": 1920,
+  "height": 1080,
+  "duration": 20.933333,
+  "seekTimes": [
+    0.42,
+    3.2,
+    8.199999,
+    11.5,
+    14,
+    17.2,
+    19.2,
+    20.8
+  ]
+}
