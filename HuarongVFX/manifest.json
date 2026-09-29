@@ -1,0 +1,402 @@
+{
+  "version": "1.1-hr-r1",
+  "referenceWikiCommit": "6d0dad6aa0fe7454a532940cf29a418505a70286",
+  "resolution": [
+    1920,
+    1080
+  ],
+  "characterHeight": 400,
+  "layers": [
+    "BattleFX_Back",
+    "Status_Back",
+    "Character",
+    "WeaponTrail",
+    "SkillFX",
+    "Projectile",
+    "HitFX",
+    "Status_Front",
+    "BattleUI"
+  ],
+  "requiredAnchors": [
+    "Caster_WeaponPoint",
+    "Attack_MidPoint",
+    "Target_HitPoint",
+    "Target_Feet"
+  ],
+  "assets": [
+    {
+      "id": "Common.BowFlash",
+      "file": "Characters/Huarong/CommonFX/BowFlash/HR_Common_BowFlash_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Caster_WeaponPoint",
+      "layer": "SkillFX",
+      "duration": 0.14,
+      "loop": false,
+      "blend": "normal",
+      "source": "firefly-cleaned",
+      "alpha": "straight"
+    },
+    {
+      "id": "Common.HitGreen",
+      "file": "Characters/Huarong/CommonFX/HitGreen/HR_Common_HitGreen_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Target_HitPoint",
+      "layer": "HitFX",
+      "duration": 0.18,
+      "loop": false,
+      "blend": "normal",
+      "source": "firefly-cleaned",
+      "alpha": "straight"
+    },
+    {
+      "id": "Common.HitBlue",
+      "file": "Characters/Huarong/CommonFX/HitBlue/HR_Common_HitBlue_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Target_HitPoint",
+      "layer": "HitFX",
+      "duration": 0.2,
+      "loop": false,
+      "blend": "normal",
+      "source": "firefly-cleaned",
+      "alpha": "straight"
+    },
+    {
+      "id": "Common.Wind",
+      "file": "Characters/Huarong/CommonFX/Wind/HR_Common_Wind_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Caster_WeaponPoint",
+      "layer": "WeaponTrail",
+      "duration": 0.26,
+      "loop": false,
+      "blend": "normal",
+      "source": "firefly-cleaned",
+      "alpha": "straight"
+    },
+    {
+      "id": "Lianzhujian.Cast",
+      "file": "Characters/Huarong/ActiveSkills/Lianzhujian/Cast/HR_Lianzhujian_Cast_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Caster_WeaponPoint",
+      "layer": "SkillFX",
+      "duration": 0.12,
+      "loop": false,
+      "blend": "normal",
+      "source": "firefly-cleaned",
+      "alpha": "straight"
+    },
+    {
+      "id": "Lianzhujian.Projectile",
+      "file": "Characters/Huarong/ActiveSkills/Lianzhujian/Projectile/HR_Lianzhujian_Projectile_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Attack_MidPoint",
+      "layer": "Projectile",
+      "duration": 0.18,
+      "loop": false,
+      "blend": "normal",
+      "source": "firefly-cleaned",
+      "alpha": "straight"
+    },
+    {
+      "id": "Lianzhujian.Hit",
+      "file": "Characters/Huarong/ActiveSkills/Lianzhujian/Hit/HR_Lianzhujian_Hit_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Target_HitPoint",
+      "layer": "HitFX",
+      "duration": 0.18,
+      "loop": false,
+      "blend": "normal",
+      "source": "firefly-cleaned",
+      "alpha": "straight"
+    },
+    {
+      "id": "Chuanyunjian.Cast",
+      "file": "Characters/Huarong/ActiveSkills/Chuanyunjian/Cast/HR_Chuanyunjian_Cast_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Caster_WeaponPoint",
+      "layer": "SkillFX",
+      "duration": 0.18,
+      "loop": false,
+      "blend": "normal",
+      "source": "firefly-cleaned",
+      "alpha": "straight"
+    },
+    {
+      "id": "Chuanyunjian.Projectile",
+      "file": "Characters/Huarong/ActiveSkills/Chuanyunjian/Projectile/HR_Chuanyunjian_Projectile_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Attack_MidPoint",
+      "layer": "Projectile",
+      "duration": 0.24,
+      "loop": false,
+      "blend": "normal",
+      "source": "firefly-cleaned",
+      "alpha": "straight"
+    },
+    {
+      "id": "Chuanyunjian.Hit",
+      "file": "Characters/Huarong/ActiveSkills/Chuanyunjian/Hit/HR_Chuanyunjian_Hit_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Target_HitPoint",
+      "layer": "HitFX",
+      "duration": 0.22,
+      "loop": false,
+      "blend": "normal",
+      "source": "firefly-cleaned",
+      "alpha": "straight"
+    },
+    {
+      "id": "Tuishenjian.Cast",
+      "file": "Characters/Huarong/ActiveSkills/Tuishenjian/Cast/HR_Tuishenjian_Cast_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Caster_WeaponPoint",
+      "layer": "SkillFX",
+      "duration": 0.12,
+      "loop": false,
+      "blend": "normal",
+      "source": "firefly-cleaned",
+      "alpha": "straight"
+    },
+    {
+      "id": "Tuishenjian.Projectile",
+      "file": "Characters/Huarong/ActiveSkills/Tuishenjian/Projectile/HR_Tuishenjian_Projectile_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Attack_MidPoint",
+      "layer": "Projectile",
+      "duration": 0.18,
+      "loop": false,
+      "blend": "normal",
+      "source": "firefly-cleaned",
+      "alpha": "straight"
+    },
+    {
+      "id": "Tuishenjian.Hit",
+      "file": "Characters/Huarong/ActiveSkills/Tuishenjian/Hit/HR_Tuishenjian_Hit_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Target_HitPoint",
+      "layer": "HitFX",
+      "duration": 0.18,
+      "loop": false,
+      "blend": "normal",
+      "source": "firefly-cleaned",
+      "alpha": "straight"
+    },
+    {
+      "id": "Tuishenjian.RetreatArc",
+      "file": "Characters/Huarong/ActiveSkills/Tuishenjian/Special/HR_Tuishenjian_RetreatArc_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Caster_WeaponPoint",
+      "layer": "WeaponTrail",
+      "duration": 0.34,
+      "loop": false,
+      "blend": "normal",
+      "source": "firefly-cleaned",
+      "alpha": "straight"
+    },
+    {
+      "id": "Tuishenjian.Wind",
+      "file": "Characters/Huarong/ActiveSkills/Tuishenjian/Trail/HR_Tuishenjian_Wind_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Caster_WeaponPoint",
+      "layer": "WeaponTrail",
+      "duration": 0.28,
+      "loop": false,
+      "blend": "normal",
+      "source": "firefly-cleaned",
+      "alpha": "straight"
+    },
+    {
+      "id": "Dingshenjian.Cast",
+      "file": "Characters/Huarong/ActiveSkills/Dingshenjian/Cast/HR_Dingshenjian_Cast_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Caster_WeaponPoint",
+      "layer": "SkillFX",
+      "duration": 0.12,
+      "loop": false,
+      "blend": "normal",
+      "source": "firefly-cleaned",
+      "alpha": "straight"
+    },
+    {
+      "id": "Dingshenjian.Projectile",
+      "file": "Characters/Huarong/ActiveSkills/Dingshenjian/Projectile/HR_Dingshenjian_Projectile_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Attack_MidPoint",
+      "layer": "Projectile",
+      "duration": 0.2,
+      "loop": false,
+      "blend": "normal",
+      "source": "firefly-cleaned",
+      "alpha": "straight"
+    },
+    {
+      "id": "Dingshenjian.Hit",
+      "file": "Characters/Huarong/ActiveSkills/Dingshenjian/Hit/HR_Dingshenjian_Hit_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Target_HitPoint",
+      "layer": "HitFX",
+      "duration": 0.18,
+      "loop": false,
+      "blend": "normal",
+      "source": "firefly-cleaned",
+      "alpha": "straight"
+    },
+    {
+      "id": "Dingshenjian.Status",
+      "file": "Characters/Huarong/ActiveSkills/Dingshenjian/Status/HR_Dingshenjian_Active_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Target_Feet",
+      "layer": "Status_Front",
+      "duration": 1,
+      "loop": true,
+      "blend": "normal",
+      "source": "firefly-cleaned",
+      "alpha": "straight"
+    },
+    {
+      "id": "Xiaoliguang.Activate",
+      "file": "Characters/Huarong/PassiveSkills/Xiaoliguang/Activate/HR_Xiaoliguang_Activate_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Target_HitPoint",
+      "layer": "Status_Front",
+      "duration": 0.22,
+      "loop": false,
+      "blend": "normal",
+      "source": "firefly-cleaned",
+      "alpha": "straight"
+    },
+    {
+      "id": "Xiaoliguang.Active",
+      "file": "Characters/Huarong/PassiveSkills/Xiaoliguang/Active/HR_Xiaoliguang_Active_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Target_HitPoint",
+      "layer": "Status_Front",
+      "duration": 1,
+      "loop": true,
+      "blend": "normal",
+      "source": "firefly-cleaned",
+      "alpha": "straight"
+    },
+    {
+      "id": "Xiaoliguang.Deactivate",
+      "file": "Characters/Huarong/PassiveSkills/Xiaoliguang/Deactivate/HR_Xiaoliguang_Deactivate_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Target_HitPoint",
+      "layer": "Status_Front",
+      "duration": 0.2,
+      "loop": false,
+      "blend": "normal",
+      "source": "firefly-cleaned",
+      "alpha": "straight"
+    }
+  ]
+}

@@ -1,0 +1,637 @@
+{
+  "version": 1,
+  "notes": [
+    "演出不计算伤害；Damage/Distance/Status 结果由 Battle Core 先确定，再驱动 VFX。",
+    "连珠箭四段必须逐段显示；每段 11 点基础伤害独立结算护甲。",
+    "退身箭先结算 18×1 命中，再发起 Near→Far 主动变距；变距受阻不回滚伤害。",
+    "定身仅提高主动变距费用 +20；强制变距不受影响，因此视觉不得表现为完全禁足。",
+    "小李广仅 FAR 时激活，所有攻击技能最终 Speed +1。"
+  ],
+  "clips": {
+    "Lianzhujian.hit": {
+      "length": 0.72,
+      "cues": [
+        {
+          "asset": "Lianzhujian.Cast",
+          "start": 0.05,
+          "duration": 0.12,
+          "anchor": "Caster_WeaponPoint",
+          "w": 120,
+          "h": 120,
+          "x": 0,
+          "y": 0,
+          "alpha": 1,
+          "scaleFrom": 0.7,
+          "scaleTo": 1.1,
+          "dx": 0,
+          "dy": 0,
+          "envelope": "pulse"
+        },
+        {
+          "asset": "Lianzhujian.Projectile",
+          "start": 0.13,
+          "duration": 0.18,
+          "anchor": "Attack_MidPoint",
+          "w": 360,
+          "h": 180,
+          "x": -180,
+          "y": -18,
+          "alpha": 1,
+          "scaleFrom": 0.72,
+          "scaleTo": 1,
+          "dx": 360,
+          "dy": 0,
+          "envelope": "transfer"
+        },
+        {
+          "asset": "Lianzhujian.Hit",
+          "start": 0.28,
+          "duration": 0.18,
+          "anchor": "Target_HitPoint",
+          "w": 145,
+          "h": 145,
+          "x": 0,
+          "y": -15,
+          "alpha": 0.9,
+          "scaleFrom": 0.65,
+          "scaleTo": 1.05,
+          "dx": 0,
+          "dy": 0,
+          "envelope": "pulse"
+        },
+        {
+          "asset": "Lianzhujian.Projectile",
+          "start": 0.24,
+          "duration": 0.18,
+          "anchor": "Attack_MidPoint",
+          "w": 360,
+          "h": 180,
+          "x": -180,
+          "y": -6,
+          "alpha": 1,
+          "scaleFrom": 0.72,
+          "scaleTo": 1,
+          "dx": 360,
+          "dy": 0,
+          "envelope": "transfer"
+        },
+        {
+          "asset": "Lianzhujian.Hit",
+          "start": 0.39,
+          "duration": 0.18,
+          "anchor": "Target_HitPoint",
+          "w": 145,
+          "h": 145,
+          "x": 0,
+          "y": -5,
+          "alpha": 0.9,
+          "scaleFrom": 0.65,
+          "scaleTo": 1.05,
+          "dx": 0,
+          "dy": 0,
+          "envelope": "pulse"
+        },
+        {
+          "asset": "Lianzhujian.Projectile",
+          "start": 0.35,
+          "duration": 0.18,
+          "anchor": "Attack_MidPoint",
+          "w": 360,
+          "h": 180,
+          "x": -180,
+          "y": 6,
+          "alpha": 1,
+          "scaleFrom": 0.72,
+          "scaleTo": 1,
+          "dx": 360,
+          "dy": 0,
+          "envelope": "transfer"
+        },
+        {
+          "asset": "Lianzhujian.Hit",
+          "start": 0.5,
+          "duration": 0.18,
+          "anchor": "Target_HitPoint",
+          "w": 145,
+          "h": 145,
+          "x": 0,
+          "y": 5,
+          "alpha": 0.9,
+          "scaleFrom": 0.65,
+          "scaleTo": 1.05,
+          "dx": 0,
+          "dy": 0,
+          "envelope": "pulse"
+        },
+        {
+          "asset": "Lianzhujian.Projectile",
+          "start": 0.46,
+          "duration": 0.18,
+          "anchor": "Attack_MidPoint",
+          "w": 360,
+          "h": 180,
+          "x": -180,
+          "y": 18,
+          "alpha": 1,
+          "scaleFrom": 0.72,
+          "scaleTo": 1,
+          "dx": 360,
+          "dy": 0,
+          "envelope": "transfer"
+        },
+        {
+          "asset": "Lianzhujian.Hit",
+          "start": 0.6100000000000001,
+          "duration": 0.18,
+          "anchor": "Target_HitPoint",
+          "w": 145,
+          "h": 145,
+          "x": 0,
+          "y": 15,
+          "alpha": 0.9,
+          "scaleFrom": 0.65,
+          "scaleTo": 1.05,
+          "dx": 0,
+          "dy": 0,
+          "envelope": "pulse"
+        }
+      ],
+      "events": [
+        {
+          "t": 0.28,
+          "label": "Hit 1 · 11",
+          "kind": "damage",
+          "value": 11
+        },
+        {
+          "t": 0.39,
+          "label": "Hit 2 · 11",
+          "kind": "damage",
+          "value": 11
+        },
+        {
+          "t": 0.5,
+          "label": "Hit 3 · 11",
+          "kind": "damage",
+          "value": 11
+        },
+        {
+          "t": 0.6100000000000001,
+          "label": "Hit 4 · 11",
+          "kind": "damage",
+          "value": 11
+        }
+      ]
+    },
+    "Chuanyunjian.hit": {
+      "length": 0.78,
+      "cues": [
+        {
+          "asset": "Chuanyunjian.Cast",
+          "start": 0.06,
+          "duration": 0.18,
+          "anchor": "Caster_WeaponPoint",
+          "w": 150,
+          "h": 150,
+          "x": 0,
+          "y": 0,
+          "alpha": 1,
+          "scaleFrom": 0.65,
+          "scaleTo": 1.12,
+          "dx": 0,
+          "dy": 0,
+          "envelope": "pulse"
+        },
+        {
+          "asset": "Chuanyunjian.Projectile",
+          "start": 0.22,
+          "duration": 0.24,
+          "anchor": "Attack_MidPoint",
+          "w": 440,
+          "h": 220,
+          "x": -210,
+          "y": 0,
+          "alpha": 1,
+          "scaleFrom": 0.72,
+          "scaleTo": 1,
+          "dx": 410,
+          "dy": 0,
+          "envelope": "transfer"
+        },
+        {
+          "asset": "Chuanyunjian.Hit",
+          "start": 0.44,
+          "duration": 0.22,
+          "anchor": "Target_HitPoint",
+          "w": 230,
+          "h": 230,
+          "x": 0,
+          "y": 0,
+          "alpha": 1,
+          "scaleFrom": 0.7,
+          "scaleTo": 1.12,
+          "dx": 0,
+          "dy": 0,
+          "envelope": "pulse"
+        },
+        {
+          "asset": "Common.Wind",
+          "start": 0.46,
+          "duration": 0.26,
+          "anchor": "Target_HitPoint",
+          "w": 310,
+          "h": 100,
+          "x": -115,
+          "y": 0,
+          "alpha": 0.55,
+          "scaleFrom": 0.7,
+          "scaleTo": 1.15,
+          "dx": 140,
+          "dy": 0,
+          "envelope": "transfer"
+        }
+      ],
+      "events": [
+        {
+          "t": 0.44,
+          "label": "55 × 1 · 单发穿透",
+          "kind": "damage",
+          "value": 55
+        }
+      ]
+    },
+    "Tuishenjian.success": {
+      "length": 0.86,
+      "cues": [
+        {
+          "asset": "Tuishenjian.Cast",
+          "start": 0.05,
+          "duration": 0.12,
+          "anchor": "Caster_WeaponPoint",
+          "w": 120,
+          "h": 120,
+          "x": 0,
+          "y": 0,
+          "alpha": 1,
+          "scaleFrom": 0.7,
+          "scaleTo": 1.08,
+          "dx": 0,
+          "dy": 0,
+          "envelope": "pulse"
+        },
+        {
+          "asset": "Tuishenjian.RetreatArc",
+          "start": 0.09,
+          "duration": 0.34,
+          "anchor": "Caster_WeaponPoint",
+          "w": 300,
+          "h": 300,
+          "x": -60,
+          "y": 10,
+          "alpha": 0.78,
+          "scaleFrom": 0.65,
+          "scaleTo": 1.02,
+          "dx": -55,
+          "dy": 0,
+          "envelope": "transfer",
+          "revealTo": 1
+        },
+        {
+          "asset": "Tuishenjian.Projectile",
+          "start": 0.18,
+          "duration": 0.18,
+          "anchor": "Attack_MidPoint",
+          "w": 330,
+          "h": 165,
+          "x": -165,
+          "y": 0,
+          "alpha": 0.82,
+          "scaleFrom": 0.72,
+          "scaleTo": 1,
+          "dx": 330,
+          "dy": 0,
+          "envelope": "transfer"
+        },
+        {
+          "asset": "Tuishenjian.Hit",
+          "start": 0.33,
+          "duration": 0.18,
+          "anchor": "Target_HitPoint",
+          "w": 150,
+          "h": 150,
+          "x": 0,
+          "y": 0,
+          "alpha": 0.8,
+          "scaleFrom": 0.7,
+          "scaleTo": 1.02,
+          "dx": 0,
+          "dy": 0,
+          "envelope": "pulse"
+        },
+        {
+          "asset": "Tuishenjian.Wind",
+          "start": 0.4,
+          "duration": 0.28,
+          "anchor": "Caster_WeaponPoint",
+          "w": 280,
+          "h": 110,
+          "x": 35,
+          "y": 0,
+          "alpha": 0.45,
+          "scaleFrom": 0.8,
+          "scaleTo": 1.1,
+          "dx": -95,
+          "dy": 0,
+          "envelope": "transfer"
+        }
+      ],
+      "events": [
+        {
+          "t": 0.33,
+          "label": "18 × 1 · 命中",
+          "kind": "damage",
+          "value": 18
+        },
+        {
+          "t": 0.4,
+          "label": "Near→Far 主动变距尝试",
+          "kind": "attempt"
+        },
+        {
+          "t": 0.58,
+          "label": "变距成功 · FAR",
+          "kind": "distance",
+          "value": "FAR"
+        }
+      ]
+    },
+    "Tuishenjian.blocked": {
+      "length": 0.78,
+      "cues": [
+        {
+          "asset": "Tuishenjian.Cast",
+          "start": 0.05,
+          "duration": 0.12,
+          "anchor": "Caster_WeaponPoint",
+          "w": 120,
+          "h": 120,
+          "x": 0,
+          "y": 0,
+          "alpha": 1,
+          "scaleFrom": 0.7,
+          "scaleTo": 1.08,
+          "dx": 0,
+          "dy": 0,
+          "envelope": "pulse"
+        },
+        {
+          "asset": "Tuishenjian.RetreatArc",
+          "start": 0.09,
+          "duration": 0.28,
+          "anchor": "Caster_WeaponPoint",
+          "w": 300,
+          "h": 300,
+          "x": -45,
+          "y": 10,
+          "alpha": 0.66,
+          "scaleFrom": 0.65,
+          "scaleTo": 0.88,
+          "dx": -25,
+          "dy": 0,
+          "envelope": "pulse",
+          "revealTo": 0.43
+        },
+        {
+          "asset": "Tuishenjian.Projectile",
+          "start": 0.18,
+          "duration": 0.18,
+          "anchor": "Attack_MidPoint",
+          "w": 330,
+          "h": 165,
+          "x": -165,
+          "y": 0,
+          "alpha": 0.82,
+          "scaleFrom": 0.72,
+          "scaleTo": 1,
+          "dx": 330,
+          "dy": 0,
+          "envelope": "transfer"
+        },
+        {
+          "asset": "Tuishenjian.Hit",
+          "start": 0.33,
+          "duration": 0.18,
+          "anchor": "Target_HitPoint",
+          "w": 150,
+          "h": 150,
+          "x": 0,
+          "y": 0,
+          "alpha": 0.8,
+          "scaleFrom": 0.7,
+          "scaleTo": 1.02,
+          "dx": 0,
+          "dy": 0,
+          "envelope": "pulse"
+        }
+      ],
+      "events": [
+        {
+          "t": 0.33,
+          "label": "18 × 1 · 命中保留",
+          "kind": "damage",
+          "value": 18
+        },
+        {
+          "t": 0.4,
+          "label": "Near→Far 主动变距尝试",
+          "kind": "attempt"
+        },
+        {
+          "t": 0.53,
+          "label": "变距受阻 · 距离不变",
+          "kind": "blocked"
+        }
+      ]
+    },
+    "Dingshenjian.apply": {
+      "length": 0.8,
+      "cues": [
+        {
+          "asset": "Dingshenjian.Cast",
+          "start": 0.05,
+          "duration": 0.12,
+          "anchor": "Caster_WeaponPoint",
+          "w": 120,
+          "h": 120,
+          "x": 0,
+          "y": 0,
+          "alpha": 1,
+          "scaleFrom": 0.7,
+          "scaleTo": 1.08,
+          "dx": 0,
+          "dy": 0,
+          "envelope": "pulse"
+        },
+        {
+          "asset": "Dingshenjian.Projectile",
+          "start": 0.18,
+          "duration": 0.2,
+          "anchor": "Attack_MidPoint",
+          "w": 350,
+          "h": 175,
+          "x": -170,
+          "y": 0,
+          "alpha": 1,
+          "scaleFrom": 0.72,
+          "scaleTo": 1,
+          "dx": 340,
+          "dy": 0,
+          "envelope": "transfer"
+        },
+        {
+          "asset": "Dingshenjian.Hit",
+          "start": 0.35,
+          "duration": 0.18,
+          "anchor": "Target_HitPoint",
+          "w": 145,
+          "h": 145,
+          "x": 0,
+          "y": 0,
+          "alpha": 0.75,
+          "scaleFrom": 0.7,
+          "scaleTo": 1.02,
+          "dx": 0,
+          "dy": 0,
+          "envelope": "pulse"
+        },
+        {
+          "asset": "Dingshenjian.Status",
+          "start": 0.4,
+          "duration": 0.26,
+          "anchor": "Target_Feet",
+          "w": 230,
+          "h": 150,
+          "x": 0,
+          "y": 0,
+          "alpha": 0.88,
+          "scaleFrom": 0.45,
+          "scaleTo": 1,
+          "dx": 0,
+          "dy": 0,
+          "envelope": "pulse"
+        },
+        {
+          "asset": "Dingshenjian.Status",
+          "start": 0.61,
+          "duration": 0.18,
+          "anchor": "Target_Feet",
+          "w": 220,
+          "h": 145,
+          "x": 0,
+          "y": 0,
+          "alpha": 0.23,
+          "scaleFrom": 1,
+          "scaleTo": 1,
+          "dx": 0,
+          "dy": 0,
+          "envelope": "hold"
+        }
+      ],
+      "events": [
+        {
+          "t": 0.35,
+          "label": "20 × 1 · 命中",
+          "kind": "damage",
+          "value": 20
+        },
+        {
+          "t": 0.4,
+          "label": "施加【定身】",
+          "kind": "status"
+        },
+        {
+          "t": 0.61,
+          "label": "主动变距费用 +20 · 持续至下一回合结束",
+          "kind": "status"
+        }
+      ]
+    },
+    "Dingshenjian.costPulse": {
+      "length": 0.45,
+      "cues": [
+        {
+          "asset": "Dingshenjian.Status",
+          "start": 0.05,
+          "duration": 0.26,
+          "anchor": "Target_Feet",
+          "w": 225,
+          "h": 148,
+          "x": 0,
+          "y": 0,
+          "alpha": 0.62,
+          "scaleFrom": 0.92,
+          "scaleTo": 1.05,
+          "dx": 0,
+          "dy": 0,
+          "envelope": "pulse"
+        }
+      ],
+      "events": [
+        {
+          "t": 0.05,
+          "label": "主动变距报价 +20 Energy；状态不消耗",
+          "kind": "cost"
+        }
+      ]
+    },
+    "Xiaoliguang.active": {
+      "length": 1.2,
+      "cues": [
+        {
+          "asset": "Xiaoliguang.Activate",
+          "start": 0.06,
+          "duration": 0.22,
+          "anchor": "Target_HitPoint",
+          "w": 150,
+          "h": 150,
+          "x": 0,
+          "y": 0,
+          "alpha": 0.78,
+          "scaleFrom": 0.7,
+          "scaleTo": 1,
+          "dx": 0,
+          "dy": 0,
+          "envelope": "pulse"
+        },
+        {
+          "asset": "Xiaoliguang.Active",
+          "start": 0.27,
+          "duration": 0.8,
+          "anchor": "Target_HitPoint",
+          "w": 125,
+          "h": 125,
+          "x": 0,
+          "y": 0,
+          "alpha": 0.18,
+          "scaleFrom": 1,
+          "scaleTo": 1,
+          "dx": 0,
+          "dy": 0,
+          "envelope": "hold"
+        }
+      ],
+      "events": [
+        {
+          "t": 0.06,
+          "label": "进入 FAR · 小李广激活",
+          "kind": "buff"
+        },
+        {
+          "t": 0.27,
+          "label": "FAR 攻击 Speed +1",
+          "kind": "buff"
+        }
+      ]
+    }
+  }
+}

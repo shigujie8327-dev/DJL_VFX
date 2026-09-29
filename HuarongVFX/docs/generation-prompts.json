@@ -1,0 +1,32 @@
+{
+  "version": "1.1-hr-r1",
+  "referenceWikiCommit": "6d0dad6aa0fe7454a532940cf29a418505a70286",
+  "rule": "技能图标视觉 DNA 决定设计；一次只生成一个组件；透明背景；禁止人物、文字、UI、魔法阵和科幻元素。",
+  "assets": [
+    {
+      "id": "Lianzhujian.Projectile",
+      "visual": "银白实体箭 + 翠绿细风迹",
+      "purpose": "同一母版重复四次形成 11×4。"
+    },
+    {
+      "id": "Chuanyunjian.Projectile",
+      "visual": "银白重箭 + 冰蓝压缩空气",
+      "purpose": "单发 55×1，强调穿透。"
+    },
+    {
+      "id": "Tuishenjian.RetreatArc",
+      "visual": "月夜蓝 + 白蓝运动弧 + 小型银箭",
+      "purpose": "Reveal 1.0 / 0.43 区分成功与受阻。"
+    },
+    {
+      "id": "Dingshenjian.Status",
+      "visual": "低矮冰蓝金属链环 + 极小淡紫节点",
+      "purpose": "脚踝持续状态；只表达主动变距 +20。"
+    },
+    {
+      "id": "Xiaoliguang.Activate",
+      "visual": "翠绿弓形准星 + 银白瞄准线",
+      "purpose": "FAR 条件提示。"
+    }
+  ]
+}
