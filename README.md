@@ -2,6 +2,10 @@
 
 本仓库保存《斗将录：梁山篇》的特效交付素材及动效预览。
 
+## 技能特效演示（六将）
+
+- [技能特效演示](SkillVfxDemo/README.md)：`SkillVfxDemo/dist/djl-skill-vfx.html` 双击离线打开，直接运行工程里的 VFX 代码，六位角色二十四个技能及其分支，带音效、慢放和逐帧时间轴。
+
 ## 林冲
 
 - [素材与接入说明](LinchongVFX/README.md)
