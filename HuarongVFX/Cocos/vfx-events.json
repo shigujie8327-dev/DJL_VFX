@@ -1,0 +1,492 @@
+{
+  "version": 1,
+  "notes": "Battle Core owns all rule resolution. Emit only after matching rule events exist.",
+  "events": {
+    "Lianzhujian.Cast": {
+      "cues": [
+        {
+          "asset": "Lianzhujian.Cast",
+          "start": 0,
+          "duration": 0.12,
+          "anchor": "Caster_WeaponPoint",
+          "w": 120,
+          "h": 120,
+          "x": 0,
+          "y": 0,
+          "alpha": 1,
+          "scaleFrom": 0.7,
+          "scaleTo": 1.08,
+          "dx": 0,
+          "dy": 0,
+          "envelope": "pulse"
+        }
+      ]
+    },
+    "Lianzhujian.Arrow": {
+      "cues": [
+        {
+          "asset": "Lianzhujian.Projectile",
+          "start": 0,
+          "duration": 0.18,
+          "anchor": "Attack_MidPoint",
+          "w": 360,
+          "h": 180,
+          "x": -180,
+          "y": 0,
+          "alpha": 1,
+          "scaleFrom": 0.72,
+          "scaleTo": 1,
+          "dx": 360,
+          "dy": 0,
+          "envelope": "transfer"
+        }
+      ]
+    },
+    "Lianzhujian.Hit": {
+      "cues": [
+        {
+          "asset": "Lianzhujian.Hit",
+          "start": 0,
+          "duration": 0.18,
+          "anchor": "Target_HitPoint",
+          "w": 145,
+          "h": 145,
+          "x": 0,
+          "y": 0,
+          "alpha": 0.9,
+          "scaleFrom": 0.65,
+          "scaleTo": 1.05,
+          "dx": 0,
+          "dy": 0,
+          "envelope": "pulse"
+        }
+      ]
+    },
+    "Chuanyunjian.Cast": {
+      "cues": [
+        {
+          "asset": "Chuanyunjian.Cast",
+          "start": 0,
+          "duration": 0.18,
+          "anchor": "Caster_WeaponPoint",
+          "w": 150,
+          "h": 150,
+          "x": 0,
+          "y": 0,
+          "alpha": 1,
+          "scaleFrom": 0.65,
+          "scaleTo": 1.12,
+          "dx": 0,
+          "dy": 0,
+          "envelope": "pulse"
+        }
+      ]
+    },
+    "Chuanyunjian.Arrow": {
+      "cues": [
+        {
+          "asset": "Chuanyunjian.Projectile",
+          "start": 0,
+          "duration": 0.24,
+          "anchor": "Attack_MidPoint",
+          "w": 440,
+          "h": 220,
+          "x": -210,
+          "y": 0,
+          "alpha": 1,
+          "scaleFrom": 0.72,
+          "scaleTo": 1,
+          "dx": 410,
+          "dy": 0,
+          "envelope": "transfer"
+        }
+      ]
+    },
+    "Chuanyunjian.Hit": {
+      "cues": [
+        {
+          "asset": "Chuanyunjian.Hit",
+          "start": 0,
+          "duration": 0.22,
+          "anchor": "Target_HitPoint",
+          "w": 230,
+          "h": 230,
+          "x": 0,
+          "y": 0,
+          "alpha": 1,
+          "scaleFrom": 0.7,
+          "scaleTo": 1.12,
+          "dx": 0,
+          "dy": 0,
+          "envelope": "pulse"
+        },
+        {
+          "asset": "Common.Wind",
+          "start": 0.02,
+          "duration": 0.26,
+          "anchor": "Target_HitPoint",
+          "w": 310,
+          "h": 100,
+          "x": -115,
+          "y": 0,
+          "alpha": 0.55,
+          "scaleFrom": 0.7,
+          "scaleTo": 1.15,
+          "dx": 140,
+          "dy": 0,
+          "envelope": "transfer"
+        }
+      ]
+    },
+    "Tuishenjian.Cast": {
+      "cues": [
+        {
+          "asset": "Tuishenjian.Cast",
+          "start": 0,
+          "duration": 0.12,
+          "anchor": "Caster_WeaponPoint",
+          "w": 120,
+          "h": 120,
+          "x": 0,
+          "y": 0,
+          "alpha": 1,
+          "scaleFrom": 0.7,
+          "scaleTo": 1.08,
+          "dx": 0,
+          "dy": 0,
+          "envelope": "pulse"
+        },
+        {
+          "asset": "Tuishenjian.RetreatArc",
+          "start": 0.02,
+          "duration": 0.34,
+          "anchor": "Caster_WeaponPoint",
+          "w": 300,
+          "h": 300,
+          "x": -60,
+          "y": 10,
+          "alpha": 0.78,
+          "scaleFrom": 0.65,
+          "scaleTo": 1.02,
+          "dx": -55,
+          "dy": 0,
+          "envelope": "transfer",
+          "revealTo": 1,
+          "tag": "retreat-arc"
+        }
+      ]
+    },
+    "Tuishenjian.Arrow": {
+      "cues": [
+        {
+          "asset": "Tuishenjian.Projectile",
+          "start": 0,
+          "duration": 0.18,
+          "anchor": "Attack_MidPoint",
+          "w": 330,
+          "h": 165,
+          "x": -165,
+          "y": 0,
+          "alpha": 0.82,
+          "scaleFrom": 0.72,
+          "scaleTo": 1,
+          "dx": 330,
+          "dy": 0,
+          "envelope": "transfer"
+        }
+      ]
+    },
+    "Tuishenjian.Hit": {
+      "cues": [
+        {
+          "asset": "Tuishenjian.Hit",
+          "start": 0,
+          "duration": 0.18,
+          "anchor": "Target_HitPoint",
+          "w": 150,
+          "h": 150,
+          "x": 0,
+          "y": 0,
+          "alpha": 0.8,
+          "scaleFrom": 0.7,
+          "scaleTo": 1.02,
+          "dx": 0,
+          "dy": 0,
+          "envelope": "pulse"
+        }
+      ]
+    },
+    "Tuishenjian.DistanceSuccess": {
+      "stopTags": [
+        "retreat-arc"
+      ],
+      "cues": [
+        {
+          "asset": "Tuishenjian.RetreatArc",
+          "start": 0,
+          "duration": 0.3,
+          "anchor": "Caster_WeaponPoint",
+          "w": 300,
+          "h": 300,
+          "x": -60,
+          "y": 10,
+          "alpha": 0.7,
+          "scaleFrom": 0.72,
+          "scaleTo": 1.02,
+          "dx": -55,
+          "dy": 0,
+          "envelope": "transfer",
+          "revealTo": 1
+        },
+        {
+          "asset": "Tuishenjian.Wind",
+          "start": 0.04,
+          "duration": 0.28,
+          "anchor": "Caster_WeaponPoint",
+          "w": 280,
+          "h": 110,
+          "x": 35,
+          "y": 0,
+          "alpha": 0.45,
+          "scaleFrom": 0.8,
+          "scaleTo": 1.1,
+          "dx": -95,
+          "dy": 0,
+          "envelope": "transfer"
+        }
+      ]
+    },
+    "Tuishenjian.DistanceBlocked": {
+      "stopTags": [
+        "retreat-arc"
+      ],
+      "cues": [
+        {
+          "asset": "Tuishenjian.RetreatArc",
+          "start": 0,
+          "duration": 0.24,
+          "anchor": "Caster_WeaponPoint",
+          "w": 300,
+          "h": 300,
+          "x": -45,
+          "y": 10,
+          "alpha": 0.6,
+          "scaleFrom": 0.7,
+          "scaleTo": 0.88,
+          "dx": -22,
+          "dy": 0,
+          "envelope": "pulse",
+          "revealTo": 0.43
+        }
+      ]
+    },
+    "Dingshenjian.Cast": {
+      "cues": [
+        {
+          "asset": "Dingshenjian.Cast",
+          "start": 0,
+          "duration": 0.12,
+          "anchor": "Caster_WeaponPoint",
+          "w": 120,
+          "h": 120,
+          "x": 0,
+          "y": 0,
+          "alpha": 1,
+          "scaleFrom": 0.7,
+          "scaleTo": 1.08,
+          "dx": 0,
+          "dy": 0,
+          "envelope": "pulse"
+        }
+      ]
+    },
+    "Dingshenjian.Arrow": {
+      "cues": [
+        {
+          "asset": "Dingshenjian.Projectile",
+          "start": 0,
+          "duration": 0.2,
+          "anchor": "Attack_MidPoint",
+          "w": 350,
+          "h": 175,
+          "x": -170,
+          "y": 0,
+          "alpha": 1,
+          "scaleFrom": 0.72,
+          "scaleTo": 1,
+          "dx": 340,
+          "dy": 0,
+          "envelope": "transfer"
+        }
+      ]
+    },
+    "Dingshenjian.Hit": {
+      "cues": [
+        {
+          "asset": "Dingshenjian.Hit",
+          "start": 0,
+          "duration": 0.18,
+          "anchor": "Target_HitPoint",
+          "w": 145,
+          "h": 145,
+          "x": 0,
+          "y": 0,
+          "alpha": 0.75,
+          "scaleFrom": 0.7,
+          "scaleTo": 1.02,
+          "dx": 0,
+          "dy": 0,
+          "envelope": "pulse"
+        }
+      ]
+    },
+    "Dingshenjian.Apply": {
+      "stopTags": [
+        "dingshen"
+      ],
+      "cues": [
+        {
+          "asset": "Dingshenjian.Status",
+          "start": 0,
+          "duration": 0.28,
+          "anchor": "Target_Feet",
+          "w": 230,
+          "h": 150,
+          "x": 0,
+          "y": 0,
+          "alpha": 0.88,
+          "scaleFrom": 0.45,
+          "scaleTo": 1,
+          "dx": 0,
+          "dy": 0,
+          "envelope": "pulse"
+        },
+        {
+          "asset": "Dingshenjian.Status",
+          "start": 0.22,
+          "duration": 1,
+          "anchor": "Target_Feet",
+          "w": 220,
+          "h": 145,
+          "x": 0,
+          "y": 0,
+          "alpha": 0.22,
+          "scaleFrom": 1,
+          "scaleTo": 1,
+          "dx": 0,
+          "dy": 0,
+          "envelope": "hold",
+          "loop": true,
+          "tag": "dingshen"
+        }
+      ]
+    },
+    "Dingshenjian.CostPulse": {
+      "cues": [
+        {
+          "asset": "Dingshenjian.Status",
+          "start": 0,
+          "duration": 0.26,
+          "anchor": "Target_Feet",
+          "w": 225,
+          "h": 148,
+          "x": 0,
+          "y": 0,
+          "alpha": 0.62,
+          "scaleFrom": 0.92,
+          "scaleTo": 1.05,
+          "dx": 0,
+          "dy": 0,
+          "envelope": "pulse"
+        }
+      ]
+    },
+    "Dingshenjian.End": {
+      "stopTags": [
+        "dingshen"
+      ],
+      "cues": [
+        {
+          "asset": "Dingshenjian.Status",
+          "start": 0,
+          "duration": 0.2,
+          "anchor": "Target_Feet",
+          "w": 220,
+          "h": 145,
+          "x": 0,
+          "y": 0,
+          "alpha": 0.3,
+          "scaleFrom": 1,
+          "scaleTo": 1.08,
+          "dx": 0,
+          "dy": 0,
+          "envelope": "pulse"
+        }
+      ]
+    },
+    "Xiaoliguang.Activate": {
+      "stopTags": [
+        "xiaoliguang"
+      ],
+      "cues": [
+        {
+          "asset": "Xiaoliguang.Activate",
+          "start": 0,
+          "duration": 0.22,
+          "anchor": "Target_HitPoint",
+          "w": 150,
+          "h": 150,
+          "x": 0,
+          "y": 0,
+          "alpha": 0.78,
+          "scaleFrom": 0.7,
+          "scaleTo": 1,
+          "dx": 0,
+          "dy": 0,
+          "envelope": "pulse"
+        },
+        {
+          "asset": "Xiaoliguang.Active",
+          "start": 0.2,
+          "duration": 1,
+          "anchor": "Target_HitPoint",
+          "w": 125,
+          "h": 125,
+          "x": 0,
+          "y": 0,
+          "alpha": 0.16,
+          "scaleFrom": 1,
+          "scaleTo": 1,
+          "dx": 0,
+          "dy": 0,
+          "envelope": "hold",
+          "loop": true,
+          "tag": "xiaoliguang"
+        }
+      ]
+    },
+    "Xiaoliguang.Deactivate": {
+      "stopTags": [
+        "xiaoliguang"
+      ],
+      "cues": [
+        {
+          "asset": "Xiaoliguang.Deactivate",
+          "start": 0,
+          "duration": 0.2,
+          "anchor": "Target_HitPoint",
+          "w": 135,
+          "h": 135,
+          "x": 0,
+          "y": 0,
+          "alpha": 0.3,
+          "scaleFrom": 1,
+          "scaleTo": 1.08,
+          "dx": 0,
+          "dy": 0,
+          "envelope": "pulse"
+        }
+      ]
+    }
+  }
+}
