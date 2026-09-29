@@ -1,0 +1,481 @@
+{
+  "version": "1.1-hr1",
+  "resolution": [
+    1920,
+    1080
+  ],
+  "characterHeight": 400,
+  "iconReference": "2026-09-26 finalized Huarong icons",
+  "layers": [
+    "BattleFX_Back",
+    "Status_Back",
+    "Character",
+    "WeaponTrail",
+    "SkillFX",
+    "Projectile",
+    "HitFX",
+    "Status_Front",
+    "BattleUI"
+  ],
+  "assets": [
+    {
+      "id": "LianzhuJian.Cast",
+      "file": "Characters/Huarong/ActiveSkills/LianzhuJian/Cast/HR_LianzhuJian_Cast_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Caster_WeaponPoint",
+      "layer": "SkillFX",
+      "duration": 0.13,
+      "loop": false,
+      "blend": "normal",
+      "source": "authored-vector",
+      "alpha": "straight"
+    },
+    {
+      "id": "LianzhuJian.Projectile",
+      "file": "Characters/Huarong/ActiveSkills/LianzhuJian/Projectile/HR_LianzhuJian_Projectile_01.png",
+      "width": 2048,
+      "height": 682,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Attack_MidPoint",
+      "layer": "Projectile",
+      "duration": 0.16,
+      "loop": false,
+      "blend": "normal",
+      "source": "imagegen",
+      "alpha": "straight"
+    },
+    {
+      "id": "LianzhuJian.Hit",
+      "file": "Characters/Huarong/ActiveSkills/LianzhuJian/Hit/HR_LianzhuJian_Hit_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Target_HitPoint",
+      "layer": "HitFX",
+      "duration": 0.16,
+      "loop": false,
+      "blend": "normal",
+      "source": "authored-vector",
+      "alpha": "straight"
+    },
+    {
+      "id": "LianzhuJian.End",
+      "file": "Characters/Huarong/ActiveSkills/LianzhuJian/End/HR_LianzhuJian_End_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Target_HitPoint",
+      "layer": "SkillFX",
+      "duration": 0.18,
+      "loop": false,
+      "blend": "normal",
+      "source": "authored-vector",
+      "alpha": "straight"
+    },
+    {
+      "id": "ChuanyunJian.Cast",
+      "file": "Characters/Huarong/ActiveSkills/ChuanyunJian/Cast/HR_ChuanyunJian_Cast_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Caster_WeaponPoint",
+      "layer": "SkillFX",
+      "duration": 0.2,
+      "loop": false,
+      "blend": "normal",
+      "source": "authored-vector",
+      "alpha": "straight"
+    },
+    {
+      "id": "ChuanyunJian.Projectile",
+      "file": "Characters/Huarong/ActiveSkills/ChuanyunJian/Projectile/HR_ChuanyunJian_Projectile_01.png",
+      "width": 2048,
+      "height": 682,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Attack_MidPoint",
+      "layer": "Projectile",
+      "duration": 0.2,
+      "loop": false,
+      "blend": "normal",
+      "source": "imagegen",
+      "alpha": "straight"
+    },
+    {
+      "id": "ChuanyunJian.AirCone",
+      "file": "Characters/Huarong/ActiveSkills/ChuanyunJian/Trail/HR_ChuanyunJian_AirCone_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Target_HitPoint",
+      "layer": "WeaponTrail",
+      "duration": 0.17,
+      "loop": false,
+      "blend": "normal",
+      "source": "authored-vector",
+      "alpha": "straight"
+    },
+    {
+      "id": "ChuanyunJian.Hit",
+      "file": "Characters/Huarong/ActiveSkills/ChuanyunJian/Hit/HR_ChuanyunJian_Hit_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Target_HitPoint",
+      "layer": "HitFX",
+      "duration": 0.25,
+      "loop": false,
+      "blend": "normal",
+      "source": "authored-vector",
+      "alpha": "straight"
+    },
+    {
+      "id": "ChuanyunJian.End",
+      "file": "Characters/Huarong/ActiveSkills/ChuanyunJian/End/HR_ChuanyunJian_End_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Target_HitPoint",
+      "layer": "SkillFX",
+      "duration": 0.23,
+      "loop": false,
+      "blend": "normal",
+      "source": "authored-vector",
+      "alpha": "straight"
+    },
+    {
+      "id": "TuishenJian.Cast",
+      "file": "Characters/Huarong/ActiveSkills/TuishenJian/Cast/HR_TuishenJian_Cast_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Caster_WeaponPoint",
+      "layer": "SkillFX",
+      "duration": 0.16,
+      "loop": false,
+      "blend": "normal",
+      "source": "authored-vector",
+      "alpha": "straight"
+    },
+    {
+      "id": "TuishenJian.Projectile",
+      "file": "Characters/Huarong/ActiveSkills/TuishenJian/Projectile/HR_TuishenJian_Projectile_01.png",
+      "width": 2048,
+      "height": 682,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Attack_MidPoint",
+      "layer": "Projectile",
+      "duration": 0.18,
+      "loop": false,
+      "blend": "normal",
+      "source": "authored-vector",
+      "alpha": "straight"
+    },
+    {
+      "id": "TuishenJian.Hit",
+      "file": "Characters/Huarong/ActiveSkills/TuishenJian/Hit/HR_TuishenJian_Hit_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Target_HitPoint",
+      "layer": "HitFX",
+      "duration": 0.18,
+      "loop": false,
+      "blend": "normal",
+      "source": "authored-vector",
+      "alpha": "straight"
+    },
+    {
+      "id": "TuishenJian.Retreat",
+      "file": "Characters/Huarong/ActiveSkills/TuishenJian/Special/HR_TuishenJian_Retreat_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Caster_PassivePoint",
+      "layer": "SkillFX",
+      "duration": 0.25,
+      "loop": false,
+      "blend": "normal",
+      "source": "authored-vector",
+      "alpha": "straight"
+    },
+    {
+      "id": "TuishenJian.Blocked",
+      "file": "Characters/Huarong/ActiveSkills/TuishenJian/Special/HR_TuishenJian_Blocked_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Caster_PassivePoint",
+      "layer": "SkillFX",
+      "duration": 0.16,
+      "loop": false,
+      "blend": "normal",
+      "source": "authored-vector",
+      "alpha": "straight"
+    },
+    {
+      "id": "TuishenJian.End",
+      "file": "Characters/Huarong/ActiveSkills/TuishenJian/End/HR_TuishenJian_End_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Caster_PassivePoint",
+      "layer": "SkillFX",
+      "duration": 0.18,
+      "loop": false,
+      "blend": "normal",
+      "source": "authored-vector",
+      "alpha": "straight"
+    },
+    {
+      "id": "DingshenJian.Cast",
+      "file": "Characters/Huarong/ActiveSkills/DingshenJian/Cast/HR_DingshenJian_Cast_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Caster_WeaponPoint",
+      "layer": "SkillFX",
+      "duration": 0.15,
+      "loop": false,
+      "blend": "normal",
+      "source": "authored-vector",
+      "alpha": "straight"
+    },
+    {
+      "id": "DingshenJian.Projectile",
+      "file": "Characters/Huarong/ActiveSkills/DingshenJian/Projectile/HR_DingshenJian_Projectile_01.png",
+      "width": 2048,
+      "height": 682,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Attack_MidPoint",
+      "layer": "Projectile",
+      "duration": 0.18,
+      "loop": false,
+      "blend": "normal",
+      "source": "authored-vector",
+      "alpha": "straight"
+    },
+    {
+      "id": "DingshenJian.Hit",
+      "file": "Characters/Huarong/ActiveSkills/DingshenJian/Hit/HR_DingshenJian_Hit_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Target_HitPoint",
+      "layer": "HitFX",
+      "duration": 0.19,
+      "loop": false,
+      "blend": "normal",
+      "source": "authored-vector",
+      "alpha": "straight"
+    },
+    {
+      "id": "DingshenJian.Trigger",
+      "file": "Characters/Huarong/ActiveSkills/DingshenJian/Status/HR_DingshenJian_Trigger_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Target_FeetPoint",
+      "layer": "Status_Front",
+      "duration": 0.25,
+      "loop": false,
+      "blend": "normal",
+      "source": "authored-vector",
+      "alpha": "straight"
+    },
+    {
+      "id": "DingshenJian.Active",
+      "file": "Characters/Huarong/ActiveSkills/DingshenJian/Status/HR_DingshenJian_Active_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Target_FeetPoint",
+      "layer": "Status_Front",
+      "duration": 1,
+      "loop": true,
+      "blend": "normal",
+      "source": "authored-vector",
+      "alpha": "straight"
+    },
+    {
+      "id": "DingshenJian.CostPulse",
+      "file": "Characters/Huarong/ActiveSkills/DingshenJian/Special/HR_DingshenJian_CostPulse_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Target_FeetPoint",
+      "layer": "Status_Front",
+      "duration": 0.22,
+      "loop": false,
+      "blend": "normal",
+      "source": "authored-vector",
+      "alpha": "straight"
+    },
+    {
+      "id": "DingshenJian.End",
+      "file": "Characters/Huarong/ActiveSkills/DingshenJian/End/HR_DingshenJian_End_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Target_FeetPoint",
+      "layer": "SkillFX",
+      "duration": 0.2,
+      "loop": false,
+      "blend": "normal",
+      "source": "authored-vector",
+      "alpha": "straight"
+    },
+    {
+      "id": "XiaoLiGuang.Trigger",
+      "file": "Characters/Huarong/PassiveSkills/XiaoLiGuang/Trigger/HR_XiaoLiGuang_Trigger_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Target_HitPoint",
+      "layer": "Status_Front",
+      "duration": 0.26,
+      "loop": false,
+      "blend": "normal",
+      "source": "authored-vector",
+      "alpha": "straight"
+    },
+    {
+      "id": "XiaoLiGuang.Active",
+      "file": "Characters/Huarong/PassiveSkills/XiaoLiGuang/Active/HR_XiaoLiGuang_Active_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Caster_WeaponPoint",
+      "layer": "Status_Front",
+      "duration": 1,
+      "loop": true,
+      "blend": "normal",
+      "source": "authored-vector",
+      "alpha": "straight"
+    },
+    {
+      "id": "XiaoLiGuang.Deactivate",
+      "file": "Characters/Huarong/PassiveSkills/XiaoLiGuang/Deactivate/HR_XiaoLiGuang_Deactivate_01.png",
+      "width": 1024,
+      "height": 1024,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Caster_WeaponPoint",
+      "layer": "Status_Front",
+      "duration": 0.22,
+      "loop": false,
+      "blend": "normal",
+      "source": "authored-vector",
+      "alpha": "straight"
+    },
+    {
+      "id": "Common.GreenFleck",
+      "file": "Characters/Huarong/CommonFX/GreenFleck/HR_Common_GreenFleck_01.png",
+      "width": 512,
+      "height": 512,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Caster_WeaponPoint",
+      "layer": "SkillFX",
+      "duration": 0.16,
+      "loop": false,
+      "blend": "normal",
+      "source": "authored-vector",
+      "alpha": "straight"
+    },
+    {
+      "id": "Common.BlueFleck",
+      "file": "Characters/Huarong/CommonFX/BlueFleck/HR_Common_BlueFleck_01.png",
+      "width": 512,
+      "height": 512,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "anchor": "Caster_WeaponPoint",
+      "layer": "SkillFX",
+      "duration": 0.16,
+      "loop": false,
+      "blend": "normal",
+      "source": "authored-vector",
+      "alpha": "straight"
+    }
+  ]
+}

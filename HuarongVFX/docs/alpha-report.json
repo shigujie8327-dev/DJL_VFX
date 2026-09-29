@@ -1,0 +1,326 @@
+[
+  {
+    "id": "LianzhuJian.Cast",
+    "size": [
+      1024,
+      1024
+    ],
+    "channels": 4,
+    "transparent": 901460,
+    "opaque": 5476,
+    "partial": 141640,
+    "pass": true
+  },
+  {
+    "id": "LianzhuJian.Projectile",
+    "size": [
+      2048,
+      682
+    ],
+    "channels": 4,
+    "transparent": 1001605,
+    "opaque": 347,
+    "partial": 394784,
+    "pass": true
+  },
+  {
+    "id": "LianzhuJian.Hit",
+    "size": [
+      1024,
+      1024
+    ],
+    "channels": 4,
+    "transparent": 971208,
+    "opaque": 6512,
+    "partial": 70856,
+    "pass": true
+  },
+  {
+    "id": "LianzhuJian.End",
+    "size": [
+      1024,
+      1024
+    ],
+    "channels": 4,
+    "transparent": 1027758,
+    "opaque": 0,
+    "partial": 20818,
+    "pass": true
+  },
+  {
+    "id": "ChuanyunJian.Cast",
+    "size": [
+      1024,
+      1024
+    ],
+    "channels": 4,
+    "transparent": 891435,
+    "opaque": 5478,
+    "partial": 151663,
+    "pass": true
+  },
+  {
+    "id": "ChuanyunJian.Projectile",
+    "size": [
+      2048,
+      682
+    ],
+    "channels": 4,
+    "transparent": 1059008,
+    "opaque": 24,
+    "partial": 337704,
+    "pass": true
+  },
+  {
+    "id": "ChuanyunJian.AirCone",
+    "size": [
+      1024,
+      1024
+    ],
+    "channels": 4,
+    "transparent": 916384,
+    "opaque": 0,
+    "partial": 132192,
+    "pass": true
+  },
+  {
+    "id": "ChuanyunJian.Hit",
+    "size": [
+      1024,
+      1024
+    ],
+    "channels": 4,
+    "transparent": 887655,
+    "opaque": 6514,
+    "partial": 154407,
+    "pass": true
+  },
+  {
+    "id": "ChuanyunJian.End",
+    "size": [
+      1024,
+      1024
+    ],
+    "channels": 4,
+    "transparent": 918981,
+    "opaque": 0,
+    "partial": 129595,
+    "pass": true
+  },
+  {
+    "id": "TuishenJian.Cast",
+    "size": [
+      1024,
+      1024
+    ],
+    "channels": 4,
+    "transparent": 989652,
+    "opaque": 13317,
+    "partial": 45607,
+    "pass": true
+  },
+  {
+    "id": "TuishenJian.Projectile",
+    "size": [
+      2048,
+      682
+    ],
+    "channels": 4,
+    "transparent": 1376206,
+    "opaque": 5839,
+    "partial": 14691,
+    "pass": true
+  },
+  {
+    "id": "TuishenJian.Hit",
+    "size": [
+      1024,
+      1024
+    ],
+    "channels": 4,
+    "transparent": 971208,
+    "opaque": 6512,
+    "partial": 70856,
+    "pass": true
+  },
+  {
+    "id": "TuishenJian.Retreat",
+    "size": [
+      1024,
+      1024
+    ],
+    "channels": 4,
+    "transparent": 932175,
+    "opaque": 0,
+    "partial": 116401,
+    "pass": true
+  },
+  {
+    "id": "TuishenJian.Blocked",
+    "size": [
+      1024,
+      1024
+    ],
+    "channels": 4,
+    "transparent": 934742,
+    "opaque": 0,
+    "partial": 113834,
+    "pass": true
+  },
+  {
+    "id": "TuishenJian.End",
+    "size": [
+      1024,
+      1024
+    ],
+    "channels": 4,
+    "transparent": 1029788,
+    "opaque": 0,
+    "partial": 18788,
+    "pass": true
+  },
+  {
+    "id": "DingshenJian.Cast",
+    "size": [
+      1024,
+      1024
+    ],
+    "channels": 4,
+    "transparent": 905348,
+    "opaque": 5476,
+    "partial": 137752,
+    "pass": true
+  },
+  {
+    "id": "DingshenJian.Projectile",
+    "size": [
+      2048,
+      682
+    ],
+    "channels": 4,
+    "transparent": 1376206,
+    "opaque": 5839,
+    "partial": 14691,
+    "pass": true
+  },
+  {
+    "id": "DingshenJian.Hit",
+    "size": [
+      1024,
+      1024
+    ],
+    "channels": 4,
+    "transparent": 971208,
+    "opaque": 6512,
+    "partial": 70856,
+    "pass": true
+  },
+  {
+    "id": "DingshenJian.Trigger",
+    "size": [
+      1024,
+      1024
+    ],
+    "channels": 4,
+    "transparent": 979685,
+    "opaque": 0,
+    "partial": 68891,
+    "pass": true
+  },
+  {
+    "id": "DingshenJian.Active",
+    "size": [
+      1024,
+      1024
+    ],
+    "channels": 4,
+    "transparent": 1004527,
+    "opaque": 0,
+    "partial": 44049,
+    "pass": true
+  },
+  {
+    "id": "DingshenJian.CostPulse",
+    "size": [
+      1024,
+      1024
+    ],
+    "channels": 4,
+    "transparent": 882641,
+    "opaque": 5705,
+    "partial": 160230,
+    "pass": true
+  },
+  {
+    "id": "DingshenJian.End",
+    "size": [
+      1024,
+      1024
+    ],
+    "channels": 4,
+    "transparent": 1036820,
+    "opaque": 0,
+    "partial": 11756,
+    "pass": true
+  },
+  {
+    "id": "XiaoLiGuang.Trigger",
+    "size": [
+      1024,
+      1024
+    ],
+    "channels": 4,
+    "transparent": 984760,
+    "opaque": 0,
+    "partial": 63816,
+    "pass": true
+  },
+  {
+    "id": "XiaoLiGuang.Active",
+    "size": [
+      1024,
+      1024
+    ],
+    "channels": 4,
+    "transparent": 1027677,
+    "opaque": 0,
+    "partial": 20899,
+    "pass": true
+  },
+  {
+    "id": "XiaoLiGuang.Deactivate",
+    "size": [
+      1024,
+      1024
+    ],
+    "channels": 4,
+    "transparent": 1016054,
+    "opaque": 0,
+    "partial": 32522,
+    "pass": true
+  },
+  {
+    "id": "Common.GreenFleck",
+    "size": [
+      512,
+      512
+    ],
+    "channels": 4,
+    "transparent": 261020,
+    "opaque": 0,
+    "partial": 1124,
+    "pass": true
+  },
+  {
+    "id": "Common.BlueFleck",
+    "size": [
+      512,
+      512
+    ],
+    "channels": 4,
+    "transparent": 260950,
+    "opaque": 0,
+    "partial": 1194,
+    "pass": true
+  }
+]
