@@ -15,3 +15,5 @@ export { BATTLE_SCENE_2_VFX, BATTLE_SCENE_2_CHARACTER_DISPLAY, BATTLE_SCENE_2_FA
 export { SIX_CHARACTER_DEFINITIONS } from './characters/definitions';
 export { HUSANNIANG_VFX } from './vfx/HusanniangVfxLibrary';
 export { HUSANNIANG_SPRITE_VFX, HUSANNIANG_STATUS_VFX } from './vfx/HusanniangSpriteVfx';
+export { WUSONG_VFX } from './vfx/WusongVfxLibrary';
+export { WUSONG_SPRITE_VFX, WUSONG_STATUS_VFX } from './vfx/WusongSpriteVfx';

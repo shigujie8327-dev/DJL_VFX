@@ -145,6 +145,9 @@ select { font: inherit; color: var(--fg); background: var(--panel); border: 1px 
     <span class="group"><span class="lbl">距离</span>
       <span class="seg" id="distSeg"><button type="button" data-v="NEAR">近</button><button type="button" data-v="FAR" aria-pressed="true">远</button></span>
     </span>
+    <span class="group" id="travGrp" hidden><span class="lbl">行者</span>
+      <span class="seg" id="travSeg"><button type="button" data-v="1">生命≤40%</button><button type="button" data-v="0" aria-pressed="true">正常</button></span>
+    </span>
   </div>
 
   <div class="main">
@@ -243,7 +246,7 @@ const VARIANTS = {
   ROOTING_ARROW: [['', '命中'], ['dodged', '被闪避']],
   RETURNING_WIND_SLASH: [['', '普通'], ['enhanced', '回风加成']],
 };
-const SPRITE_KIND = { linchong: '帧动画 · DJL_VFX 1.1-r5（正式）', huarong: '帧动画 · 占位（按原 Graphics 编排）', wuyong: '帧动画 · 占位 1.1-wy-cocos-r2（按原 Graphics 编排）', husanniang: '帧动画 · HSNVFX 1.1-hsn-cocos-r1（正式）' };
+const SPRITE_KIND = { linchong: '帧动画 · DJL_VFX 1.1-r5（正式）', huarong: '帧动画 · 占位（按原 Graphics 编排）', wuyong: '帧动画 · 占位 1.1-wy-cocos-r2（按原 Graphics 编排）', husanniang: '帧动画 · HSNVFX 1.1-hsn-cocos-r1（正式）', wusong: '帧动画 · WSVFX sources-r1（正式素材，编排为手工）' };
 
 // ------------------------------------------------------------------ assets → cc.resources / audio
 const loadImg = (src) => new Promise((res) => { const i = new Image(); i.onload = () => res(i); i.onerror = () => res(null); i.src = src; });
@@ -298,9 +301,9 @@ function statusAnchors(c) {
   return { Caster_WeaponPoint: weapon, Target_HitPoint: hit, Attack_MidPoint: { x: (weapon.x + hit.x) / 2, y: (weapon.y + hit.y) / 2 },
     Ground: { x: x + f * 270 * S, y: GROUND }, Caster_PassivePoint: { x: x - f * 66 * S, y: GROUND + 420 * S }, Caster_FeetPoint: { x, y: GROUND }, Target_FeetPoint: { x: o.x, y: GROUND } };
 }
-const STATUS_LIB = { version: 'linchong+huarong+wuyong+husanniang', authoredSpan: D.LINCHONG_VFX.authoredSpan,
-  assets: { ...D.LINCHONG_VFX.assets, ...D.HUARONG_VFX.assets, ...D.WUYONG_VFX.assets, ...D.HUSANNIANG_SPRITE_VFX.assets }, events: { ...D.LINCHONG_VFX.events, ...D.HUARONG_VFX.events, ...D.WUYONG_VFX.events, ...D.HUSANNIANG_SPRITE_VFX.events } };
-const STATUS_TABLE = { ...D.LINCHONG_STATUS_VFX, ...D.HUARONG_STATUS_VFX, ...D.WUYONG_STATUS_VFX, ...D.HUSANNIANG_STATUS_VFX };
+const STATUS_LIB = { version: 'linchong+huarong+wuyong+husanniang+wusong', authoredSpan: D.LINCHONG_VFX.authoredSpan,
+  assets: { ...D.LINCHONG_VFX.assets, ...D.HUARONG_VFX.assets, ...D.WUYONG_VFX.assets, ...D.HUSANNIANG_SPRITE_VFX.assets, ...D.WUSONG_SPRITE_VFX.assets }, events: { ...D.LINCHONG_VFX.events, ...D.HUARONG_VFX.events, ...D.WUYONG_VFX.events, ...D.HUSANNIANG_SPRITE_VFX.events, ...D.WUSONG_SPRITE_VFX.events } };
+const STATUS_TABLE = { ...D.LINCHONG_STATUS_VFX, ...D.HUARONG_STATUS_VFX, ...D.WUYONG_STATUS_VFX, ...D.HUSANNIANG_STATUS_VFX, ...D.WUSONG_STATUS_VFX };
 for (const c of [P, E]) {
   c.aura = D.StatusAuraEffect.spawnLocal(fxLayers.Status_Front, c.x, GROUND, c.facing, VS);
   c.tracker = new D.SpriteStatusVfxTracker(c.side, { parent: fxLayers.SkillFX, layers: fxLayers, scale: VS, speed: () => 1, facing: () => c.facing, anchors: () => statusAnchors(c) }, STATUS_LIB, STATUS_TABLE);
@@ -420,7 +423,7 @@ async function playSkill(id, fromQueue = false) {
   const { skill } = skillDef(id);
   let variant = state.variant[id] ?? (VARIANTS[id]?.[0][0] ?? '');
   // Fresh board: statuses from the previous demo play their exits.
-  for (const c of [P, E]) if (c.statuses.length) setStatuses(c, []);
+  for (const c of [P, E]) if (c.statuses.length) setStatuses(c, c === P && state.trav ? ['TRAVELER'] : []);
   const need = id === 'SHADOW_GLIDE' ? state.distance : skill.range === 'ANY' ? state.distance : skill.range;
   if (id === 'SHADOW_GLIDE') variant = state.distance === 'NEAR' ? 'retreat' : '';
   if (state.distance !== need) { log(`${skill.name}需要${need === 'NEAR' ? '近' : '远'}距离，先滑步换距`, 'sys'); await glideTo(need); await wait(0.18); if (my !== state.token) return; }
@@ -531,8 +534,8 @@ function buildRoster() {
 }
 function setHero(id) {
   state.token++; state.queue = []; stopFx(); hideCaption();
-  clearStatuses(P); clearStatuses(E);
-  P.hero = id;
+  clearStatuses(P); clearStatuses(E); state.trav = false; setTravUi();
+  P.hero = id; $('travGrp').hidden = id !== 'wusong';
   if (E.hero === id) { E.hero = HEROES.find((h) => h.id !== id).id; $('enemySel').value = E.hero; }
   for (const b of rosterEl.children) b.setAttribute('aria-pressed', String(b.dataset.id === id));
   $('pName').textContent = `${HERO[id].name}（出招）`; $('eName').textContent = HERO[E.hero].name;
@@ -605,6 +608,8 @@ function segment(id, onPick) {
 }
 segment('speedSeg', (v) => { state.speed = Number(v); });
 segment('sfxSeg', (v) => { sfxOn = v === '1'; if (sfxOn) ensureAudio(); });
+function setTravUi() { for (const x of $('travSeg').querySelectorAll('button')) x.setAttribute('aria-pressed', String((x.dataset.v === '1') === !!state.trav)); }
+segment('travSeg', (v) => { state.trav = v === '1'; setTravUi(); state.paused = false; state.scrubbing = false; setPauseUi(); if (P.hero !== 'wusong') return; if (state.trav) addStatus(P, 'TRAVELER'); else removeStatus(P, 'TRAVELER'); });
 segment('distSeg', (v) => { state.token++; state.queue = []; stopFx(); state.paused = false; state.scrubbing = false; setPauseUi(); glideTo(v); });
 function updateDistUi() {
   $('dist').textContent = state.distance === 'NEAR' ? '◀ 近距离 ▶' : '◀ 远距离 ▶';
@@ -638,7 +643,7 @@ function tinted(img, r, g, b) {
   bgImg = bg;
   texKeys.forEach((k, i) => { if (texImgs[i]) TEX[k] = texImgs[i]; });
   HEROES.forEach((h, i) => { const img = heroImgs[i]; if (img) sprites[h.id] = { img, flash: tinted(img, 255, 160, 150), ghost: tinted(img, 150, 172, 200) }; });
-  await Promise.all([D.SpriteVfxEffect.preload(D.LINCHONG_VFX), D.SpriteVfxEffect.preload(D.HUARONG_VFX), D.SpriteVfxEffect.preload(D.WUYONG_VFX), D.SpriteVfxEffect.preload(D.HUSANNIANG_VFX)]);
+  await Promise.all([D.SpriteVfxEffect.preload(D.LINCHONG_VFX), D.SpriteVfxEffect.preload(D.HUARONG_VFX), D.SpriteVfxEffect.preload(D.WUYONG_VFX), D.SpriteVfxEffect.preload(D.HUSANNIANG_VFX), D.SpriteVfxEffect.preload(D.WUSONG_VFX)]);
   buildRoster();
   sel.value = E.hero;
   setHero('luzhishen');
@@ -649,6 +654,7 @@ function tinted(img, r, g, b) {
   state.last = { id: 'STAFF_SWEEP', variant: '', seed: 0.4242, fx: null, dist: 'NEAR' };
   scrubTo(0.42); scrub.value = '420';
   buildTicks(state.fx);
+  window.__djl = { P, E, state }; // read-only debugging hook for the smoke / montage scripts
   requestAnimationFrame(frame);
 })();
 })();
