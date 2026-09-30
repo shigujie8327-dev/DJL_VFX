@@ -8264,8 +8264,8 @@ const STEP_FORMATION = [
 ];
 const IMPACT = ['StaffSweep.Hit01', 'StaffSweep.Hit02', 'StaffSweep.End', 'MadStaff.Hit01', 'MadStaff.End', 'Quake.Hit01', 'StepFormation.Hit01', 'StepFormation.End', 'Common.Spark', 'Common.Dust'];
 /** 霸体 art: the delivered gilded-armour image baked into a breathing loop (not in the generated delivery library). Frames are 322×448. */
-const ARMOR_ASSET = { path: 'Characters/Luzhishen/ActiveSkills/MadStaff/Armor/LZ_FM_Armor', layer: 'Status_Front', frames: 10, fps: 8 };
-const ARMOR_H = 520, ARMOR_W = Math.round(ARMOR_H * 322 / 448);
+const ARMOR_ASSET = { path: 'Characters/Luzhishen/ActiveSkills/MadStaff/Armor/LZ_FM_Armor', layer: 'Status_Back', frames: 10, fps: 8 };
+const ARMOR_H = 560, ARMOR_W = Math.round(ARMOR_H * 322 / 448);
 /** Height of the floor-ellipse seal (Quake.Special02 is 768²; see 'Quake.Seal'). */
 const SEAL_H = 180;
 const DERIVED = {
@@ -8287,10 +8287,10 @@ const DERIVED = {
     'Quake.Seal': event([{ ...cueOf('Quake.play', 'Quake.Special02'), anchor: 'Caster_FeetPoint', x: 0, y: 4, w: 300, h: SEAL_H, pivot: [0.5, 0.25], start: 0, duration: 0.3, envelope: 'none', alpha: 0.95, scaleFrom: 1, scaleTo: 1, loop: true, tag: 'lzs-intimidated' }]),
     // Gone (expired, or spent stopping a step): the seal just goes.
     'Quake.SealFade': event([]),
-    // SUPER_ARMOR: the gilded armour with flames licking its edges (delivered 霸体 art) covers the fighter while the status lasts.
+    // SUPER_ARMOR: the gilded armour with flames licking its edges (delivered 霸体 art) glows behind the fighter while the status lasts.
     // The 10 frames are a slow breathing loop baked from the one image (glow ±16%, flame tips swaying). Gone with the status.
     'MadStaff.Armor': event([{
-            asset: 'MadStaff.Armor', start: 0, duration: 0.3, anchor: FEET, x: 0, y: 2, w: ARMOR_W, h: ARMOR_H, pivot: [0.5, 0.02],
+            asset: 'MadStaff.Armor', start: 0, duration: 0.3, anchor: FEET, x: 0, y: -6, w: ARMOR_W, h: ARMOR_H, pivot: [0.5, 0.02],
             alpha: 1, scaleFrom: 1, scaleTo: 1, dx: 0, dy: 0, rotation: 0, spin: 0, envelope: 'none', loop: true, tag: 'lzs-superarmor',
         }]),
     'MadStaff.ArmorFade': event([]),
@@ -8407,7 +8407,7 @@ exports.LUZHISHEN_SKILL_SPAWNERS = {
 /**
  * Tracker anchors belong to the fighter that HAS the status: INTIMIDATED sits on the afflicted opponent.
  * SUPER_ARMOR (疯魔杖 霸体): the delivered 霸体 art (a gilded armour figure with flames on its edges, LZ_FM_Armor) is baked into a
- * 10-frame breathing loop and drawn on Status_Front over the fighter for as long as the status lasts (the cast's 疯魔火舌 stays
+ * 10-frame breathing loop and drawn on Status_Back, BEHIND the fighter and larger than it (over the fighter it hid the character), for as long as the status lasts (the cast's 疯魔火舌 stays
  * a cast effect).
  * INTIMIDATED and SUPER_ARMOR are no longer drawn by the procedural aura.
  */
