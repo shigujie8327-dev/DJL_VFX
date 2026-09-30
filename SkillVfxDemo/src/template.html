@@ -246,7 +246,7 @@ const VARIANTS = {
   ROOTING_ARROW: [['', '命中'], ['dodged', '被闪避']],
   RETURNING_WIND_SLASH: [['', '普通'], ['enhanced', '回风加成']],
 };
-const SPRITE_KIND = { linchong: '帧动画 · DJL_VFX 1.1-r5（正式）', huarong: '帧动画 · 占位（按原 Graphics 编排）', wuyong: '帧动画 · 占位 1.1-wy-cocos-r2（按原 Graphics 编排）', husanniang: '帧动画 · HSNVFX 1.1-hsn-cocos-r1（正式）', wusong: '帧动画 · WSVFX sources-r1（正式素材，编排为手工）' };
+const SPRITE_KIND = { linchong: '帧动画 · DJL_VFX 1.1-r5（正式）', huarong: '帧动画 · 占位（按原 Graphics 编排）', wuyong: '帧动画 · 占位 1.1-wy-cocos-r2（按原 Graphics 编排）', husanniang: '帧动画 · HSNVFX 1.1-hsn-cocos-r1（正式）', wusong: '帧动画 · WSVFX sources-r1（正式素材，编排为手工）', luzhishen: '帧动画 · LZSVFX 1.1-lzs-cocos-r1（正式）' };
 
 // ------------------------------------------------------------------ assets → cc.resources / audio
 const loadImg = (src) => new Promise((res) => { const i = new Image(); i.onload = () => res(i); i.onerror = () => res(null); i.src = src; });
@@ -301,9 +301,9 @@ function statusAnchors(c) {
   return { Caster_WeaponPoint: weapon, Target_HitPoint: hit, Attack_MidPoint: { x: (weapon.x + hit.x) / 2, y: (weapon.y + hit.y) / 2 },
     Ground: { x: x + f * 270 * S, y: GROUND }, Caster_PassivePoint: { x: x - f * 66 * S, y: GROUND + 420 * S }, Caster_FeetPoint: { x, y: GROUND }, Target_FeetPoint: { x: o.x, y: GROUND } };
 }
-const STATUS_LIB = { version: 'linchong+huarong+wuyong+husanniang+wusong', authoredSpan: D.LINCHONG_VFX.authoredSpan,
-  assets: { ...D.LINCHONG_VFX.assets, ...D.HUARONG_VFX.assets, ...D.WUYONG_VFX.assets, ...D.HUSANNIANG_SPRITE_VFX.assets, ...D.WUSONG_SPRITE_VFX.assets }, events: { ...D.LINCHONG_VFX.events, ...D.HUARONG_VFX.events, ...D.WUYONG_VFX.events, ...D.HUSANNIANG_SPRITE_VFX.events, ...D.WUSONG_SPRITE_VFX.events } };
-const STATUS_TABLE = { ...D.LINCHONG_STATUS_VFX, ...D.HUARONG_STATUS_VFX, ...D.WUYONG_STATUS_VFX, ...D.HUSANNIANG_STATUS_VFX, ...D.WUSONG_STATUS_VFX };
+const STATUS_LIB = { version: 'linchong+huarong+wuyong+husanniang+wusong+luzhishen', authoredSpan: D.LINCHONG_VFX.authoredSpan,
+  assets: { ...D.LUZHISHEN_SPRITE_VFX.assets, ...D.LINCHONG_VFX.assets, ...D.HUARONG_VFX.assets, ...D.WUYONG_VFX.assets, ...D.HUSANNIANG_SPRITE_VFX.assets, ...D.WUSONG_SPRITE_VFX.assets }, events: { ...D.LUZHISHEN_SPRITE_VFX.events, ...D.LINCHONG_VFX.events, ...D.HUARONG_VFX.events, ...D.WUYONG_VFX.events, ...D.HUSANNIANG_SPRITE_VFX.events, ...D.WUSONG_SPRITE_VFX.events } };
+const STATUS_TABLE = { ...D.LUZHISHEN_STATUS_VFX, ...D.LINCHONG_STATUS_VFX, ...D.HUARONG_STATUS_VFX, ...D.WUYONG_STATUS_VFX, ...D.HUSANNIANG_STATUS_VFX, ...D.WUSONG_STATUS_VFX };
 for (const c of [P, E]) {
   c.aura = D.StatusAuraEffect.spawnLocal(fxLayers.Status_Front, c.x, GROUND, c.facing, VS);
   c.tracker = new D.SpriteStatusVfxTracker(c.side, { parent: fxLayers.SkillFX, layers: fxLayers, scale: VS, speed: () => 1, facing: () => c.facing, anchors: () => statusAnchors(c) }, STATUS_LIB, STATUS_TABLE);
@@ -643,7 +643,7 @@ function tinted(img, r, g, b) {
   bgImg = bg;
   texKeys.forEach((k, i) => { if (texImgs[i]) TEX[k] = texImgs[i]; });
   HEROES.forEach((h, i) => { const img = heroImgs[i]; if (img) sprites[h.id] = { img, flash: tinted(img, 255, 160, 150), ghost: tinted(img, 150, 172, 200) }; });
-  await Promise.all([D.SpriteVfxEffect.preload(D.LINCHONG_VFX), D.SpriteVfxEffect.preload(D.HUARONG_VFX), D.SpriteVfxEffect.preload(D.WUYONG_VFX), D.SpriteVfxEffect.preload(D.HUSANNIANG_VFX), D.SpriteVfxEffect.preload(D.WUSONG_VFX)]);
+  await Promise.all([D.SpriteVfxEffect.preload(D.LINCHONG_VFX), D.SpriteVfxEffect.preload(D.HUARONG_VFX), D.SpriteVfxEffect.preload(D.WUYONG_VFX), D.SpriteVfxEffect.preload(D.HUSANNIANG_VFX), D.SpriteVfxEffect.preload(D.WUSONG_VFX), D.SpriteVfxEffect.preload(D.LUZHISHEN_VFX)]);
   buildRoster();
   sel.value = E.hero;
   setHero('luzhishen');
