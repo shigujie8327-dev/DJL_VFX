@@ -7578,14 +7578,16 @@ const DERIVED = {
     // distance closes, away from them when it opens); the afterimage and the fading shadow stay where the caster left.
     'Lueying.approach': event([
         { ...cueOf('Lueying.approach', 'Lueying.Cast'), anchor: 'Caster_FeetPoint', w: 380, h: 380, pivot: [0.5, 0.06] },
-        { ...cueOf('Lueying.approach', 'Lueying.Special01'), anchor: 'Caster_FeetPoint', y: -HIP,
+        // The delivered streak shows the runner facing left (trail on the right): mirrored so the caster runs toward the opponent.
+        // The path is a straight line along the floor, so no orient-to-path turn (it would flip the mirrored streak upside down).
+        { ...cueOf('Lueying.approach', 'Lueying.Special01'), anchor: 'Caster_FeetPoint', y: -HIP, mirrorX: true, orientToPath: false,
             curve: { control: [260, -HIP], endAnchor: 'Target_FeetPoint', endOffset: [-150, -HIP] } },
         { ...cueOf('Lueying.approach', 'Lueying.Trail01'), anchor: 'Caster_FeetPoint', pivot: [0.5, 0.1] },
         { ...cueOf('Lueying.approach', 'Lueying.End'), anchor: 'Caster_FeetPoint', pivot: [0.5, 0.1] },
     ]),
     'Lueying.retreat': event([
         { ...cueOf('Lueying.retreat', 'Lueying.Cast'), anchor: 'Caster_FeetPoint', w: 380, h: 380, pivot: [0.5, 0.06] },
-        // The delivered streak shows the runner facing right: mirrored so the caster runs away, backwards along the floor.
+        // The delivered streak shows the runner facing right (trail on the left): mirrored so the caster runs away from the opponent.
         { ...cueOf('Lueying.retreat', 'Lueying.Special02'), anchor: 'Caster_FeetPoint', y: -HIP, mirrorX: true,
             curve: { control: [-150, -HIP], endAnchor: 'Caster_FeetPoint', endOffset: [-320, -HIP] } },
         { ...cueOf('Lueying.retreat', 'Lueying.Trail01'), anchor: 'Caster_FeetPoint', pivot: [0.5, 0.1] },
