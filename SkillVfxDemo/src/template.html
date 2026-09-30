@@ -209,10 +209,10 @@ const PHASES = {
   MAD_STAFF: ['疯魔 0.55s：金赤内力如火舌腾起（霸体），脚下金纹裂地', '劈落 ≈0.2s：巨大禅杖虚影抡圆劈下，金赤火弧砸中对手', '崩地 1.1s：金焰冲起，放射裂纹透火光，碎石迸飞，上下重震两次'],
   QUAKE: ['提杖 0.3s → 顿地 0.08s：金色冲击环、褐色尘爆', '地裂 0.3s：岩脊沿地面奔向对手，岩刺依次破土，冲到脚下即命中', '震慑 0.6s：脚下留颤动墨环与四道金色镇纹', '分支 trigger：镇纹骤亮、岩刺一拱、地面一震（拦下近→远）'],
   STEP_FORMATION: ['三踏 0.5s：连踏三脚，每脚炸开金色地环，把岩脊往前推', '撞中 0.8s：岩脊冲到对手脚下，岩刺拱起顶中，震屏；随后滑步拉近'],
-  FEATHER_FAN_PLAN: ['Cast 0.55s：手前展开扇形风', '0.2s Flight：七枚羽毛依次飞出（视觉七羽，判定仍是一击）', '0.6s Hit：墨色命中与散羽', '分支 recovered：0.8s 金色内气回流（Core 报告回气时才演）'],
-  STRATAGEM: ['Cast 0.53s：对手身前浮现棋局，吴用手前墨旋', '0.55s 分支 matched：棋局收紧，墨击落下', '0.55s 分支 missed：棋局化作墨旋散去'],
-  CHAOTIC_FORMATION: ['Cast：对手脚下五根石柱依次破土，1.05s 后沉回', '0.22s Wind：墨旋在对手脚下卷起约 1s', '0.55s 白刃斩中（第 1 击），0.82s 黑刃斩中（第 2 击）', '状态 乱阵：对手身旁留一团循环墨旋，状态结束时收束'],
-  EMPTY_CITY: ['Cast：琴弦 0.85s，0.35s 起城门在脚下升起 1.15s', '状态 空城：城门循环常驻，状态结束时收淡', '分支 absorb：空城期间受击且确有减伤时，墨旋与城门一闪'],
+  FEATHER_FAN_PLAN: ['Cast 0.55s：手前展开扇形风', '0.2s Flight：七枚羽毛依次飞出（视觉七羽，判定仍是一击）', '0.6s Hit：墨色命中与散羽', '分支 recovered：0.8s 三道金色内气回流，1.3s 在吴用身上旋成金环（Core 报告回气时才演）'],
+  STRATAGEM: ['Cast 0.55s：对手身前展开八卦，吴用手前墨旋', '0.55s 分支 matched：八卦急收成一枚金子落定', '0.55s 分支 missed：八卦旋开化作墨旋散去'],
+  CHAOTIC_FORMATION: ['Cast：对手周围五根石柱依次破土（约齐腰高），1.05s 后沉回', '0.22s Wind：墨旋在对手脚下卷起约 1s', '0.55s 白刃斩中（第 1 击），0.82s 黑刃斩中（第 2 击）', '状态 乱阵：对手身旁留一团循环墨旋，状态结束时收束'],
+  EMPTY_CITY: ['Cast：琴弦 0.85s，0.35s 起城门在身后升起 1.15s，吴用立于门洞中', '状态 空城：城门以半透明常驻身后，状态结束时收淡', '分支 absorb：空城期间受击且确有减伤时，墨旋与城门一闪'],
   PEARL_ARROWS: ['四箭连珠：每箭 Shot（离弦）→ Hit（0.29/0.42/0.55/0.68s）', '帧动画占位，节拍沿用原 Graphics 版'],
   CLOUD_PIERCER: ['Cast 满弓 → 0.5s Shot 穿云 → 0.66s Hit 贯穿，震屏', '帧动画占位，节拍沿用原 Graphics 版'],
   RETREATING_ARROW: ['Cast → 0.12s Shot 贴身一箭 → 0.19s Hit', '分支 retreat：退身劲风（随后滑步拉远）', '分支 blocked：退身被拦'],
@@ -243,7 +243,7 @@ const VARIANTS = {
   ROOTING_ARROW: [['', '命中'], ['dodged', '被闪避']],
   RETURNING_WIND_SLASH: [['', '普通'], ['enhanced', '回风加成']],
 };
-const SPRITE_KIND = { linchong: '帧动画 · DJL_VFX 1.1-r5（正式）', huarong: '帧动画 · 占位（按原 Graphics 编排）', wuyong: '帧动画 · 占位 1.1-wy-cocos-r1（按原 Graphics 编排）' };
+const SPRITE_KIND = { linchong: '帧动画 · DJL_VFX 1.1-r5（正式）', huarong: '帧动画 · 占位（按原 Graphics 编排）', wuyong: '帧动画 · 占位 1.1-wy-cocos-r2（按原 Graphics 编排）' };
 
 // ------------------------------------------------------------------ assets → cc.resources / audio
 const loadImg = (src) => new Promise((res) => { const i = new Image(); i.onload = () => res(i); i.onerror = () => res(null); i.src = src; });
