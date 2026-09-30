@@ -217,10 +217,10 @@ const PHASES = {
   CLOUD_PIERCER: ['Cast 满弓 → 0.5s Shot 穿云 → 0.66s Hit 贯穿，震屏', '帧动画占位，节拍沿用原 Graphics 版'],
   RETREATING_ARROW: ['Cast → 0.12s Shot 贴身一箭 → 0.19s Hit', '分支 retreat：退身劲风（随后滑步拉远）', '分支 blocked：退身被拦'],
   ROOTING_ARROW: ['Cast 金色内力缠箭 → 0.18s Shot → 0.36s Hit', '0.48s Pin：虚箭钉影；定身状态由 DingshenJian.Active 循环接手'],
-  DUAL_BLADES: ['刀尖寒芒一闪 → 第一刀自左上劈向右下', '第二刀自左下撩向右上，两道刀光交成「X」；每刀朱红碎劲、花瓣、小气环'],
-  RED_SASH: ['抛绫 0.42s：红绫翻卷飞过场地', '抽中 0.1s：朱红碎劲与花瓣迸开', '缚足 0.5s：绫尾缠上脚踝绕成三圈', '收绫 0.4s：只留脚踝红圈（由状态光环接手）'],
-  SHADOW_GLIDE: ['化影 0.3s：墨色烟与朱红绫风卷起，花瓣绕身疾旋', '掠 0.45s：贴地影流朝移动方向疾掠（近距离时自动向后掠 retreat）'],
-  RETURNING_WIND_SLASH: ['聚风 0.2s：银白与朱红两股旋风', '回风 0.72s：三层风环绕身疾转，三道斜刀光依次斩中（3 击）', '风散 0.4s', '分支 enhanced：整体转朱红，风柱更粗，末击炸出红风'],
+  DUAL_BLADES: ['两刀依次斩出（命中 0.142 / 0.302s），刀光拖尾 + 命中闪光，轻震', '分支 dodged：保留刀光，去掉命中贴图与震屏', '正式素材 HSNVFX 1.1-hsn-cocos-r1'],
+  RED_SASH: ['抛绫：Cast → 红绫 Projectile 飞过场地，0.42s 抽中 Hit', '分支 dodged：只有抛绫，没有抽中', '缚足 BOUND：绳圈缠在对手脚下（状态光环，随状态出现与消失，解除时 End 散开）'],
+  SHADOW_GLIDE: ['化影：Cast 裹身，冲刺拖影贴地朝对手掠去，原地留残影与渐隐影', '分支 retreat：近距离时向后掠，拖影镜像朝远离对手的方向'],
+  RETURNING_WIND_SLASH: ['普通：三斩（0.35 / 0.57 / 0.79s）依次命中，风环与刀光', '分支 enhanced（回风）：红色风柱，末击炸出红环', '分支 dodged：去掉命中贴图', '状态 回风 RETURN_WIND：腰间闪光 + 脚下玉环（一丈青）'],
   MANDARIN_DUCK_KICKS: ['一脚高扫：琥珀腿风从身后绕过身前扫中上身', '二脚低扫：贴地腿风扫下盘，带起尘土', '三脚正蹬：劲风成锥直贯胸口，两圈气浪；末一脚最重'],
   PRECEPT_BLADE: ['按刀 0.22s：戒刀虚影提起，刀身一线冷光走到刀尖', '一刀 0.1s：从身后上方斜劈到前下方', '刀痕 0.8s：刀痕裂成两道白线，钢屑火星迸散，冷风穿出，重震'],
   DRUNKEN_STEP: ['洒酒 0.35s：酒水抛成弧线，泛起琥珀酒雾', '醉摇 0.8s：雾带绕身画「8」字，两侧留墨色残步（闪避姿态由状态光环接手）'],
@@ -243,7 +243,7 @@ const VARIANTS = {
   ROOTING_ARROW: [['', '命中'], ['dodged', '被闪避']],
   RETURNING_WIND_SLASH: [['', '普通'], ['enhanced', '回风加成']],
 };
-const SPRITE_KIND = { linchong: '帧动画 · DJL_VFX 1.1-r5（正式）', huarong: '帧动画 · 占位（按原 Graphics 编排）', wuyong: '帧动画 · 占位 1.1-wy-cocos-r2（按原 Graphics 编排）' };
+const SPRITE_KIND = { linchong: '帧动画 · DJL_VFX 1.1-r5（正式）', huarong: '帧动画 · 占位（按原 Graphics 编排）', wuyong: '帧动画 · 占位 1.1-wy-cocos-r2（按原 Graphics 编排）', husanniang: '帧动画 · HSNVFX 1.1-hsn-cocos-r1（正式）' };
 
 // ------------------------------------------------------------------ assets → cc.resources / audio
 const loadImg = (src) => new Promise((res) => { const i = new Image(); i.onload = () => res(i); i.onerror = () => res(null); i.src = src; });
@@ -298,9 +298,9 @@ function statusAnchors(c) {
   return { Caster_WeaponPoint: weapon, Target_HitPoint: hit, Attack_MidPoint: { x: (weapon.x + hit.x) / 2, y: (weapon.y + hit.y) / 2 },
     Ground: { x: x + f * 270 * S, y: GROUND }, Caster_PassivePoint: { x: x - f * 66 * S, y: GROUND + 420 * S }, Caster_FeetPoint: { x, y: GROUND }, Target_FeetPoint: { x: o.x, y: GROUND } };
 }
-const STATUS_LIB = { version: 'linchong+huarong+wuyong', authoredSpan: D.LINCHONG_VFX.authoredSpan,
-  assets: { ...D.LINCHONG_VFX.assets, ...D.HUARONG_VFX.assets, ...D.WUYONG_VFX.assets }, events: { ...D.LINCHONG_VFX.events, ...D.HUARONG_VFX.events, ...D.WUYONG_VFX.events } };
-const STATUS_TABLE = { ...D.LINCHONG_STATUS_VFX, ...D.HUARONG_STATUS_VFX, ...D.WUYONG_STATUS_VFX };
+const STATUS_LIB = { version: 'linchong+huarong+wuyong+husanniang', authoredSpan: D.LINCHONG_VFX.authoredSpan,
+  assets: { ...D.LINCHONG_VFX.assets, ...D.HUARONG_VFX.assets, ...D.WUYONG_VFX.assets, ...D.HUSANNIANG_SPRITE_VFX.assets }, events: { ...D.LINCHONG_VFX.events, ...D.HUARONG_VFX.events, ...D.WUYONG_VFX.events, ...D.HUSANNIANG_SPRITE_VFX.events } };
+const STATUS_TABLE = { ...D.LINCHONG_STATUS_VFX, ...D.HUARONG_STATUS_VFX, ...D.WUYONG_STATUS_VFX, ...D.HUSANNIANG_STATUS_VFX };
 for (const c of [P, E]) {
   c.aura = D.StatusAuraEffect.spawnLocal(fxLayers.Status_Front, c.x, GROUND, c.facing, VS);
   c.tracker = new D.SpriteStatusVfxTracker(c.side, { parent: fxLayers.SkillFX, layers: fxLayers, scale: VS, speed: () => 1, facing: () => c.facing, anchors: () => statusAnchors(c) }, STATUS_LIB, STATUS_TABLE);
@@ -638,7 +638,7 @@ function tinted(img, r, g, b) {
   bgImg = bg;
   texKeys.forEach((k, i) => { if (texImgs[i]) TEX[k] = texImgs[i]; });
   HEROES.forEach((h, i) => { const img = heroImgs[i]; if (img) sprites[h.id] = { img, flash: tinted(img, 255, 160, 150), ghost: tinted(img, 150, 172, 200) }; });
-  await Promise.all([D.SpriteVfxEffect.preload(D.LINCHONG_VFX), D.SpriteVfxEffect.preload(D.HUARONG_VFX), D.SpriteVfxEffect.preload(D.WUYONG_VFX)]);
+  await Promise.all([D.SpriteVfxEffect.preload(D.LINCHONG_VFX), D.SpriteVfxEffect.preload(D.HUARONG_VFX), D.SpriteVfxEffect.preload(D.WUYONG_VFX), D.SpriteVfxEffect.preload(D.HUSANNIANG_VFX)]);
   buildRoster();
   sel.value = E.hero;
   setHero('luzhishen');

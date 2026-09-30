@@ -13,3 +13,5 @@ export { skillSfxCues, allSfxClips, REACTION_SFX } from './sfx/SkillSfxManifest'
 export { BattleSfx } from './sfx/BattleSfx';
 export { BATTLE_SCENE_2_VFX, BATTLE_SCENE_2_CHARACTER_DISPLAY, BATTLE_SCENE_2_FACE_CENTERS } from './BattleScene2PresentationConfig';
 export { SIX_CHARACTER_DEFINITIONS } from './characters/definitions';
+export { HUSANNIANG_VFX } from './vfx/HusanniangVfxLibrary';
+export { HUSANNIANG_SPRITE_VFX, HUSANNIANG_STATUS_VFX } from './vfx/HusanniangSpriteVfx';
