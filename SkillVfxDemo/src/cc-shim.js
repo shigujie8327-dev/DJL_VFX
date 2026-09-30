@@ -132,7 +132,12 @@ Sprite.FillType = { HORIZONTAL: 0, VERTICAL: 1, RADIAL: 2 };
 
 // Audio: the demo installs the output via cc.__audio.
 class AudioClip { constructor(key) { this.key = key; } }
-class AudioSource extends Component { playOneShot(clip, vol) { cc.__audio?.(clip.key, vol); } }
+class AudioSource extends Component {
+  constructor() { super(); this.clip = null; this.loop = false; this.volume = 1; this._h = null; }
+  playOneShot(clip, vol) { cc.__audio?.(clip.key, vol); }
+  play() { this.stop(); if (this.clip) this._h = cc.__audioLoop?.(this.clip.key, this.volume, this.loop) ?? null; }
+  stop() { if (this._h) { this._h.stop(); this._h = null; } }
+}
 
 const resources = {
   load(path, Type, cb) {

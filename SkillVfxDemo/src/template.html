@@ -268,6 +268,19 @@ function ensureAudio() {
     }
   } catch (e) { actx = null; }
 }
+// Loops (行者's madness): the buffer may still be decoding on the first click, so start once it is there. Handle.stop() ends it.
+cc.__audioLoop = (key, vol, loop) => {
+  if (!sfxOn || silent || !actx) return null;
+  const h = { stopped: false, node: null, stop() { this.stopped = true; try { this.node && this.node.stop(); } catch (e) {} } };
+  const go = (n) => {
+    if (h.stopped) return;
+    if (!buffers[key]) { if (n < 20) setTimeout(() => go(n + 1), 150); return; }
+    const src = actx.createBufferSource(); src.buffer = buffers[key]; src.loop = !!loop;
+    const g = actx.createGain(); g.gain.value = vol; src.connect(g).connect(actx.destination); src.start(); h.node = src;
+  };
+  go(0);
+  return h;
+};
 cc.__audio = (key, vol) => {
   if (!sfxOn || silent || !actx || !buffers[key]) return;
   const src = actx.createBufferSource(); src.buffer = buffers[key];
