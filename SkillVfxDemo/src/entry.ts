@@ -7,6 +7,8 @@ export { LINCHONG_VFX } from './vfx/LinchongVfxLibrary';
 export { HUARONG_VFX } from './vfx/HuarongVfxLibrary';
 export { LINCHONG_STATUS_VFX, LINCHONG_SPRITE_SFX } from './vfx/LinchongSpriteVfx';
 export { HUARONG_STATUS_VFX } from './vfx/HuarongSpriteVfx';
+export { WUYONG_VFX } from './vfx/WuyongVfxLibrary';
+export { WUYONG_STATUS_VFX } from './vfx/WuyongSpriteVfx';
 export { skillSfxCues, allSfxClips, REACTION_SFX } from './sfx/SkillSfxManifest';
 export { BattleSfx } from './sfx/BattleSfx';
 export { BATTLE_SCENE_2_VFX, BATTLE_SCENE_2_CHARACTER_DISPLAY, BATTLE_SCENE_2_FACE_CENTERS } from './BattleScene2PresentationConfig';
