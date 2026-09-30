@@ -7605,7 +7605,7 @@ const PHASES = {
   QUAKE: ['提杖 0.3s → 顿地 0.08s：金色冲击环、褐色尘爆', '地裂 0.3s：岩脊沿地面奔向对手，岩刺依次破土，冲到脚下即命中', '震慑 0.6s：脚下留颤动墨环与四道金色镇纹', '分支 trigger：镇纹骤亮、岩刺一拱、地面一震（拦下近→远）'],
   STEP_FORMATION: ['三踏 0.5s：连踏三脚，每脚炸开金色地环，把岩脊往前推', '撞中 0.8s：岩脊冲到对手脚下，岩刺拱起顶中，震屏；随后滑步拉近'],
   FEATHER_FAN_PLAN: ['Cast 0.55s：手前展开扇形风', '0.2s Flight：七枚羽毛依次飞出（视觉七羽，判定仍是一击）', '0.6s Hit：墨色命中与散羽', '分支 recovered：0.8s 三股金色光尘从对手身上流回吴用胸口，随后内收并沿身体上升（Core 报告回气时才演）'],
-  STRATAGEM: ['Cast 0.7s（序列帧 17 帧，由参考视频抠出）：一枚黑子落在对手脚下，金边涟漪荡开，墨线铺成棋盘', '0.8s 分支 matched（26 帧）：棋盘与四角落子在人物身后，中心墨焰与金光单独切出放在人物前层，不会被身体挡住', '0.8s 分支 missed：棋盘淡去，墨旋散开', '音效取自参考视频，按画面同样加速 1.6 倍'],
+  STRATAGEM: ['Cast 0.7s（序列帧 17 帧，由参考视频抠出）：一枚黑子落在对手脚下，金边涟漪荡开，墨线铺成棋盘', '0.8s 分支 matched（26 帧）：棋盘与四角落子在人物身后，中心墨焰与金光单独切出放在人物前层，不会被身体挡住', '分支 missed：不播特效，只在吴用头上提示「奇谋未中」（避免被误解为生效）', '音效取自参考视频，按画面同样加速 1.6 倍'],
   CHAOTIC_FORMATION: ['Cast：对手周围五根石柱依次破土（约齐腰高），1.05s 后沉回', '0.22s Wind：墨旋在对手脚下卷起约 1s', '0.55s 白刃斩中（第 1 击），0.82s 黑刃斩中（第 2 击）', '状态 乱阵：对手身旁留一团循环墨旋，状态结束时收束'],
   EMPTY_CITY: ['Cast：琴弦 0.85s，0.35s 起城门在身后升起 1.15s，吴用立于门洞中', '状态 空城：城门以半透明常驻身后，状态结束时收淡', '分支 absorb：空城期间受击且确有减伤时，墨旋与城门一闪'],
   PEARL_ARROWS: ['四箭连珠：每箭 Shot（离弦）→ Hit（0.29/0.42/0.55/0.68s）', '帧动画占位，节拍沿用原 Graphics 版'],
@@ -7741,7 +7741,8 @@ function render() {
   for (const p of state.popups) {
     const q = (state.clock - p.born) / 0.9; if (q >= 1) continue;
     ctx.globalAlpha = q < 0.7 ? 1 : 1 - (q - 0.7) / 0.3;
-    const y = -p.y - 60 * easeOutCubic(Math.min(1, q * 1.6));
+    // p.y is a height above the ground (like the game's float texts), not an absolute stage y.
+    const y = -(GROUND + p.y) - 60 * easeOutCubic(Math.min(1, q * 1.6));
     ctx.font = `${p.big ? 64 : 48}px "Ma Shan Zheng", KaiTi, serif`; ctx.textAlign = 'center';
     ctx.lineWidth = 7; ctx.strokeStyle = 'rgba(28,26,30,0.85)'; ctx.strokeText(p.text, p.x, y);
     ctx.fillStyle = p.color; ctx.fillText(p.text, p.x, y);
@@ -7824,6 +7825,15 @@ async function playSkill(id, fromQueue = false) {
   if (id === 'MAD_STAFF') addStatus(P, 'SUPER_ARMOR');
   if (id === 'EMPTY_CITY' && variant === 'absorb') { addStatus(P, 'EMPTY_CITY'); log(`空城已布，${HERO[E.hero].name} 出手攻击……`, 'sys'); await wait(1.0); if (my !== state.token) return;
     P.anim.flash = 1; P.anim.knock = 18; P.anim.knockDir = -1; popup(P.x, 420, '减半', '#bfe9d6', false); log('　空城：直接攻击伤害减半'); }
+  // 奇谋未中: like the game (BattleGameController), no effect at all — only a prompt over 吴用.
+  if (id === 'STRATAGEM' && variant === 'missed') {
+    hideCaption();
+    log(`${HERO[P.hero].name} 使出【${skill.name}】（未中）· 速度 ${skill.speed}`, 'hit');
+    popup(P.x, 420, '奇谋未中', '#bfe9d6', false); log('　奇谋未中，对手招式照常', 'sys');
+    state.fx = null; state.last = null; buildTicks(null);
+    await wait(0.9); if (my !== state.token) return;
+    onComplete(my, id, variant); return;
+  }
   const dodged = variant === 'dodged';
   const bonus = P.hero === 'huarong' && state.distance === 'FAR' && skill.tags.includes('ATTACK') ? 1 : 0;
   log(`${HERO[P.hero].name} 使出【${skill.name}】${variant ? `（${VARIANTS[id]?.find((v) => v[0] === variant)?.[1] ?? variant}）` : ''} · 速度 ${skill.speed + bonus}`, 'hit');
@@ -7860,7 +7870,7 @@ async function onComplete(my, id, variant) {
     case 'MAD_STAFF': removeStatus(P, 'SUPER_ARMOR'); break;
     case 'QUAKE': if (variant === 'trigger') { removeStatus(E, 'INTIMIDATED'); log(`${who} 被震住，拉远失败`, 'sys'); } else { addStatus(E, 'INTIMIDATED'); log(`${who} 被震慑`, 'sys'); } break;
     case 'STEP_FORMATION': if (variant === 'blocked') log('拉近被拦下，距离不变', 'sys'); else await glideTo('NEAR'); break;
-    case 'STRATAGEM': log(variant === 'missed' ? '奇谋未中' : `识破！${who} 的技能被取消`, 'sys'); break;
+    case 'STRATAGEM': if (variant !== 'missed') log(`识破！${who} 的技能被取消`, 'sys'); break;
     case 'CHAOTIC_FORMATION': addStatus(E, 'CHAOS_COST_UP'); log(`${who} 下一个技能耗气 +20`, 'sys'); break;
     case 'EMPTY_CITY': addStatus(P, 'EMPTY_CITY'); if (variant === 'absorb') log('受击：回合末回气 20', 'sys'); break;
     case 'FEATHER_FAN_PLAN': if (variant === 'recovered') log('羽扇策命中：回气 +5', 'sys'); break;
