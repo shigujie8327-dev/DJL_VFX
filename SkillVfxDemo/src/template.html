@@ -1,0 +1,675 @@
+<title>斗将录技能特效演示</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Sans+SC:wght@400;500;700&display=swap">
+<style>
+/* Layout: stage-first viewer. Hero roster above the stage, scrub timeline under it, skill cards + detail like the game's action bar. */
+:root {
+  --bg: #111513;
+  --panel: #19201c;
+  --panel-2: #222b26;
+  --line: #303b35;
+  --fg: #e8ece5;
+  --muted: #98a59d;
+  --jade: #86d7b4;
+  --jade-deep: #3f8f6f;
+  --gold: #f0c460;
+  --hit: #ff9a7a;
+  --f-display: "Ma Shan Zheng", "STKaiti", "KaiTi", serif;
+  --f-ui: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  --f-mono: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { background: var(--bg); color: var(--fg); }
+body { font-family: var(--f-ui); font-size: 14px; line-height: 1.55; padding-inline: 16px; padding-block: 18px 32px; }
+.wrap { max-width: 1280px; margin: 0 auto; display: grid; gap: 14px; }
+header { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 16px; }
+h1 { font-family: var(--f-display); font-weight: 400; font-size: clamp(28px, 4vw, 40px); line-height: 1.1; margin: 0; letter-spacing: 0.04em; text-wrap: balance; }
+h1 small { font-family: var(--f-ui); font-size: 13px; color: var(--muted); letter-spacing: 0.02em; margin-left: 10px; }
+.src { color: var(--muted); font-size: 12px; font-family: var(--f-mono); overflow-wrap: anywhere; }
+
+.roster { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; }
+@media (max-width: 640px) { .roster { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.hero { display: grid; grid-template-columns: 44px 1fr; gap: 8px; align-items: center; text-align: left; font: inherit; color: var(--fg); background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 6px 8px; cursor: pointer; min-width: 0; }
+.hero:hover { border-color: var(--jade-deep); }
+.hero[aria-pressed="true"] { border-color: var(--jade); background: var(--panel-2); }
+.hero canvas { width: 44px; height: 44px; border-radius: 50%; background: var(--panel-2); }
+.hero > span { min-width: 0; overflow: hidden; }
+.hero .hn { font-family: var(--f-display); font-size: 21px; line-height: 1.1; }
+.hero .ht { display: block; font-size: 11px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.stage { position: relative; width: 100%; aspect-ratio: 1920 / 770; max-width: 100%; border-radius: 10px; overflow: hidden; background: #000; border: 1px solid var(--line); }
+.stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.dist { position: absolute; top: 3%; left: 50%; transform: translateX(-50%); padding: 3px 14px; border-radius: 999px; background: rgba(12, 16, 14, 0.62); color: #f2efe4; font-size: clamp(11px, 1.3vw, 15px); letter-spacing: 0.3em; white-space: nowrap; pointer-events: none; }
+.caption { position: absolute; left: 2%; bottom: 4%; font-family: var(--f-display); color: #fffaf0; font-size: clamp(20px, 3.4vw, 46px); text-shadow: 0 2px 10px rgba(0,0,0,0.7); pointer-events: none; opacity: 0; transition: opacity .25s; }
+.caption.on { opacity: 1; }
+.names { position: absolute; top: 3%; left: 2%; right: 2%; display: flex; justify-content: space-between; pointer-events: none; font-size: clamp(11px, 1.3vw, 15px); color: #f2efe4; }
+.names span { padding: 2px 10px; border-radius: 999px; background: rgba(12, 16, 14, 0.5); }
+
+.bar { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; }
+.btn { font: inherit; font-weight: 500; color: var(--fg); background: var(--panel-2); border: 1px solid var(--line); border-radius: 8px; padding: 7px 14px; cursor: pointer; }
+.btn:hover { border-color: var(--jade-deep); }
+.btn:focus-visible, .skill:focus-visible, .hero:focus-visible, .seg button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px solid var(--jade); outline-offset: 2px; }
+.btn.primary { background: var(--jade-deep); border-color: var(--jade-deep); color: #f4fffa; }
+.seg { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.seg button { font: inherit; font-size: 13px; color: var(--muted); background: var(--panel); border: 0; padding: 7px 11px; cursor: pointer; font-variant-numeric: tabular-nums; }
+.seg button + button { border-left: 1px solid var(--line); }
+.seg button[aria-pressed="true"] { background: var(--panel-2); color: var(--jade); }
+.lbl { color: var(--muted); font-size: 12px; letter-spacing: 0.08em; }
+select { font: inherit; color: var(--fg); background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; }
+.group { display: inline-flex; align-items: center; gap: 8px; }
+
+.timeline { display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; }
+.track { position: relative; height: 28px; }
+.track input { position: absolute; inset: 0; width: 100%; margin: 0; accent-color: var(--jade); background: transparent; }
+.ticks { position: absolute; left: 8px; right: 8px; top: 0; bottom: 0; pointer-events: none; }
+.ticks i { position: absolute; top: 2px; width: 2px; height: 8px; background: var(--hit); border-radius: 1px; transform: translateX(-1px); }
+.time { font-variant-numeric: tabular-nums; color: var(--muted); font-size: 12px; min-width: 94px; text-align: right; }
+
+.main { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 14px; }
+@media (max-width: 860px) { .main { grid-template-columns: 1fr; } }
+.skills { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; align-content: start; }
+@media (max-width: 480px) { .skills { grid-template-columns: 1fr; } }
+.skill { display: grid; grid-template-columns: 56px 1fr; gap: 4px 12px; align-items: center; text-align: left; font: inherit; color: var(--fg); background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; cursor: pointer; min-width: 0; }
+.skill:hover { border-color: var(--jade-deep); }
+.skill[aria-pressed="true"] { border-color: var(--jade); background: var(--panel-2); }
+.skill img { grid-row: span 2; width: 56px; height: 56px; border-radius: 8px; }
+.skill .nm { font-family: var(--f-display); font-size: 24px; line-height: 1.1; }
+.skill .meta { display: flex; flex-wrap: wrap; gap: 4px 10px; font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.pill { display: inline-block; padding: 0 7px; border-radius: 999px; font-size: 11px; border: 1px solid var(--line); color: var(--fg); }
+.pill.FAR { color: var(--jade); border-color: var(--jade-deep); }
+.pill.NEAR { color: var(--gold); border-color: #8a6b2a; }
+.pill.ANY { color: #c9c3f0; border-color: #5b5690; }
+.innate { grid-column: 1 / -1; display: grid; grid-template-columns: 40px 1fr; gap: 10px; align-items: center; padding: 8px 12px; border: 1px dashed var(--line); border-radius: 10px; color: var(--muted); font-size: 13px; }
+.innate img { width: 40px; height: 40px; border-radius: 6px; }
+.innate b { color: var(--fg); font-weight: 500; }
+
+.info { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.info h2 { font-family: var(--f-display); font-weight: 400; font-size: 30px; margin: 0; line-height: 1.1; }
+.info h2 span { font-family: var(--f-mono); font-size: 12px; color: var(--muted); margin-left: 8px; }
+.kind { justify-self: start; font-size: 11px; padding: 1px 8px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); }
+.kind.sprite { color: var(--gold); border-color: #8a6b2a; }
+.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin: 0; }
+.stats div { background: var(--panel-2); border-radius: 8px; padding: 6px 8px; }
+.stats dt { font-size: 11px; color: var(--muted); letter-spacing: 0.08em; }
+.stats dd { margin: 0; font-weight: 700; font-variant-numeric: tabular-nums; }
+.eff { color: var(--gold); font-size: 13px; }
+.vars { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.phases { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+.phases li { font-size: 13px; color: var(--fg); }
+.timing { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; font-family: var(--f-mono); overflow-wrap: anywhere; }
+
+.log { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; font-size: 13px; max-height: 132px; overflow-y: auto; display: grid; gap: 2px; align-content: start; }
+.log p { margin: 0; color: var(--muted); }
+.log p.hit { color: var(--fg); }
+.log p.sys { color: var(--jade); }
+.note { color: var(--muted); font-size: 12px; max-width: 90ch; margin: 0; }
+@media (prefers-reduced-motion: reduce) { .caption { transition: none; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>斗将录 · 技能特效<small>六将二十四技，直接运行项目中的 VFX 代码</small></h1>
+    <div class="src">assets/scripts/cocos/presentation/battle-ui-2/vfx/ · SkillVfxRegistry.ts</div>
+  </header>
+
+  <div class="roster" id="roster" role="group" aria-label="出招角色"></div>
+
+  <div class="stage" id="stage">
+    <canvas id="cv"></canvas>
+    <div class="names"><span id="pName">我方</span><span id="eName">对手</span></div>
+    <div class="dist" id="dist">◀ 远距离 ▶</div>
+    <div class="caption" id="caption"></div>
+  </div>
+
+  <div class="timeline">
+    <button class="btn" id="pauseBtn" type="button">暂停</button>
+    <div class="track">
+      <div class="ticks" id="ticks"></div>
+      <input id="scrub" type="range" min="0" max="1000" value="0" aria-label="特效时间轴">
+    </div>
+    <div class="time" id="time">0.00 / 0.00 s</div>
+  </div>
+
+  <div class="bar">
+    <button class="btn primary" id="allBtn" type="button">连续演示四技</button>
+    <button class="btn" id="replayBtn" type="button">重播当前</button>
+    <span class="group"><span class="lbl">速度</span>
+      <span class="seg" id="speedSeg"><button type="button" data-v="0.1">0.1×</button><button type="button" data-v="0.25">0.25×</button><button type="button" data-v="0.5">0.5×</button><button type="button" data-v="1" aria-pressed="true">1×</button></span>
+    </span>
+    <span class="group"><span class="lbl">音效</span>
+      <span class="seg" id="sfxSeg"><button type="button" data-v="1" aria-pressed="true">开</button><button type="button" data-v="0">关</button></span>
+    </span>
+    <span class="group"><label class="lbl" for="enemySel">对手</label><select id="enemySel"></select></span>
+    <span class="group"><span class="lbl">距离</span>
+      <span class="seg" id="distSeg"><button type="button" data-v="NEAR">近</button><button type="button" data-v="FAR" aria-pressed="true">远</button></span>
+    </span>
+    <span class="group" id="travGrp" hidden><span class="lbl">行者</span>
+      <span class="seg" id="travSeg"><button type="button" data-v="1">生命≤40%</button><button type="button" data-v="0" aria-pressed="true">正常</button></span>
+    </span>
+  </div>
+
+  <div class="main">
+    <div class="skills" id="skills"></div>
+    <div class="info" id="info"></div>
+  </div>
+
+  <div class="log" id="log" aria-live="polite"></div>
+  <p class="note">页面里跑的是项目当前的 SkillVfxRegistry 及各 Effect 源码（TypeScript 直接编译，外加一层模拟 cc.Graphics / Sprite 的 Canvas 适配），出手点、命中点、比例 1.4、顿帧、震屏、音效时间点、分层顺序和状态光环都按 BattleScene2Presenter 的接法。点技能时若距离不符，会先按 0.3 秒滑步换距。飘字是技能面板伤害，未计护甲；「分支」对应 Core 事件给出的 variant。</p>
+</div>
+
+<script>/*__SHIM__*/</script>
+<script>/*__BUNDLE__*/</script>
+<script>/*__ASSETS__*/</script>
+<script>
+(() => {
+'use strict';
+const cc = window.cc, D = window.DJL, A = window.ASSETS;
+const TAU = Math.PI * 2;
+const clamp01 = (k) => (k < 0 ? 0 : k > 1 ? 1 : k);
+const easeOutCubic = (k) => 1 - Math.pow(1 - k, 3);
+
+// ------------------------------------------------------------------ project constants (BattleScene2PresentationConfig / Presenter)
+const ANCHORS = { NEAR: { player: 620 - 960, enemy: 1300 - 960 }, FAR: { player: 390 - 960, enemy: 1530 - 960 } };
+const GROUND = -370, MASTER = 760, VS = D.BATTLE_SCENE_2_VFX.scale, HITP = D.BATTLE_SCENE_2_VFX.hitPoint;
+const GLIDE = 0.3, GHOST = { interval: 0.028, life: 0.32, alpha: 150, originLife: 0.45 };
+const DISPLAY = D.BATTLE_SCENE_2_CHARACTER_DISPLAY, FACES = D.BATTLE_SCENE_2_FACE_CENTERS;
+const HEROES = D.SIX_CHARACTER_DEFINITIONS;
+const HERO = Object.fromEntries(HEROES.map((h) => [h.id, h]));
+
+const INNATE = {
+  linchong: ['豹子头', 'leopard_head', '打断或截击成功后速度 +2，下次攻击时消耗。'],
+  luzhishen: ['倒拔垂杨柳', 'uproot_willow', '单次伤害超过 15 时减伤（数值暂为 0，机制保留待测）。'],
+  wuyong: ['智多星', 'wise_star', '预判时从对手可用技能中随机排除一个。'],
+  huarong: ['小李广', 'little_li_guang', '远距离时攻击技能速度 +1。'],
+  husanniang: ['一丈青', 'one_zhang_qing', '主动变距耗气 -15；远→近后获得「回风」到下回合结束。'],
+  wusong: ['行者', 'traveler', '生命 ≤ 40% 时攻击速度 +1、每击伤害 +4。'],
+};
+const TITLE = { linchong: '豹子头', luzhishen: '花和尚', wuyong: '智多星', huarong: '小李广', husanniang: '一丈青', wusong: '行者' };
+const ICON = { GALE_THRUST: 'gale_thrust', RETURNING_SPEAR: 'returning_spear', SWEEPING_HOSTS: 'sweeping_hosts', SPEAR_FORMATION: 'spear_formation',
+  STAFF_SWEEP: 'staff_sweep', MAD_STAFF: 'mad_staff', QUAKE: 'quake', STEP_FORMATION: 'step_formation',
+  FEATHER_FAN_PLAN: 'feather_fan_plan', STRATAGEM: 'stratagem', CHAOTIC_FORMATION: 'chaotic_formation', EMPTY_CITY: 'empty_city',
+  PEARL_ARROWS: 'pearl_arrows', CLOUD_PIERCER: 'cloud_piercer', RETREATING_ARROW: 'retreating_arrow', ROOTING_ARROW: 'rooting_arrow',
+  DUAL_BLADES: 'dual_blades', RED_SASH: 'red_sash', SHADOW_GLIDE: 'shadow_glide', RETURNING_WIND_SLASH: 'returning_wind_slash',
+  MANDARIN_DUCK_KICKS: 'mandarin_duck_kicks', PRECEPT_BLADE: 'precept_blade', DRUNKEN_STEP: 'drunken_step', TIGER_SUBDUING: 'tiger_subduing' };
+
+// Mechanism text (definitions.ts effects) and the VFX choreography (each effect file's header comment).
+const EFFECT = {
+  GALE_THRUST: '30% 概率打断（需先于对手出手）', RETURNING_SPEAR: '对手攻击命中后反击，伤害升为 55', SWEEPING_HOSTS: '伤害后强制拉远', SPEAR_FORMATION: '布阵：对手远→近时拦下并造成 32 伤害，持续到自己下次行动结束',
+  MAD_STAFF: '出手即霸体（只有强制打断能打断）', QUAKE: '震慑：对手下回合结束前试图近→远会被拦下', STEP_FORMATION: '伤害后主动拉近',
+  FEATHER_FAN_PLAN: '命中回气 +5', STRATAGEM: '预判对手技能，猜中则令其取消（对手多耗 50% 气）', CHAOTIC_FORMATION: '对手下一个技能耗气 +20', EMPTY_CITY: '本回合受直接攻击伤害减半；受击则回合末回气 20',
+  RETREATING_ARROW: '伤害后主动拉远', ROOTING_ARROW: '定身：对手主动变距 +20 气，持续到下回合结束',
+  RED_SASH: '缚足：对手下一次主动变距 +15 气', SHADOW_GLIDE: '切换远近；本回合首次攻击必定闪避', RETURNING_WIND_SLASH: '带「回风」时每击伤害升为 24',
+  DRUNKEN_STEP: '本回合受攻击 50% 闪避，闪避回气 15', TIGER_SUBDUING: '无视护甲；击杀回气 25，未击杀则自身下回合速度 -2',
+};
+const PHASES = {
+  GALE_THRUST: ['Cast：枪锋寒芒 + 赤红速度场，0.17s 命中 → Hit', '分支 interrupt：追加「行动轨迹切断」斩痕'],
+  RETURNING_SPEAR: ['普通：Normal 回身一枪 → Hit35（0.32s）', '分支 counter：Trigger + Counter 枪尾拖痕 → Hit55（0.30s），轻震'],
+  SWEEPING_HOSTS: ['Cast + 弧形拖尾，0.37s 横扫命中 → Hit，震屏', '分支 push：强制拉远成功，风压推开', '分支 blocked：风压破碎（伤害不回退）'],
+  SPEAR_FORMATION: ['布阵：Activate 地面枪阵，低亮枪影由状态循环接手（离场时 Expire）', '分支 trigger：远→近被拦，聚枪、弧形突刺、32×1 命中，枪阵散去'],
+  STAFF_SWEEP: ['抡杖 0.22s：禅杖虚影高举过肩，金色内力在握杖处翻涌', '一扫：自后上方劈扫至前下方，金赤月牙杖风（第 1 击）', '回扫：顺势反撩而上，与第一道交成十字（第 2 击）；每击金色尘爆、碎石、重震'],
+  MAD_STAFF: ['疯魔 0.55s：金赤内力如火舌腾起，脚下金纹裂地；霸体只在头上浮出「霸体」二字，不再有金甲特效', '劈落 ≈0.2s：巨大禅杖虚影抡圆劈下，金赤火弧砸中对手', '崩地 1.1s：金焰冲起，放射裂纹透火光，碎石迸飞，上下重震两次'],
+  QUAKE: ['提杖 0.3s → 顿地 0.08s：金色冲击环、褐色尘爆', '地裂 0.3s：岩脊沿地面奔向对手，岩刺依次破土，冲到脚下即命中', '震慑 0.6s：脚下留颤动墨环与四道金色镇纹', '分支 trigger：镇纹骤亮、岩刺一拱、地面一震（拦下近→远）'],
+  STEP_FORMATION: ['三踏 0.5s：连踏三脚，每脚炸开金色地环，把岩脊往前推', '撞中 0.8s：岩脊冲到对手脚下，岩刺拱起顶中，震屏；随后滑步拉近'],
+  FEATHER_FAN_PLAN: ['Cast 0.55s：手前展开扇形风', '0.2s Flight：七枚羽毛依次飞出（视觉七羽，判定仍是一击）', '0.6s Hit：墨色命中与散羽', '分支 recovered：0.8s 三股金色光尘从对手身上流回吴用胸口，随后内收并沿身体上升（Core 报告回气时才演）'],
+  STRATAGEM: ['Cast 0.7s（序列帧 17 帧，由参考视频抠出）：一枚黑子落在对手脚下，金边涟漪荡开，墨线铺成棋盘', '0.8s 分支 matched（26 帧）：棋盘与四角落子在人物身后，中心墨焰与金光单独切出放在人物前层，不会被身体挡住', '分支 missed：不播特效，只在吴用头上提示「奇谋未中」（避免被误解为生效）', '音效取自参考视频，按画面同样加速 1.6 倍'],
+  CHAOTIC_FORMATION: ['Cast：对手周围五根石柱依次破土（约齐腰高），1.05s 后沉回', '0.22s Wind：墨旋在对手脚下卷起约 1s', '0.55s 白刃斩中（第 1 击），0.82s 黑刃斩中（第 2 击）', '状态 乱阵：对手身旁留一团循环墨旋，状态结束时收束'],
+  EMPTY_CITY: ['Cast：琴弦 0.85s，0.35s 起城门在身后升起 1.15s，吴用立于门洞中', '状态 空城：城门以半透明常驻身后，状态结束时收淡', '分支 absorb：空城期间受击且确有减伤时，墨旋与城门一闪'],
+  PEARL_ARROWS: ['四箭连珠：每箭 Shot（离弦）→ Hit（0.29/0.42/0.55/0.68s）', '帧动画占位，节拍沿用原 Graphics 版'],
+  CLOUD_PIERCER: ['Cast 满弓 → 0.5s Shot 穿云 → 0.66s Hit 贯穿，震屏', '帧动画占位，节拍沿用原 Graphics 版'],
+  RETREATING_ARROW: ['Cast → 0.12s Shot 贴身一箭 → 0.19s Hit', '分支 retreat：退身劲风（随后滑步拉远）', '分支 blocked：退身被拦'],
+  ROOTING_ARROW: ['Cast 金色内力缠箭 → 0.18s Shot → 0.36s Hit', '0.48s Pin：虚箭钉影；定身状态由 DingshenJian.Active 循环接手'],
+  DUAL_BLADES: ['两刀依次斩出（命中 0.142 / 0.302s），刀光拖尾 + 命中闪光，轻震', '分支 dodged：保留刀光，去掉命中贴图与震屏', '正式素材 HSNVFX 1.1-hsn-cocos-r1'],
+  RED_SASH: ['抛绫：Cast → 红绫 Projectile 飞过场地，0.42s 抽中 Hit', '分支 dodged：只有抛绫，没有抽中', '缚足 BOUND：绳圈缠在对手脚下（状态光环，随状态出现与消失，解除时 End 散开）'],
+  SHADOW_GLIDE: ['化影：Cast 裹身，冲刺拖影贴地朝对手掠去，原地留残影与渐隐影', '分支 retreat：近距离时向后掠，拖影镜像朝远离对手的方向'],
+  RETURNING_WIND_SLASH: ['普通：三斩（0.35 / 0.57 / 0.79s）依次命中，风环与刀光', '分支 enhanced（回风）：红色风柱，末击炸出红环', '分支 dodged：去掉命中贴图', '状态 回风 RETURN_WIND：腰间闪光 + 脚下玉环（一丈青）'],
+  MANDARIN_DUCK_KICKS: ['一脚高扫：琥珀腿风从身后绕过身前扫中上身', '二脚低扫：贴地腿风扫下盘，带起尘土', '三脚正蹬：劲风成锥直贯胸口，两圈气浪；末一脚最重'],
+  PRECEPT_BLADE: ['按刀 0.22s：戒刀虚影提起，刀身一线冷光走到刀尖', '一刀 0.1s：从身后上方斜劈到前下方', '刀痕 0.8s：刀痕裂成两道白线，钢屑火星迸散，冷风穿出，重震'],
+  DRUNKEN_STEP: ['洒酒 0.35s：酒水抛成弧线，泛起琥珀酒雾', '醉摇 0.8s：雾带绕身画「8」字，两侧留墨色残步（闪避姿态由状态光环接手）'],
+  TIGER_SUBDUING: ['虎威 0.55s：虎纹笔触卷向拳上，一声虎啸荡开', '虎爪 0.14s：三道巨大虎爪痕自上而下斜抓', '破甲 0.9s：钢屑甲片迸出（无视护甲），琥珀重爆，重震'],
+};
+const VARIANTS = {
+  GALE_THRUST: [['', '命中'], ['interrupt', '打断'], ['dodged', '被闪避']],
+  RETURNING_SPEAR: [['', '普通 35'], ['counter', '反击 55']],
+  SWEEPING_HOSTS: [['push', '击退成功'], ['blocked', '击退被拦'], ['dodged', '被闪避']],
+  SPEAR_FORMATION: [['', '布阵'], ['trigger', '拦截触发']],
+  QUAKE: [['', '震地'], ['trigger', '震慑触发']],
+  STEP_FORMATION: [['', '拉近'], ['blocked', '拉近被拦']],
+  FEATHER_FAN_PLAN: [['recovered', '命中回气'], ['', '命中（气满不回）'], ['dodged', '被闪避']],
+  STRATAGEM: [['', '识破'], ['missed', '未中']],
+  CHAOTIC_FORMATION: [['', '命中'], ['dodged', '被闪避']],
+  EMPTY_CITY: [['', '布城'], ['absorb', '受击减伤']],
+  PEARL_ARROWS: [['', '命中'], ['dodged', '被闪避']],
+  CLOUD_PIERCER: [['', '命中'], ['dodged', '被闪避']],
+  RETREATING_ARROW: [['retreat', '退身成功'], ['blocked', '退身被拦']],
+  ROOTING_ARROW: [['', '命中'], ['dodged', '被闪避']],
+  RETURNING_WIND_SLASH: [['', '普通'], ['enhanced', '回风加成']],
+};
+const SPRITE_KIND = { linchong: '帧动画 · DJL_VFX 1.1-r5（正式）', huarong: '帧动画 · 占位（按原 Graphics 编排）', wuyong: '帧动画 · 占位 1.1-wy-cocos-r2（按原 Graphics 编排）', husanniang: '帧动画 · HSNVFX 1.1-hsn-cocos-r1（正式）', wusong: '帧动画 · WSVFX sources-r1（正式素材，编排为手工）', luzhishen: '帧动画 · LZSVFX 1.1-lzs-cocos-r1（正式）' };
+
+// ------------------------------------------------------------------ assets → cc.resources / audio
+const loadImg = (src) => new Promise((res) => { const i = new Image(); i.onload = () => res(i); i.onerror = () => res(null); i.src = src; });
+const TEX = {};
+cc.__resolve = (path, Type) => {
+  if (Type === cc.Texture2D) { const img = TEX[path.replace(/\/texture$/, '')]; return img ? new cc.Texture2D(img) : null; }
+  if (Type === cc.AudioClip) { const key = path.replace(/^battle-ui-2\/sfx\//, ''); return A.sfx[key] ? new cc.AudioClip(key) : null; }
+  return null;
+};
+let actx = null, sfxOn = true, silent = 0;
+const buffers = {};
+function ensureAudio() {
+  if (actx) { if (actx.state === 'suspended') actx.resume(); return; }
+  try {
+    actx = new (window.AudioContext || window.webkitAudioContext)();
+    for (const [k, v] of Object.entries(A.sfx)) {
+      const bin = Uint8Array.from(atob(v.split(',')[1]), (ch) => ch.charCodeAt(0));
+      actx.decodeAudioData(bin.buffer).then((b) => { buffers[k] = b; }).catch(() => {});
+    }
+  } catch (e) { actx = null; }
+}
+// Loops (行者's madness): the buffer may still be decoding on the first click, so start once it is there. Handle.stop() ends it.
+cc.__audioLoop = (key, vol, loop) => {
+  if (!sfxOn || silent || !actx) return null;
+  const h = { stopped: false, node: null, stop() { this.stopped = true; try { this.node && this.node.stop(); } catch (e) {} } };
+  const go = (n) => {
+    if (h.stopped) return;
+    if (!buffers[key]) { if (n < 20) setTimeout(() => go(n + 1), 150); return; }
+    const src = actx.createBufferSource(); src.buffer = buffers[key]; src.loop = !!loop;
+    const g = actx.createGain(); g.gain.value = vol; src.connect(g).connect(actx.destination); src.start(); h.node = src;
+  };
+  go(0);
+  return h;
+};
+cc.__audio = (key, vol) => {
+  if (!sfxOn || silent || !actx || !buffers[key]) return;
+  const src = actx.createBufferSource(); src.buffer = buffers[key];
+  const g = actx.createGain(); g.gain.value = vol; src.connect(g).connect(actx.destination); src.start();
+};
+
+// ------------------------------------------------------------------ scene graph (same layer order as the presenter)
+const root = new cc.Node('Root');
+const worldRoot = new cc.Node('WorldRoot'); root.addChild(worldRoot);
+const ghostLayer = new cc.Node('AfterimageLayer'); worldRoot.addChild(ghostLayer);
+const vfxLayer = new cc.Node('VfxLayer'); worldRoot.addChild(vfxLayer);
+const fxLayers = {};
+for (const name of D.SPRITE_VFX_LAYERS) {
+  const n = new cc.Node(name); fxLayers[name] = n;
+  (D.SPRITE_VFX_BACK_LAYERS.indexOf(name) >= 0 ? ghostLayer : vfxLayer).addChild(n);
+}
+const sfxHost = new cc.Node('Sfx'); root.addChild(sfxHost); D.BattleSfx.attach(sfxHost);
+
+const sprites = {};
+let bgImg = null;
+const fighter = (side) => ({ side, hero: side === 'player' ? 'luzhishen' : 'linchong', x: 0, facing: side === 'player' ? 1 : -1, anim: { flash: 0, knock: 0, knockDir: 1, dodge: 0, dodgeDir: 1 }, statuses: [], aura: null, tracker: null });
+const P = fighter('player'), E = fighter('enemy');
+const state = { distance: 'FAR', speed: 1, paused: false, scrubbing: false, glide: null, ghosts: [], ghostClock: 0, popups: [], clock: 0,
+  skill: null, variant: {}, fx: null, last: null, queue: [], token: 0 };
+P.x = ANCHORS.FAR.player; E.x = ANCHORS.FAR.enemy;
+
+function tipOf(hero) { return D.BATTLE_SCENE_2_VFX.weaponTip[hero] ?? D.BATTLE_SCENE_2_VFX.defaultWeaponTip; }
+function statusAnchors(c) {
+  const o = c === P ? E : P, f = c.facing, S = VS, x = c.x, tip = tipOf(c.hero);
+  const weapon = { x: x + f * tip.x, y: GROUND + tip.y }, hit = { x: o.x - f * HITP.x, y: GROUND + HITP.y };
+  return { Caster_WeaponPoint: weapon, Target_HitPoint: hit, Attack_MidPoint: { x: (weapon.x + hit.x) / 2, y: (weapon.y + hit.y) / 2 },
+    Ground: { x: x + f * 270 * S, y: GROUND }, Caster_PassivePoint: { x: x - f * 66 * S, y: GROUND + 420 * S }, Caster_FeetPoint: { x, y: GROUND }, Target_FeetPoint: { x: o.x, y: GROUND } };
+}
+const STATUS_LIB = { version: 'linchong+huarong+wuyong+husanniang+wusong+luzhishen', authoredSpan: D.LINCHONG_VFX.authoredSpan,
+  assets: { ...D.LUZHISHEN_SPRITE_VFX.assets, ...D.LINCHONG_VFX.assets, ...D.HUARONG_VFX.assets, ...D.WUYONG_VFX.assets, ...D.HUSANNIANG_SPRITE_VFX.assets, ...D.WUSONG_SPRITE_VFX.assets }, events: { ...D.LUZHISHEN_SPRITE_VFX.events, ...D.LINCHONG_VFX.events, ...D.HUARONG_VFX.events, ...D.WUYONG_VFX.events, ...D.HUSANNIANG_SPRITE_VFX.events, ...D.WUSONG_SPRITE_VFX.events } };
+const STATUS_TABLE = { ...D.LUZHISHEN_STATUS_VFX, ...D.LINCHONG_STATUS_VFX, ...D.HUARONG_STATUS_VFX, ...D.WUYONG_STATUS_VFX, ...D.HUSANNIANG_STATUS_VFX, ...D.WUSONG_STATUS_VFX };
+for (const c of [P, E]) {
+  c.aura = D.StatusAuraEffect.spawnLocal(fxLayers.Status_Front, c.x, GROUND, c.facing, VS);
+  c.tracker = new D.SpriteStatusVfxTracker(c.side, { parent: fxLayers.SkillFX, layers: fxLayers, scale: VS, speed: () => 1, facing: () => c.facing, anchors: () => statusAnchors(c) }, STATUS_LIB, STATUS_TABLE);
+}
+function setStatuses(c, ids) {
+  c.statuses = [...ids];
+  c.aura.setStatuses(ids.filter((id) => !c.tracker.handles(id)));
+  c.tracker.setStatuses(ids);
+}
+const addStatus = (c, id) => { if (c.statuses.indexOf(id) < 0) setStatuses(c, [...c.statuses, id]); };
+const removeStatus = (c, id) => setStatuses(c, c.statuses.filter((s) => s !== id));
+function clearStatuses(c) { c.statuses = []; c.aura.setStatuses([]); c.tracker.clear(); }
+
+// ------------------------------------------------------------------ rendering
+const cv = document.getElementById('cv'), ctx = cv.getContext('2d');
+function resize() { const r = cv.getBoundingClientRect(), dpr = Math.min(window.devicePixelRatio || 1, 2); cv.width = Math.max(1, Math.round(r.width * dpr)); cv.height = Math.max(1, Math.round(r.height * dpr)); }
+new ResizeObserver(resize).observe(cv);
+
+function spriteScaleX(c) { const want = c.facing; return want === DISPLAY[c.hero].authoredFacing ? 1 : -1; }
+function drawFighter(c) {
+  const sp = sprites[c.hero]; if (!sp) return;
+  const a = c.anim, fx = MASTER * 0.5, fy = MASTER * 1810 / 2048;
+  const knock = a.knock * a.knockDir * (Math.random() * 0.4 + 0.8), dodge = Math.sin(Math.PI * a.dodge) * 70 * a.dodgeDir;
+  ctx.save(); ctx.translate(c.x + knock + dodge, GROUND); ctx.scale(spriteScaleX(c), -1);
+  ctx.drawImage(sp.img, -fx, -fy, MASTER, MASTER);
+  if (a.flash > 0) { ctx.globalAlpha = a.flash; ctx.drawImage(sp.flash, -fx, -fy, MASTER, MASTER); }
+  ctx.restore();
+}
+function render() {
+  const W = cv.width, H = cv.height, k = W / 1920, wp = worldRoot.position;
+  ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H);
+  ctx.setTransform(k, 0, 0, -k, (960 + wp.x) * k, (385 - wp.y) * k);
+  if (bgImg) { ctx.save(); ctx.scale(1, -1); ctx.drawImage(bgImg, -960, -385, 1920, 780); ctx.restore(); }
+  for (const n of ghostLayer.children) cc.renderTree(n, ctx);
+  for (const g of state.ghosts) {
+    const a = 1 - (state.clock - g.born) / g.life; if (a <= 0) continue;
+    ctx.save(); ctx.globalAlpha = (GHOST.alpha / 255) * a; ctx.translate(g.x, GROUND); ctx.scale(g.sx, -1);
+    ctx.drawImage(g.img, -MASTER * 0.5, -MASTER * 1810 / 2048, MASTER, MASTER); ctx.restore();
+  }
+  drawFighter(E); drawFighter(P);
+  cc.renderTree(vfxLayer, ctx);
+  ctx.setTransform(k, 0, 0, k, (960 + wp.x) * k, (385 - wp.y) * k);
+  for (const p of state.popups) {
+    const q = (state.clock - p.born) / 0.9; if (q >= 1) continue;
+    ctx.globalAlpha = q < 0.7 ? 1 : 1 - (q - 0.7) / 0.3;
+    // p.y is a height above the ground (like the game's float texts), not an absolute stage y.
+    const y = -(GROUND + p.y) - 60 * easeOutCubic(Math.min(1, q * 1.6));
+    ctx.font = `${p.big ? 64 : 48}px "Ma Shan Zheng", KaiTi, serif`; ctx.textAlign = 'center';
+    ctx.lineWidth = 7; ctx.strokeStyle = 'rgba(28,26,30,0.85)'; ctx.strokeText(p.text, p.x, y);
+    ctx.fillStyle = p.color; ctx.fillText(p.text, p.x, y);
+  }
+  ctx.globalAlpha = 1;
+}
+
+// ------------------------------------------------------------------ motion
+function addGhost(c, life) { const sp = sprites[c.hero]; if (sp) state.ghosts.push({ x: c.x, img: sp.ghost, sx: spriteScaleX(c), born: state.clock, life }); }
+function glideTo(dist) {
+  return new Promise((res) => {
+    if (state.distance === dist) { res(); return; }
+    const from = ANCHORS[state.distance], to = ANCHORS[dist];
+    log(`距离：${state.distance === 'NEAR' ? '近' : '远'} → ${dist === 'NEAR' ? '近' : '远'}`, 'sys');
+    state.distance = dist; updateDistUi();
+    addGhost(P, GHOST.originLife); addGhost(E, GHOST.originLife);
+    state.glide = { t: 0, from, to, done: res };
+  });
+}
+function tick(dt) {
+  state.clock += dt;
+  for (const c of [P, E]) { const a = c.anim; a.flash = Math.max(0, a.flash - dt * 5.5); a.knock = Math.max(0, a.knock - dt * 110); a.dodge = Math.max(0, a.dodge - dt * 2.6); }
+  if (state.glide) {
+    const g = state.glide; g.t += dt; const e = easeOutCubic(clamp01(g.t / GLIDE));
+    P.x = g.from.player + (g.to.player - g.from.player) * e; E.x = g.from.enemy + (g.to.enemy - g.from.enemy) * e;
+    state.ghostClock += dt;
+    while (state.ghostClock >= GHOST.interval) { state.ghostClock -= GHOST.interval; addGhost(P, GHOST.life); addGhost(E, GHOST.life); }
+    if (g.t >= GLIDE) { state.glide = null; g.done(); }
+  }
+  state.ghosts = state.ghosts.filter((g) => state.clock - g.born < g.life);
+  state.popups = state.popups.filter((p) => state.clock - p.born < 0.9);
+  for (const c of [P, E]) c.aura.follow(c.x, c.facing);
+  cc.updateTree(root, dt);
+}
+let last = performance.now();
+function frame(now) {
+  const real = Math.min(0.05, (now - last) / 1000); last = now;
+  if (!state.paused) tick(real * state.speed);
+  syncTimeline(); render();
+  requestAnimationFrame(frame);
+}
+const wait = (s) => new Promise((r) => { const until = state.clock + s; const check = () => (state.clock >= until ? r() : requestAnimationFrame(check)); check(); });
+
+// ------------------------------------------------------------------ skill playback (mirrors BattleGameController → presenter.playSkillVfx)
+function skillDef(id) { for (const h of HEROES) { const s = h.skills.find((x) => x.id === id); if (s) return { hero: h, skill: s }; } return null; }
+function damageOf(id, variant, i) {
+  if (id === 'RETURNING_SPEAR' && variant === 'counter') return 55;
+  if (id === 'RETURNING_WIND_SLASH' && variant === 'enhanced') return 24;
+  if (id === 'SPEAR_FORMATION') return variant === 'trigger' ? 32 : 0;
+  const s = skillDef(id).skill; return s.damagePerHit[i] ?? 0;
+}
+function spawnSkill(id, variant, opts) {
+  const entry = D.SKILL_VFX[id], f = P.facing, tip = tipOf(P.hero);
+  const fromX = P.x + f * tip.x, fromY = GROUND + tip.y;
+  const hitX = entry.anchor === 'self' ? P.x : E.x - f * HITP.x, toY = GROUND + HITP.y;
+  return entry.spawn(fxLayers.SkillFX, fromX, fromY, hitX, toY, {
+    scale: VS, speed: 1, facing: f, groundY: GROUND, casterX: P.x, targetX: E.x, variant: variant || undefined,
+    sfxCues: D.skillSfxCues(id, variant || undefined), shakeNode: worldRoot, layers: fxLayers, owner: 'player', ...opts,
+  });
+}
+function withSeed(r, fn) { const orig = Math.random; let first = true; Math.random = () => { if (first) { first = false; return r; } return orig(); }; try { return fn(); } finally { Math.random = orig; } }
+
+async function playSkill(id, fromQueue = false) {
+  const my = ++state.token;
+  if (!fromQueue) state.queue = [];
+  stopFx();
+  state.paused = false; state.scrubbing = false; setPauseUi();
+  ensureAudio();
+  selectSkill(id);
+  const { skill } = skillDef(id);
+  let variant = state.variant[id] ?? (VARIANTS[id]?.[0][0] ?? '');
+  // Fresh board: statuses from the previous demo play their exits.
+  for (const c of [P, E]) if (c.statuses.length) setStatuses(c, c === P && state.trav ? ['TRAVELER'] : []);
+  const need = id === 'SHADOW_GLIDE' ? state.distance : skill.range === 'ANY' ? state.distance : skill.range;
+  if (id === 'SHADOW_GLIDE') variant = state.distance === 'NEAR' ? 'retreat' : '';
+  if (state.distance !== need) { log(`${skill.name}需要${need === 'NEAR' ? '近' : '远'}距离，先滑步换距`, 'sys'); await glideTo(need); await wait(0.18); if (my !== state.token) return; }
+  // Trigger variants need their status on the board first.
+  if (id === 'SPEAR_FORMATION' && variant === 'trigger') { addStatus(P, 'SPEAR_FORMATION'); log('枪阵已布下，对手试图拉近……', 'sys'); await wait(0.9); if (my !== state.token) return; }
+  if (id === 'QUAKE' && variant === 'trigger') { addStatus(E, 'INTIMIDATED'); log(`${HERO[E.hero].name} 已被震慑，试图拉远……`, 'sys'); await wait(0.9); if (my !== state.token) return; }
+  // 霸体: like the game (BattleGameController), no effect art — only a '霸体' prompt over 鲁智深 as 疯魔杖 starts.
+  if (id === 'MAD_STAFF') { addStatus(P, 'SUPER_ARMOR'); popup(P.x, 440, '霸体', '#ffd27a', false); }
+  if (id === 'EMPTY_CITY' && variant === 'absorb') { addStatus(P, 'EMPTY_CITY'); log(`空城已布，${HERO[E.hero].name} 出手攻击……`, 'sys'); await wait(1.0); if (my !== state.token) return;
+    P.anim.flash = 1; P.anim.knock = 18; P.anim.knockDir = -1; popup(P.x, 420, '减半', '#bfe9d6', false); log('　空城：直接攻击伤害减半'); }
+  // 奇谋未中: like the game (BattleGameController), no effect at all — only a prompt over 吴用.
+  if (id === 'STRATAGEM' && variant === 'missed') {
+    hideCaption();
+    log(`${HERO[P.hero].name} 使出【${skill.name}】（未中）· 速度 ${skill.speed}`, 'hit');
+    popup(P.x, 420, '奇谋未中', '#bfe9d6', false); log('　奇谋未中，对手招式照常', 'sys');
+    state.fx = null; state.last = null; buildTicks(null);
+    await wait(0.9); if (my !== state.token) return;
+    onComplete(my, id, variant); return;
+  }
+  const dodged = variant === 'dodged';
+  const bonus = P.hero === 'huarong' && state.distance === 'FAR' && skill.tags.includes('ATTACK') ? 1 : 0;
+  log(`${HERO[P.hero].name} 使出【${skill.name}】${variant ? `（${VARIANTS[id]?.find((v) => v[0] === variant)?.[1] ?? variant}）` : ''} · 速度 ${skill.speed + bonus}`, 'hit');
+  showCaption(skill.name);
+  const seed = Math.random();
+  const fx = withSeed(seed, () => spawnSkill(id, variant, {
+    onHit: (i) => onHit(id, variant, i, dodged),
+    onComplete: () => onComplete(my, id, variant),
+  }));
+  state.fx = fx; state.last = { id, variant, seed, fx, dist: state.distance };
+  buildTicks(fx);
+}
+function onHit(id, variant, i, dodged) {
+  if (dodged) {
+    if (i === 0) { E.anim.dodge = 1; E.anim.dodgeDir = 1; addGhost(E, 0.35);
+      D.DodgeEffect.spawnLocal(fxLayers.SkillFX, E.x, GROUND, 1, { scale: VS, speed: 1, sfxCues: D.REACTION_SFX.dodge });
+      popup(E.x, 420, '闪避', '#bfe9d6', false); log(`　${HERO[E.hero].name} 闪开了这一招`); }
+    return;
+  }
+  const raw = damageOf(id, variant, i); if (!raw) return;
+  const n = D.SKILL_VFX[id] ? (state.fx?.hitTimes?.length || 1) : 1, heavy = raw >= 40;
+  E.anim.flash = 1; E.anim.knock = heavy ? 34 : 18; E.anim.knockDir = 1;
+  popup(E.x + (n > 1 ? (i - (n - 1) / 2) * 40 : 0), 420 + (n > 1 ? i * 24 : 0), `-${raw}`, heavy ? '#ffd27a' : '#fff3e2', heavy);
+  log(`　第 ${i + 1} 击 ${HERO[E.hero].name} 受到 ${raw}（未计护甲）`);
+}
+async function onComplete(my, id, variant) {
+  if (my !== state.token) return;
+  hideCaption();
+  const who = HERO[E.hero].name;
+  switch (id) {
+    case 'GALE_THRUST': if (variant === 'interrupt') { log(`${who} 被打断；豹子头：林冲速度 +2`, 'sys'); addStatus(P, 'LINCHONG_SPEED_BONUS'); } break;
+    case 'SWEEPING_HOSTS': if (variant === 'push') await glideTo('FAR'); else if (variant === 'blocked') log('击退被拦下，距离不变', 'sys'); break;
+    case 'SPEAR_FORMATION': if (variant === 'trigger') { removeStatus(P, 'SPEAR_FORMATION'); log('枪阵拦下拉近，阵散', 'sys'); } else { addStatus(P, 'SPEAR_FORMATION'); log('枪阵：对手远→近将被拦截', 'sys'); } break;
+    case 'MAD_STAFF': removeStatus(P, 'SUPER_ARMOR'); break;
+    case 'QUAKE': if (variant === 'trigger') { removeStatus(E, 'INTIMIDATED'); log(`${who} 被震住，拉远失败`, 'sys'); } else { addStatus(E, 'INTIMIDATED'); log(`${who} 被震慑`, 'sys'); } break;
+    case 'STEP_FORMATION': if (variant === 'blocked') log('拉近被拦下，距离不变', 'sys'); else await glideTo('NEAR'); break;
+    case 'STRATAGEM': if (variant !== 'missed') log(`识破！${who} 的技能被取消`, 'sys'); break;
+    case 'CHAOTIC_FORMATION': addStatus(E, 'CHAOS_COST_UP'); log(`${who} 下一个技能耗气 +20`, 'sys'); break;
+    case 'EMPTY_CITY': addStatus(P, 'EMPTY_CITY'); if (variant === 'absorb') log('受击：回合末回气 20', 'sys'); break;
+    case 'FEATHER_FAN_PLAN': if (variant === 'recovered') log('羽扇策命中：回气 +5', 'sys'); break;
+    case 'RETREATING_ARROW': if (variant === 'blocked') log('退身被拦下，距离不变', 'sys'); else await glideTo('FAR'); break;
+    case 'ROOTING_ARROW': if (variant !== 'dodged') { addStatus(E, 'ROOTED'); log(`${who} 被定身：主动变距 +20 气`, 'sys'); } break;
+    case 'RED_SASH': addStatus(E, 'BOUND'); log(`${who} 被缚足：下一次主动变距 +15 气`, 'sys'); break;
+    case 'SHADOW_GLIDE': {
+      const to = state.distance === 'NEAR' ? 'FAR' : 'NEAR';
+      await glideTo(to); addStatus(P, 'DODGE_FIRST_ATTACK');
+      if (to === 'NEAR') { addStatus(P, 'RETURN_WIND'); log('一丈青：远→近，获得「回风」', 'sys'); }
+      break;
+    }
+    case 'DRUNKEN_STEP': addStatus(P, 'DODGE_ATTACK'); break;
+    case 'TIGER_SUBDUING': addStatus(P, 'WUSONG_SPEED_PENALTY'); log('未击杀：武松下回合速度 -2', 'sys'); break;
+  }
+  if (my !== state.token) return;
+  const next = state.queue.shift();
+  if (next) { await wait(0.9); if (my === state.token) playSkill(next, true); }
+}
+function stopFx() { if (state.fx) { try { state.fx.stop(); } catch (e) {} if (state.fx.node?.isValid) state.fx.node.destroy(); } state.fx = null; }
+
+// Scrub: replay the same play (same seed) silently and step it to the chosen time.
+function scrubTo(frac) {
+  const L = state.last; if (!L) return;
+  state.token++; state.queue = [];
+  stopFx(); hideCaption();
+  state.scrubbing = true; state.paused = true; setPauseUi();
+  // Replay from the stance the skill was cast at (a finished 退身箭 has already glided back to FAR).
+  if (L.dist && state.distance !== L.dist) { state.glide = null; state.distance = L.dist; P.x = ANCHORS[L.dist].player; E.x = ANCHORS[L.dist].enemy; updateDistUi(); }
+  silent++;
+  const fx = withSeed(L.seed, () => spawnSkill(L.id, L.variant, { sfx: false, shakeNode: null }));
+  const target = frac * fx.duration;
+  let guard = 0;
+  while (fx.isPlaying && fx.t < target - 1e-4 && guard++ < 4000) fx.update(Math.min(1 / 120, target - fx.t + 1e-4));
+  silent--;
+  state.fx = fx; L.fx = fx;
+}
+
+// ------------------------------------------------------------------ UI
+const $ = (id) => document.getElementById(id);
+const skillsEl = $('skills'), infoEl = $('info'), logEl = $('log'), rosterEl = $('roster');
+function iconSrc(hero, key) { return A.img[`ic_${hero}_${key}`] || ''; }
+
+function buildRoster() {
+  for (const h of HEROES) {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'hero'; b.dataset.id = h.id;
+    const c = document.createElement('canvas'); c.width = 88; c.height = 88;
+    const sp = sprites[h.id], fc = FACES[h.id];
+    if (sp && fc) { const g = c.getContext('2d'), s = 1024 / 2048, r = 150 * s; g.drawImage(sp.img, fc.x * s - r, fc.y * s - r, r * 2, r * 2, 0, 0, 88, 88); }
+    const t = document.createElement('span'); t.innerHTML = `<span class="hn">${h.name}</span><span class="ht">${TITLE[h.id]} · ${SPRITE_KIND[h.id] ? '帧动画' : 'Graphics'}</span>`;
+    b.append(c, t); b.addEventListener('click', () => setHero(h.id)); rosterEl.appendChild(b);
+  }
+}
+function setHero(id) {
+  state.token++; state.queue = []; stopFx(); hideCaption();
+  clearStatuses(P); clearStatuses(E); state.trav = false; setTravUi();
+  P.hero = id; $('travGrp').hidden = id !== 'wusong';
+  if (E.hero === id) { E.hero = HEROES.find((h) => h.id !== id).id; $('enemySel').value = E.hero; }
+  for (const b of rosterEl.children) b.setAttribute('aria-pressed', String(b.dataset.id === id));
+  $('pName').textContent = `${HERO[id].name}（出招）`; $('eName').textContent = HERO[E.hero].name;
+  const h = HERO[id];
+  skillsEl.innerHTML = '';
+  for (const s of h.skills) {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'skill'; b.dataset.id = s.id; b.setAttribute('aria-pressed', 'false');
+    const dmg = s.damagePerHit.length ? (s.damagePerHit.length > 1 ? `${s.damagePerHit[0]}×${s.damagePerHit.length}` : `${s.damagePerHit[0]}`) : '—';
+    b.innerHTML = `<img alt="" src="${iconSrc(id, ICON[s.id])}"><span class="nm">${s.name}</span>
+      <span class="meta"><span class="pill ${s.range}">${s.range === 'FAR' ? '远' : s.range === 'NEAR' ? '近' : '任意'}</span><span>气 ${s.energyCost}</span><span>速 ${s.speed}</span><span>伤 ${dmg}</span></span>`;
+    b.addEventListener('click', () => playSkill(s.id));
+    skillsEl.appendChild(b);
+  }
+  const [iname, ikey, itext] = INNATE[id];
+  const inn = document.createElement('div'); inn.className = 'innate';
+  inn.innerHTML = `<img alt="" src="${iconSrc(id, ikey)}"><span><b>天赋 · ${iname}</b>　${itext}生命 ${h.maxHp}，护甲 ${h.armor}。</span>`;
+  skillsEl.appendChild(inn);
+  selectSkill(h.skills[0].id);
+  state.last = null; buildTicks(null);
+}
+function selectSkill(id) {
+  state.skill = id;
+  for (const b of skillsEl.querySelectorAll('.skill')) b.setAttribute('aria-pressed', String(b.dataset.id === id));
+  const { hero, skill: s } = skillDef(id);
+  // Read the timing from a throwaway instance of the real effect.
+  const tmp = new cc.Node('probe'); silent++;
+  let probe = null;
+  try { probe = D.SKILL_VFX[id].spawn(tmp, 0, 0, 600, 0, { scale: VS, facing: 1, groundY: GROUND, variant: (state.variant[id] ?? VARIANTS[id]?.[0][0]) || undefined, sfx: false, layers: { SkillFX: tmp } }); } catch (e) {}
+  silent--;
+  const timing = probe ? `命中 ${probe.hitTimes.length ? probe.hitTimes.map((t) => t.toFixed(2) + 's').join(' / ') : '无'} · 顿帧 ${probe.hitStop}s · 总长 ${probe.duration.toFixed(2)}s${probe.shakes.length ? ' · 震屏 ' + probe.shakes.map((x) => x.amp).join('/') + 'px' : ''}` : '';
+  try { probe?.stop(); } catch (e) {} tmp.destroy();
+  const dmg = s.damagePerHit.length ? (s.damagePerHit.length > 1 ? `${s.damagePerHit[0]} × ${s.damagePerHit.length}` : `${s.damagePerHit[0]}`) : '—';
+  const vars = VARIANTS[id];
+  const cur = state.variant[id] ?? vars?.[0][0];
+  const kind = SPRITE_KIND[hero.id];
+  infoEl.innerHTML = `<h2>${s.name}<span>${s.id}</span></h2>
+    <span class="kind ${kind ? 'sprite' : ''}">${kind ?? '程序化 · cc.Graphics'}</span>
+    <dl class="stats"><div><dt>气</dt><dd>${s.energyCost}</dd></div><div><dt>距离</dt><dd>${s.range === 'FAR' ? '远' : s.range === 'NEAR' ? '近' : '任意'}</dd></div><div><dt>速度</dt><dd>${s.speed}${hero.id === 'huarong' && s.range === 'FAR' ? ' +1' : ''}</dd></div><div><dt>伤害</dt><dd>${dmg}</dd></div></dl>
+    ${EFFECT[id] ? `<div class="eff">${EFFECT[id]}</div>` : ''}
+    ${vars ? `<div class="vars"><span class="lbl">分支</span><span class="seg" id="varSeg">${vars.map(([v, l]) => `<button type="button" data-v="${v}" aria-pressed="${v === cur}">${l}</button>`).join('')}</span></div>` : ''}
+    <ul class="phases">${(PHASES[id] || []).map((p) => `<li>${p}</li>`).join('')}</ul>
+    <div class="timing">${timing}</div>`;
+  const vs = $('varSeg');
+  if (vs) vs.addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; state.variant[id] = b.dataset.v; playSkill(id); });
+}
+function buildTicks(fx) {
+  const el = $('ticks'); el.innerHTML = '';
+  if (!fx) return;
+  for (const t of fx.hitTimes) { const i = document.createElement('i'); i.style.left = (t / fx.duration * 100) + '%'; el.appendChild(i); }
+}
+const scrub = $('scrub'), timeEl = $('time');
+function syncTimeline() {
+  const fx = state.last?.fx;
+  if (!fx) { timeEl.textContent = '0.00 / 0.00 s'; if (!state.scrubbing) scrub.value = '0'; return; }
+  const t = Math.min(fx.t, fx.duration);
+  if (!state.scrubbing) scrub.value = String(Math.round(t / fx.duration * 1000));
+  timeEl.textContent = `${t.toFixed(2)} / ${fx.duration.toFixed(2)} s`;
+}
+scrub.addEventListener('input', () => scrubTo(Number(scrub.value) / 1000));
+function setPauseUi() { $('pauseBtn').textContent = state.paused ? '继续' : '暂停'; }
+$('pauseBtn').addEventListener('click', () => {
+  if (state.scrubbing) { state.scrubbing = false; state.paused = false; setPauseUi(); return; }
+  state.paused = !state.paused; setPauseUi();
+});
+$('replayBtn').addEventListener('click', () => playSkill(state.skill));
+$('allBtn').addEventListener('click', () => { const ids = HERO[P.hero].skills.map((s) => s.id); playSkill(ids[0]); state.queue = ids.slice(1); });
+function segment(id, onPick) {
+  const seg = $(id);
+  seg.addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; for (const x of seg.querySelectorAll('button')) x.setAttribute('aria-pressed', String(x === b)); onPick(b.dataset.v); });
+}
+segment('speedSeg', (v) => { state.speed = Number(v); });
+segment('sfxSeg', (v) => { sfxOn = v === '1'; if (sfxOn) ensureAudio(); });
+function setTravUi() { for (const x of $('travSeg').querySelectorAll('button')) x.setAttribute('aria-pressed', String((x.dataset.v === '1') === !!state.trav)); }
+segment('travSeg', (v) => { state.trav = v === '1'; setTravUi(); state.paused = false; state.scrubbing = false; setPauseUi(); if (P.hero !== 'wusong') return; if (state.trav) addStatus(P, 'TRAVELER'); else removeStatus(P, 'TRAVELER'); });
+segment('distSeg', (v) => { state.token++; state.queue = []; stopFx(); state.paused = false; state.scrubbing = false; setPauseUi(); glideTo(v); });
+function updateDistUi() {
+  $('dist').textContent = state.distance === 'NEAR' ? '◀ 近距离 ▶' : '◀ 远距离 ▶';
+  for (const x of $('distSeg').querySelectorAll('button')) x.setAttribute('aria-pressed', String(x.dataset.v === state.distance));
+}
+const sel = $('enemySel');
+for (const h of HEROES) { const o = document.createElement('option'); o.value = h.id; o.textContent = h.name; sel.appendChild(o); }
+sel.addEventListener('change', () => {
+  if (sel.value === P.hero) { sel.value = E.hero; log('对手不能与出招角色相同', 'sys'); return; }
+  state.token++; stopFx(); clearStatuses(E); E.hero = sel.value; $('eName').textContent = HERO[E.hero].name; log(`对手换为 ${HERO[E.hero].name}`, 'sys');
+});
+const capEl = $('caption');
+function showCaption(t) { capEl.textContent = t; capEl.classList.add('on'); }
+function hideCaption() { capEl.classList.remove('on'); }
+function popup(x, y, text, color, big) { state.popups.push({ x, y, text, color, big, born: state.clock }); }
+function log(text, cls = '') {
+  const p = document.createElement('p'); p.textContent = text; if (cls) p.className = cls;
+  logEl.appendChild(p); while (logEl.children.length > 60) logEl.firstChild.remove(); logEl.scrollTop = logEl.scrollHeight;
+}
+function tinted(img, r, g, b) {
+  const c = document.createElement('canvas'); c.width = img.width; c.height = img.height; const x = c.getContext('2d');
+  x.drawImage(img, 0, 0); x.globalCompositeOperation = 'multiply'; x.fillStyle = `rgb(${r},${g},${b})`; x.fillRect(0, 0, c.width, c.height);
+  x.globalCompositeOperation = 'destination-in'; x.drawImage(img, 0, 0); return c;
+}
+
+// ------------------------------------------------------------------ boot
+(async () => {
+  resize();
+  const texKeys = Object.keys(A.tex);
+  const [bg, texImgs, heroImgs] = await Promise.all([loadImg(A.img.bg), Promise.all(texKeys.map((k) => loadImg(A.tex[k]))), Promise.all(HEROES.map((h) => loadImg(A.img['ch_' + h.id])))]);
+  bgImg = bg;
+  texKeys.forEach((k, i) => { if (texImgs[i]) TEX[k] = texImgs[i]; });
+  HEROES.forEach((h, i) => { const img = heroImgs[i]; if (img) sprites[h.id] = { img, flash: tinted(img, 255, 160, 150), ghost: tinted(img, 150, 172, 200) }; });
+  await Promise.all([D.SpriteVfxEffect.preload(D.LINCHONG_VFX), D.SpriteVfxEffect.preload(D.HUARONG_VFX), D.SpriteVfxEffect.preload(D.WUYONG_VFX), D.SpriteVfxEffect.preload(D.HUSANNIANG_VFX), D.SpriteVfxEffect.preload(D.WUSONG_VFX), D.SpriteVfxEffect.preload(D.LUZHISHEN_VFX)]);
+  buildRoster();
+  sel.value = E.hero;
+  setHero('luzhishen');
+  log('选角色 → 点技能卡播放；有分支的技能可在右侧切换；时间轴可拖动逐帧查看。', 'sys');
+  // Opening frame: 禅杖横扫 frozen at its second hit.
+  state.variant = {};
+  state.distance = 'NEAR'; P.x = ANCHORS.NEAR.player; E.x = ANCHORS.NEAR.enemy; updateDistUi();
+  state.last = { id: 'STAFF_SWEEP', variant: '', seed: 0.4242, fx: null, dist: 'NEAR' };
+  scrubTo(0.42); scrub.value = '420';
+  buildTicks(state.fx);
+  window.__djl = { P, E, state }; // read-only debugging hook for the smoke / montage scripts
+  requestAnimationFrame(frame);
+})();
+})();
+</script>
