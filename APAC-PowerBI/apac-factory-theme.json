@@ -1,0 +1,83 @@
+{
+  "name": "APAC Factory Operations",
+  "dataColors": [
+    "#2563A8",
+    "#E08A2E",
+    "#0E7C70",
+    "#6B7280",
+    "#9CB4D3",
+    "#B45309",
+    "#1D4E89",
+    "#C9CED6"
+  ],
+  "background": "#FFFFFF",
+  "foreground": "#1B1F24",
+  "tableAccent": "#2563A8",
+  "good": "#1D4E89",
+  "neutral": "#6B7280",
+  "bad": "#B45309",
+  "maximum": "#1D4E89",
+  "center": "#9DBFE4",
+  "minimum": "#EEF4FB",
+  "textClasses": {
+    "callout": {
+      "fontSize": 22,
+      "fontFace": "Segoe UI Semibold",
+      "color": "#1B1F24"
+    },
+    "title": {
+      "fontSize": 11,
+      "fontFace": "Segoe UI Semibold",
+      "color": "#1B1F24"
+    },
+    "header": {
+      "fontSize": 10,
+      "fontFace": "Segoe UI Semibold",
+      "color": "#4B5563"
+    },
+    "label": {
+      "fontSize": 9,
+      "fontFace": "Segoe UI",
+      "color": "#4B5563"
+    }
+  },
+  "visualStyles": {
+    "page": {
+      "*": {
+        "background": [
+          {
+            "color": { "solid": { "color": "#F3F4F6" } },
+            "transparency": 0
+          }
+        ]
+      }
+    },
+    "*": {
+      "*": {
+        "background": [
+          {
+            "show": true,
+            "color": { "solid": { "color": "#FFFFFF" } },
+            "transparency": 0
+          }
+        ],
+        "border": [
+          {
+            "show": true,
+            "color": { "solid": { "color": "#E1E4E8" } },
+            "radius": 6
+          }
+        ],
+        "title": [
+          {
+            "show": true,
+            "fontColor": { "solid": { "color": "#1B1F24" } },
+            "fontSize": 11,
+            "fontFamily": "Segoe UI Semibold",
+            "alignment": "left"
+          }
+        ]
+      }
+    }
+  }
+}
